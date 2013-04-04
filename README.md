@@ -1,4 +1,4 @@
 pluginparameters
 ================
 
-A library to support the development of Modular Plugins in JUCE.
+A library to automate parameter configuration in plugins developed with JUCE.
