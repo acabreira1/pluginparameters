@@ -32,12 +32,12 @@
 #include "MidiDelay/MidiDelay.h"
 #include "MidiSustain/MidiSustain.h"
 
-class PluginProcessor  : public ExtendedAudioProcessor{
+class MyPluginProcessor  : public PluginProcessor{
   
 public:
     //==============================================================================
-    PluginProcessor();
-    ~PluginProcessor();
+    MyPluginProcessor();
+    ~MyPluginProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock);
@@ -67,52 +67,37 @@ public:
     //==============================================================================    
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);          
-    
-    class MainParamGroup: public ParamGroup{
-      PluginProcessor *processor;
-    public:
-      enum ParamGroups{
-        midiDelayIndex=0,
-        midiNoteGainIndex,
-        midiSustainIndex
-      };
-      
-      enum Params{        
-        bypassIndex=0
-      };
-      
-      MainParamGroup( PluginProcessor *processor):
-      ParamGroup(JucePlugin_Name),
-      processor(processor){}
-      
-      void init(){        
-        //Parameters   
-        addBoolParam(bypassIndex,"bypass",true,true,&processor->bypass);     
-        
-        //SubGroups
-        addParamGroup(midiDelayIndex,new MidiDelayParamGroup(&processor->midiDelay));
-        addParamGroup(midiNoteGainIndex,new MidiNoteGainParamGroup(&processor->midiNoteGain));
-        addParamGroup(midiSustainIndex,new MidiSustainParamGroup(&processor->midiSustain));
-
-      }     
-                               
-      
-    };                    
-    
-    //---------------------------
-    //MainParamGroup Parameters
-    //---------------------------
-    bool bypass;
-    //---------------------------    	    
+   
+    bool bypass;    
 
     MidiDelay midiDelay;
     MidiNoteGain midiNoteGain;
     MidiSustain midiSustain;
-
+   
+    enum ParamGroups{
+      midiDelayIndex=0,
+      midiNoteGainIndex,
+      midiSustainIndex
+    };
+      
+    enum Params{        
+      bypassIndex=0
+    };
+           
+    void init(){        
+      //Parameters   
+      addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
+        
+      //SubGroups
+      addParamGroup(midiDelayIndex,midiDelay);
+      addParamGroup(midiNoteGainIndex,midiNoteGain);
+      addParamGroup(midiSustainIndex,midiSustain);
+    }                          
+       
 private:
     //==============================================================================
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MyPluginProcessor);
 };
 
 #endif  // __PLUGINPROCESSOR_H_526ED7A9__

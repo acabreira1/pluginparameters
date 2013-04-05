@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:16:11pm
+  Creation date:  5 Apr 2013 4:25:32pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_C65CBDDE__
-#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_C65CBDDE__
+#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__
+#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -48,7 +48,7 @@
   ==============================================================================
 */
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 //[/Headers]
 
 
@@ -69,7 +69,7 @@ class MainComponent  : public AudioProcessorEditor,
 {
 public:
     //==============================================================================
-    MainComponent (PluginProcessor* processor);
+    MainComponent (MyPluginProcessor* processor);
     ~MainComponent();
 
     //==============================================================================
@@ -90,10 +90,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    // handy wrapper method to avoid having to cast the filter to a PluginProcessor
+    // handy wrapper method to avoid having to cast the filter to a MyPluginProcessor
 	  // every time we need it..
-	  ParamGroup* const paramGroup;
-	  PluginProcessor *const processor;
+	  MyPluginProcessor * processor;
     //[/UserVariables]
 
     //==============================================================================
@@ -115,4 +114,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_C65CBDDE__
+#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__

@@ -30,16 +30,25 @@
 
 #include "PluginParameters.h"
 
-class MidiNoteGain{
+class MidiNoteGain: public ParamGroup{
   double sampleRate;
   
 public:
   bool enable;
+  
   int noteVelocities[12];
+  IntParamArray noteVelocitiesParamArray;
+
   int numNotes;
 
-  void setSampleRate(double sampleRateArg){
+  void prepareToPlay (double sampleRateArg, int /*estimatedSamplesPerBlockArg*/) {
     sampleRate=sampleRateArg;
+  }
+
+  void releaseResources(){
+  }
+
+  void reset(){
   }
 
   void processBlock(AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages){ 
@@ -59,9 +68,26 @@ public:
     }
   }
 
+  enum ParamGroups{
+    noteVelocitiesIndex = 0
+  };
+  enum Params{
+    enableIndex = 0
+  };
+
+  void init(){
+    //Parameters 
+    addBoolParam(enableIndex,"enable",true,true,&enable); 
+    
+    //ParamGroups
+    addParamGroup(noteVelocitiesIndex,noteVelocitiesParamArray);
+  }  
+
   MidiNoteGain():
+  ParamGroup("MidiNoteGain"),
   enable(true),
-  numNotes(12){
+  numNotes(12),
+  noteVelocitiesParamArray("noteVelocities",true,true,noteVelocities,&numNotes,12,0,127){
     for (int i=0;i<12;i++)
       noteVelocities[i]=127;
   }
@@ -73,31 +99,6 @@ public:
   // avoids warning C4512: "assignment operator could not be generated"
   MidiNoteGain (const MidiNoteGain&);
   MidiNoteGain& operator=(const MidiNoteGain &other);
-};
-
-class MidiNoteGainParamGroup: public ParamGroup{
-  MidiNoteGain *midiNoteGain;
-public:
-  enum ParamGroups{
-    noteVelocitiesIndex = 0
-  };
-  enum Params{
-    enableIndex = 0
-  };
-      
-  MidiNoteGainParamGroup(MidiNoteGain *midiNoteGain):
-  ParamGroup("MidiNoteGain"),
-  midiNoteGain(midiNoteGain)  {
-  }
-      
-  void init(){
-    //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&midiNoteGain->enable); 
-    
-    //ParamGroups
-    addParamGroup(noteVelocitiesIndex,new IntParamArray("noteVelocities",true,true,midiNoteGain->noteVelocities,&midiNoteGain->numNotes,12,0,127));
-  }      
-
 };
 
 #endif

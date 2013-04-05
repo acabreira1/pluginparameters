@@ -23,18 +23,20 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 #include "MainComponent.h"
 
 //==============================================================================
-PluginProcessor::PluginProcessor():
+MyPluginProcessor::MyPluginProcessor():
 floatVar(0),
 logVar(0),
 logWith0Var(0),
 symSignedLogVar(0),
 asymSignedLogVar(0),
 intArray(nullptr),
-intMatrix(nullptr)
+intMatrix(nullptr),
+intParamArray(nullptr),
+intParamMatrix(nullptr)
 {
     intArray=new int[10];
     for (int i=0;i<10;i++)
@@ -50,10 +52,13 @@ intMatrix(nullptr)
     intMatrixRows=2;
     intMatrixCols=2;
 
-    init(new MainParamGroup(this));           
+    intParamArray = new IntParamArray("intArray",true,true,intArray,&intArraySize,10,0,127);
+    intParamMatrix = new IntParamMatrix("intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
+
+    setup();
 }
 
-PluginProcessor::~PluginProcessor()
+MyPluginProcessor::~MyPluginProcessor()
 {  
   if (intArray)
     delete[] intArray;
@@ -65,7 +70,7 @@ PluginProcessor::~PluginProcessor()
   }
 }
 
-const String PluginProcessor::getParameterText (int index)
+const String MyPluginProcessor::getParameterText (int index)
 {
     // Instructions to format the parameter value
     // Now all floating numbers are written with a string of maximum 2 characters
@@ -76,7 +81,7 @@ const String PluginProcessor::getParameterText (int index)
 //save all parameters in sessions and xml presets
 //------------------------------------------------------------------------------
 
-void PluginProcessor::getStateInformation (MemoryBlock& destData)
+void MyPluginProcessor::getStateInformation (MemoryBlock& destData)
 {   
   // You should use this method to store your parameters in the memory block.
   // Here's an example of how you can use XML to make it easy and more robust:
@@ -86,13 +91,13 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
   XmlElement xml(JucePlugin_Name);
 
   // add some attributes to it..
-  getParamGroup()->saveXml(&xml,false,true);  
+  saveXml(&xml,false,true);  
 
   // then use this helper function to stuff it into the binary blob and return it..
   copyXmlToBinary (xml, destData);
 }
 
-void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
+void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
   // You should use this method to restore your parameters from this memory block,
   // whose contents will have been created by the getStateInformation() call.
@@ -103,62 +108,62 @@ void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
   // make sure that it's actually our type of XML object..
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){  
            
-    getParamGroup()->preLoadXml(xmlState, true);   
-    getParamGroup()->updateProcessorHostAndUiFromXml(true,true,true);     
+    preLoadXml(xmlState, true);   
+    updateProcessorHostAndUiFromXml(true,true,true);     
   }
 }
 
 //------------------------------------------------------------------------------
 
-void PluginProcessor::prepareToPlay (double /*sampleRate*/, int /*samplesPerBlock*/)
+void MyPluginProcessor::prepareToPlay (double /*sampleRate*/, int /*samplesPerBlock*/)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 }
 
-void PluginProcessor::releaseResources()
+void MyPluginProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-void PluginProcessor::reset()
+void MyPluginProcessor::reset()
 {
     // Use this method as the place to clear any delay lines, buffers, etc, as it
     // means there's been a break in the audio's continuity.
     //reset the phase
 }
 
-void PluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
+void MyPluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {            
     const int numSamples = buffer.getNumSamples();    
     buffer.applyGain(0,numSamples,floatVar);
 }
 
 //------------------------------------------------------------------------------
-AudioProcessorEditor* PluginProcessor::createEditor()
+AudioProcessorEditor* MyPluginProcessor::createEditor()
 {
     return new MainComponent (this);
 }
 
 //------------------------------------------------------------------------------
 
-const String PluginProcessor::getInputChannelName (const int channelIndex) const
+const String MyPluginProcessor::getInputChannelName (const int channelIndex) const
 {
     return String (channelIndex + 1);
 }
 
-const String PluginProcessor::getOutputChannelName (const int channelIndex) const
+const String MyPluginProcessor::getOutputChannelName (const int channelIndex) const
 {
     return String (channelIndex + 1);
 }
 
-bool PluginProcessor::isInputChannelStereoPair (int /*index*/) const
+bool MyPluginProcessor::isInputChannelStereoPair (int /*index*/) const
 {
     return true;
 }
 
-bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
+bool MyPluginProcessor::isOutputChannelStereoPair (int /*index*/) const
 {
     return true;
 }
@@ -167,5 +172,5 @@ bool PluginProcessor::isOutputChannelStereoPair (int /*index*/) const
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new PluginProcessor();
+    return new MyPluginProcessor();
 }

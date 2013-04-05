@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:09am
+  Creation date:  5 Apr 2013 4:04:56pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -45,7 +45,7 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 //[/Headers]
 
 #include "MidiNoteGainComponent.h"
@@ -55,8 +55,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MidiNoteGainComponent::MidiNoteGainComponent (ParamGroup *paramGroup)
-    : paramGroup(paramGroup),
+MidiNoteGainComponent::MidiNoteGainComponent (MidiNoteGain *midiNoteGain)
+    : midiNoteGain(midiNoteGain),
       label12 (0),
       label2 (0),
       slider1 (0),
@@ -264,7 +264,7 @@ MidiNoteGainComponent::MidiNoteGainComponent (ParamGroup *paramGroup)
 
     //[Constructor] You can add your own custom stuff here..
     IntParam *param;
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(1);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(1);
     slider1->setRange(param->getMin(),param->getMax(),slider1->getInterval());
     slider2->setRange(param->getMin(),param->getMax(),slider2->getInterval());
     slider3->setRange(param->getMin(),param->getMax(),slider3->getInterval());
@@ -369,73 +369,73 @@ void MidiNoteGainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider1)
     {
         //[UserSliderCode_slider1] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(0)->updateProcessorAndHostFromUi((int)slider1->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(0)->updateProcessorAndHostFromUi((int)slider1->getValue());
         //[/UserSliderCode_slider1]
     }
     else if (sliderThatWasMoved == slider2)
     {
         //[UserSliderCode_slider2] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(1)->updateProcessorAndHostFromUi((int)slider2->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(1)->updateProcessorAndHostFromUi((int)slider2->getValue());
         //[/UserSliderCode_slider2]
     }
     else if (sliderThatWasMoved == slider3)
     {
         //[UserSliderCode_slider3] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(2)->updateProcessorAndHostFromUi((int)slider3->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(2)->updateProcessorAndHostFromUi((int)slider3->getValue());
         //[/UserSliderCode_slider3]
     }
     else if (sliderThatWasMoved == slider4)
     {
         //[UserSliderCode_slider4] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(3)->updateProcessorAndHostFromUi((int)slider4->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(3)->updateProcessorAndHostFromUi((int)slider4->getValue());
         //[/UserSliderCode_slider4]
     }
     else if (sliderThatWasMoved == slider5)
     {
         //[UserSliderCode_slider5] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(4)->updateProcessorAndHostFromUi((int)slider5->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(4)->updateProcessorAndHostFromUi((int)slider5->getValue());
         //[/UserSliderCode_slider5]
     }
     else if (sliderThatWasMoved == slider6)
     {
         //[UserSliderCode_slider6] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(5)->updateProcessorAndHostFromUi((int)slider6->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(5)->updateProcessorAndHostFromUi((int)slider6->getValue());
         //[/UserSliderCode_slider6]
     }
     else if (sliderThatWasMoved == slider7)
     {
         //[UserSliderCode_slider7] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(6)->updateProcessorAndHostFromUi((int)slider7->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(6)->updateProcessorAndHostFromUi((int)slider7->getValue());
         //[/UserSliderCode_slider7]
     }
     else if (sliderThatWasMoved == slider8)
     {
         //[UserSliderCode_slider8] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(7)->updateProcessorAndHostFromUi((int)slider8->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(7)->updateProcessorAndHostFromUi((int)slider8->getValue());
         //[/UserSliderCode_slider8]
     }
     else if (sliderThatWasMoved == slider10)
     {
         //[UserSliderCode_slider10] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(9)->updateProcessorAndHostFromUi((int)slider10->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(9)->updateProcessorAndHostFromUi((int)slider10->getValue());
         //[/UserSliderCode_slider10]
     }
     else if (sliderThatWasMoved == slider11)
     {
         //[UserSliderCode_slider11] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(10)->updateProcessorAndHostFromUi((int)slider11->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(10)->updateProcessorAndHostFromUi((int)slider11->getValue());
         //[/UserSliderCode_slider11]
     }
     else if (sliderThatWasMoved == slider12)
     {
         //[UserSliderCode_slider12] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(11)->updateProcessorAndHostFromUi((int)slider12->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(11)->updateProcessorAndHostFromUi((int)slider12->getValue());
         //[/UserSliderCode_slider12]
     }
     else if (sliderThatWasMoved == slider9)
     {
         //[UserSliderCode_slider9] -- add your slider handling code here..
-        paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(8)->updateProcessorAndHostFromUi((int)slider9->getValue());
+        midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(8)->updateProcessorAndHostFromUi((int)slider9->getValue());
         //[/UserSliderCode_slider9]
     }
 
@@ -451,7 +451,7 @@ void MidiNoteGainComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == enableToggle)
     {
         //[UserButtonCode_enableToggle] -- add your button handler code here..
-        paramGroup->getBoolParam(MidiNoteGainParamGroup::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
+        midiNoteGain->getBoolParam(MidiNoteGain::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
         //[/UserButtonCode_enableToggle]
     }
 
@@ -465,68 +465,68 @@ void MidiNoteGainComponent::buttonClicked (Button* buttonThatWasClicked)
 
 void MidiNoteGainComponent::timerCallback()
 {
-    BoolParam *enableParam=paramGroup->getBoolParam(MidiNoteGainParamGroup::enableIndex);
+    BoolParam *enableParam=midiNoteGain->getBoolParam(MidiNoteGain::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
       enableToggle->setToggleState(enableParam->uiGet(),false);
     }
 
     IntParam *param;
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(0);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(0);
     if (slider1 && param->updateUiRequested()){
       slider1->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(1);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(1);
     if (slider2 && param->updateUiRequested()){
       slider2->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(2);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(2);
     if (slider3 && param->updateUiRequested()){
       slider3->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(3);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(3);
     if (slider4 && param->updateUiRequested()){
       slider4->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(4);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(4);
     if (slider5 && param->updateUiRequested()){
       slider5->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(5);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(5);
     if (slider6 && param->updateUiRequested()){
       slider6->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(6);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(6);
     if (slider7 && param->updateUiRequested()){
       slider7->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(7);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(7);
     if (slider8 && param->updateUiRequested()){
       slider8->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(8);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(8);
     if (slider9 && param->updateUiRequested()){
       slider9->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(9);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(9);
     if (slider10 && param->updateUiRequested()){
       slider10->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(10);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(10);
     if (slider11 && param->updateUiRequested()){
       slider11->setValue (param->uiGet(),false);
     }
 
-    param=paramGroup->getParamGroup(MidiNoteGainParamGroup::noteVelocitiesIndex)->getIntParam(11);
+    param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(11);
     if (slider12 && param->updateUiRequested()){
       slider12->setValue (param->uiGet(),false);
     }
@@ -546,8 +546,8 @@ void MidiNoteGainComponent::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MidiNoteGainComponent" componentName=""
-                 parentClasses="public Component" constructorParams="ParamGroup *paramGroup"
-                 variableInitialisers="paramGroup(paramGroup)" snapPixels="8"
+                 parentClasses="public Component" constructorParams="MidiNoteGain *midiNoteGain"
+                 variableInitialisers="midiNoteGain(midiNoteGain)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330000013" fixedSize="1"
                  initialWidth="800" initialHeight="120">
   <BACKGROUND backgroundColour="ffc4c4c4"/>

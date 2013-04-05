@@ -30,7 +30,7 @@
 
 #include "PluginParameters.h"
 
-class MidiSustain{
+class MidiSustain: public ParamGroup{
   bool panicFlag;
   int lastChannel;
 public:
@@ -38,6 +38,15 @@ public:
 
   void panic(){
     panicFlag=true;
+  }
+
+  void prepareToPlay (double /*sampleRateArg*/, int /*estimatedSamplesPerBlockArg*/) {
+  }
+
+  void releaseResources(){
+  }
+
+  void reset(){
   }
 
   void processBlock(AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages){ 
@@ -61,7 +70,28 @@ public:
     }
   }
 
+  enum ParamGroups{
+    none = 0
+  };
+  enum Params{
+    enableIndex = 0
+  };
+  
+  void init(){
+    //Parameters 
+    addBoolParam(enableIndex,"enable",true,true,&enable);     
+  }      
+
+  void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){
+    if (updateFromFlag&UPDATE_FROM_XML)
+      return;
+    
+    if (index==enableIndex && enable==false)
+      panic();
+  }
+
   MidiSustain():
+  ParamGroup("MidiSustain"),
   enable(true),
   panicFlag(false),
   lastChannel(1){    
@@ -74,36 +104,6 @@ public:
   // avoids warning C4512: "assignment operator could not be generated"
   MidiSustain (const MidiSustain&);
   MidiSustain& operator=(const MidiSustain &other);
-};
-
-class MidiSustainParamGroup: public ParamGroup{
-  MidiSustain *midiSustain;
-public:
-  enum ParamGroups{
-    none = 0
-  };
-  enum Params{
-    enableIndex = 0
-  };
-      
-  MidiSustainParamGroup(MidiSustain *midiSustain):
-  ParamGroup("MidiSustain"),
-  midiSustain(midiSustain)  {
-  }
-      
-  void init(){
-    //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&midiSustain->enable);     
-  }      
-
-  void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){
-    if (updateFromFlag&UPDATE_FROM_XML)
-      return;
-    
-    if (index==enableIndex && midiSustain->enable==false)
-      midiSustain->panic();
-  }
-
 };
 
 #endif

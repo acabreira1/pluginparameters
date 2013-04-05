@@ -63,6 +63,10 @@
     </VS2010>
   </EXPORTFORMATS>
   <MAINGROUP id="dYAMo6Ykd" name="PluginBasicTemplate">
+    <FILE id="u9PSdB" name="MyPluginProcessor.cpp" compile="1" resource="0"
+          file="Source/MyPluginProcessor.cpp"/>
+    <FILE id="qaToU4" name="MyPluginProcessor.h" compile="0" resource="0"
+          file="Source/MyPluginProcessor.h"/>
     <FILE id="A6d3P7" name="PluginParameters.cpp" compile="1" resource="0"
           file="Source/PluginParameters.cpp"/>
     <FILE id="CNFZfR" name="PluginParameters.h" compile="0" resource="0"
@@ -70,10 +74,6 @@
     <FILE id="HtaRCt" name="MainComponent.cpp" compile="1" resource="0"
           file="Source/MainComponent.cpp"/>
     <FILE id="f4kyLl" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-    <FILE id="LabBGo" name="PluginProcessor.cpp" compile="1" resource="0"
-          file="Source/PluginProcessor.cpp"/>
-    <FILE id="yDIsbK" name="PluginProcessor.h" compile="0" resource="0"
-          file="Source/PluginProcessor.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_PLUGINHOST_VST="disabled" JUCE_PLUGINHOST_AU="disabled"/>
   <MODULES>

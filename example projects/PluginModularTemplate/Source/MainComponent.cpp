@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:15:57pm
+  Creation date:  5 Apr 2013 4:09:38pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -56,17 +56,17 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainComponent::MainComponent (PluginProcessor* processor)
-    : AudioProcessorEditor(processor), processor(processor), paramGroup(processor->getParamGroup()),
+MainComponent::MainComponent (MyPluginProcessor* processor)
+    : AudioProcessorEditor(processor), processor(processor),
       tabbedComponent (0),
       bypassToggle (0),
       label (0)
 {
     addAndMakeVisible (tabbedComponent = new TabbedComponent (TabbedButtonBar::TabsAtTop));
     tabbedComponent->setTabBarDepth (30);
-    tabbedComponent->addTab (L"Sustain", Colours::lightgrey, new MidiSustainComponent (paramGroup->getParamGroup(PluginProcessor::MainParamGroup::midiSustainIndex)), true);
-    tabbedComponent->addTab (L"Delay", Colours::lightgrey, new MidiDelayComponent (paramGroup->getParamGroup(PluginProcessor::MainParamGroup::midiDelayIndex)), true);
-    tabbedComponent->addTab (L"NoteGain", Colours::lightgrey, new MidiNoteGainComponent (paramGroup->getParamGroup(PluginProcessor::MainParamGroup::midiNoteGainIndex)), true);
+    tabbedComponent->addTab (L"Sustain", Colours::lightgrey, new MidiSustainComponent (&processor->midiSustain), true);
+    tabbedComponent->addTab (L"Delay", Colours::lightgrey, new MidiDelayComponent (&processor->midiDelay), true);
+    tabbedComponent->addTab (L"NoteGain", Colours::lightgrey, new MidiNoteGainComponent (&processor->midiNoteGain), true);
     tabbedComponent->setCurrentTabIndex (1);
 
     addAndMakeVisible (bypassToggle = new ToggleButton (String::empty));
@@ -84,7 +84,7 @@ MainComponent::MainComponent (PluginProcessor* processor)
 
 
     //[UserPreSize]
-    paramGroup->requestUpdateUiRecursively(true);
+    processor->requestUpdateUiRecursively(true);
     timerCallback();
     //[/UserPreSize]
 
@@ -139,7 +139,7 @@ void MainComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == bypassToggle)
     {
         //[UserButtonCode_bypassToggle] -- add your button handler code here..
-		    BoolParam *param=paramGroup->getBoolParam(PluginProcessor::MainParamGroup::bypassIndex);
+		    BoolParam *param=processor->getBoolParam(MyPluginProcessor::bypassIndex);
         param->updateProcessorAndHostFromUi(bypassToggle->getToggleState());
         //[/UserButtonCode_bypassToggle]
     }
@@ -152,7 +152,7 @@ void MainComponent::buttonClicked (Button* buttonThatWasClicked)
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void MainComponent::timerCallback(){
-	BoolParam * const bypassParam=paramGroup->getBoolParam(PluginProcessor::MainParamGroup::bypassIndex);
+	BoolParam * const bypassParam=processor->getBoolParam(MyPluginProcessor::bypassIndex);
   if (bypassToggle && bypassParam->updateUiRequested()){
     bypassToggle->setToggleState (bypassParam->uiGet(), false);
   }
@@ -178,8 +178,8 @@ void MainComponent::timerCallback(){
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* processor"
-                 variableInitialisers="AudioProcessorEditor(processor), processor(processor), paramGroup(processor-&gt;getParamGroup())"
+                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="MyPluginProcessor* processor"
+                 variableInitialisers="AudioProcessorEditor(processor), processor(processor)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330000013"
                  fixedSize="1" initialWidth="800" initialHeight="150">
   <BACKGROUND backgroundColour="ffffffff"/>
@@ -187,14 +187,11 @@ BEGIN_JUCER_METADATA
                    explicitFocusOrder="0" pos="0 0 800 150" orientation="top" tabBarDepth="30"
                    initialTab="1">
     <TAB name="Sustain" colour="ffd3d3d3" useJucerComp="1" contentClassName=""
-         constructorParams="paramGroup-&gt;getParamGroup(PluginProcessor::MainParamGroup::midiSustainIndex)"
-         jucerComponentFile="MidiSustain/MidiSustainComponent.cpp"/>
+         constructorParams="&amp;processor-&gt;midiSustain" jucerComponentFile="MidiSustain/MidiSustainComponent.cpp"/>
     <TAB name="Delay" colour="ffd3d3d3" useJucerComp="1" contentClassName=""
-         constructorParams="paramGroup-&gt;getParamGroup(PluginProcessor::MainParamGroup::midiDelayIndex)"
-         jucerComponentFile="MidiDelay/MidiDelayComponent.cpp"/>
+         constructorParams="&amp;processor-&gt;midiDelay" jucerComponentFile="MidiDelay/MidiDelayComponent.cpp"/>
     <TAB name="NoteGain" colour="ffd3d3d3" useJucerComp="1" contentClassName=""
-         constructorParams="paramGroup-&gt;getParamGroup(PluginProcessor::MainParamGroup::midiNoteGainIndex)"
-         jucerComponentFile="MidiNoteGain/MidiNoteGainComponent.cpp"/>
+         constructorParams="&amp;processor-&gt;midiNoteGain" jucerComponentFile="MidiNoteGain/MidiNoteGainComponent.cpp"/>
   </TABBEDCOMPONENT>
   <TOGGLEBUTTON name="" id="d90e123570461871" memberName="bypassToggle" virtualName=""
                 explicitFocusOrder="0" pos="660 4 62 18" buttonText="bypass"

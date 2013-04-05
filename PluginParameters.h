@@ -38,7 +38,7 @@ namespace PluginParameters{
   const PluginFloatType epsilon=(PluginFloatType)1e-6; //used to avoid rounding errors
 };
 
-class ExtendedAudioProcessor;
+class PluginProcessor;
 
 //UPDATE_FROM_HOST will usally be associated to Automation
 enum UpdateFromFlags{
@@ -62,7 +62,7 @@ private:
     
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the host 
       with load */
-  ExtendedAudioProcessor* processor;
+  PluginProcessor* pluginProcessor;
   
   bool updateUiFlag;     
   
@@ -192,8 +192,8 @@ public:
       (when it has changed).*/ 
   void updateProcessorHostAndUiFromXml(bool forceRunAfterChange=false,bool forceUpdateUi=false);
   
-  Param(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
-  processor(processor),
+  Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
+  pluginProcessor(pluginProcessor),
   globalIndex(globalIndex),
   name(name),
   type(type),  
@@ -289,8 +289,8 @@ public:
   }
 
 
- StringParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, String * const value):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"String"),
+ StringParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, String * const value):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"String"),
   value(value),
   defaultValue(*value){
     // Strings cannot be automated! 
@@ -434,8 +434,8 @@ public:
       xml->setAttribute(Param::getName(),(double)(*value));
   }
   
-  FloatParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Float"),
+  FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Float"),
   defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
@@ -592,8 +592,8 @@ public:
       xml->setAttribute(Param::getName(),(double)(*value));
   }
   
-  LogParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),const PluginFloatType factor=(PluginFloatType)(1)):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Log"),
+  LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),const PluginFloatType factor=(PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Log"),
   defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(maxValue,defaultValue))),
   minLogValue((PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -772,8 +772,8 @@ public:
       xml->setAttribute(Param::getName(),(double)(*value));
   }
 
-  LogWith0Param(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor=(PluginFloatType)(1)):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWith0"),
+  LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor=(PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWith0"),
   defaultValue(jmax<PluginFloatType>(0,jmin<PluginFloatType>(*value,maxValue))),
   minLogValue((PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -1018,8 +1018,8 @@ public:
       xml->setAttribute(Param::getName(),(double)(*value));
   }
 
-  LogWithSignParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor=(PluginFloatType)(1)):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWithSign"),
+  LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor=(PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWithSign"),
   defaultValue(jmax<PluginFloatType>(minNegativeValue,jmin<PluginFloatType>(*value,maxPositiveValue))),
   maxNegLogValue((PluginFloatType)(factor*log10(-(double)minNegativeValue))),
   maxPosLogValue((PluginFloatType)(factor*log10((double)maxPositiveValue))),
@@ -1166,8 +1166,8 @@ public:
       xml->setAttribute(Param::getName(),(int)(*value));
   }
   
-  IntParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType * const value, const PluginIntType minValue=0,const PluginIntType maxValue=1):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Int"),
+  IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType * const value, const PluginIntType minValue=0,const PluginIntType maxValue=1):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Int"),
   value(value),
   defaultValue(jmax<PluginIntType>(minValue,jmin<PluginIntType>(*value,maxValue))),
   minValue(minValue),
@@ -1247,8 +1247,8 @@ public:
       xml->setAttribute(Param::getName(),(int)(*value));
   }
   
-  BoolParam(ExtendedAudioProcessor *processor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
-  Param(processor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Bool"),
+  BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
+  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Bool"),
   defaultValue(*value),
   value(value){
     xmlValue=*value=defaultValue;
@@ -1296,12 +1296,12 @@ private:
   
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the host 
       with update */
-  ExtendedAudioProcessor* processor;
+  PluginProcessor* pluginProcessor;
 
 protected:  
   /** Returns the pointer to the (Extended)AudioProcessor instance */
-  ExtendedAudioProcessor* getProcessor() const{
-    return processor;
+  PluginProcessor* getProcessor() const{
+    return pluginProcessor;
   }    
   
   /** Sets the number of automated parameters added so far */
@@ -1329,9 +1329,9 @@ public:
     return parentParamGroup;
   }    
 
-  /** Sets the pointer to the (Extended)AudioProcessor instance */
-  void setProcessor(ExtendedAudioProcessor *processorArg){
-    processor=processorArg;
+  /** Sets the pointer to the PluginProcessor instance */
+  void setPluginProcessor(PluginProcessor *pluginProcessorArg){
+    pluginProcessor=pluginProcessorArg;
   }  
 
   /** Returns the number of automated parameters added so far */
@@ -1436,9 +1436,9 @@ public:
   void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value){
       
       if (automationFlag)
-        addParam(paramIndex,new StringParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+        addParam(paramIndex,new StringParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
       else
-        addParam(paramIndex,new StringParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));        
+        addParam(paramIndex,new StringParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));        
   }  
   
   FloatParam *getFloatParam(const int index) const{
@@ -1455,9 +1455,9 @@ public:
   
   void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)){
       if (automationFlag)
-        addParam(paramIndex,new FloatParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+        addParam(paramIndex,new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
       else
-        addParam(paramIndex,new FloatParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));        
+        addParam(paramIndex,new FloatParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));        
   }   
   
   LogParam *getLogParam(const int index) const{
@@ -1474,9 +1474,9 @@ public:
    
    void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
       if (automationFlag)
-        addParam(paramIndex,new LogParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+        addParam(paramIndex,new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
       else
-        addParam(paramIndex,new LogParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+        addParam(paramIndex,new LogParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
   }   
   
   LogWith0Param *getLogWith0Param(const int index) const{
@@ -1493,9 +1493,9 @@ public:
    
    void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
       if (automationFlag)
-        addParam(paramIndex,new LogWith0Param(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+        addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
       else
-        addParam(paramIndex,new LogWith0Param(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+        addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
   }      
   
   LogWithSignParam *getLogWithSignParam(const int index) const{
@@ -1512,9 +1512,9 @@ public:
    
    void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1),const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor = (PluginFloatType)(1)){
       if (automationFlag)
-        addParam(paramIndex,new LogWithSignParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+        addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
       else
-        addParam(paramIndex,new LogWithSignParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+        addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
   }    
   
   IntParam *getIntParam(const int index) const{
@@ -1531,9 +1531,9 @@ public:
   
   void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginIntType *const value, const PluginIntType minValue=0,const PluginIntType maxValue=1){
       if (automationFlag)
-        addParam(paramIndex,new IntParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+        addParam(paramIndex,new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
       else
-        addParam(paramIndex,new IntParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+        addParam(paramIndex,new IntParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
   }    
   
   BoolParam *getBoolParam(const int index) const{
@@ -1550,28 +1550,28 @@ public:
   
   void addBoolParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag, bool *const value){
       if (automationFlag)
-        addParam(paramIndex,new BoolParam(processor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+        addParam(paramIndex,new BoolParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
       else
-        addParam(paramIndex,new BoolParam(processor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+        addParam(paramIndex,new BoolParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
   }  
     
   /** Adds a subgroup of parameters to this group and returns the number of parameters 
       in the list */
-  void addParamGroup(const int paramGroupIndex, ParamGroup * const paramGroup){
+  void addParamGroup(const int paramGroupIndex, ParamGroup &paramGroup){
     //Oh oh! You are not adding the parameter groups in the same order that you enumerated
     //their indexes. Please go and fix it.
     if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; return;}
     
-    paramGroup->setProcessor(getProcessor());
-    paramGroup->setParentParamGroup(this);
-    paramGroup->setNumAutomatedParams(numAutomatedParams);
-    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);
+    paramGroup.setPluginProcessor(getProcessor());
+    paramGroup.setParentParamGroup(this);
+    paramGroup.setNumAutomatedParams(numAutomatedParams);
+    paramGroup.setNumNonAutomatedParams(numNonAutomatedParams);
     
-    paramGroup->init();
-    paramGroupList.add(paramGroup);
+    paramGroup.init();
+    paramGroupList.add(&paramGroup);
         
-    numAutomatedParams=paramGroup->getNumAutomatedParams();
-    numNonAutomatedParams=paramGroup->getNumNonAutomatedParams();      
+    numAutomatedParams=paramGroup.getNumAutomatedParams();
+    numNonAutomatedParams=paramGroup.getNumNonAutomatedParams();      
   }   
 
   /** Stores the parameter values as an XML attribute.
@@ -1685,7 +1685,7 @@ public:
     numNonAutomatedParams(0),
     name(name),
     updateUiFlag(false),
-    processor(nullptr),
+    pluginProcessor(nullptr),
     saveXmlFlagCopy(nullptr)
     {
       #if JUCE_DEBUG
@@ -1697,6 +1697,9 @@ public:
     }
 
   ~ParamGroup(){
+    paramList.clear(true);
+    paramGroupList.clear(false);
+
     if (saveXmlFlagCopy){
       delete[] saveXmlFlagCopy;
       saveXmlFlagCopy=nullptr;
@@ -2956,25 +2959,20 @@ public:
 
 /**  methods to redirect all parameters to the global list referred by the host        
      and handle automatically automated and not automated parameters */
-class ExtendedAudioProcessor : public AudioProcessor{
+class PluginProcessor : public AudioProcessor, public ParamGroup{
 private:
-  ParamGroup* paramGroup;
-
   ParamGroup **groupAutomated;
   int *indexInGroupAutomated;
   ParamGroup **groupNonAutomated;
   int *indexInGroupNonAutomated;  
-  
-  int numAutomatedParams;
-  int numNonAutomatedParams;       
-  
+   
   /** compues recursively all the mappings between the global index 
     of parameters and their ParamGroup and index in the ParamGroup */
   void mapGlobalIndex(ParamGroup *root, bool countIfAutomate, ParamGroup **map,int *indexMap)  {
     for (int i=0;i<root->getNumParams();i++){      
       Param* param=root->getParam(i);
       if (param->automationIsOn()==countIfAutomate){
-        jassert(param->getGlobalIndex()<((countIfAutomate)?numAutomatedParams:numNonAutomatedParams));
+        jassert(param->getGlobalIndex()<((countIfAutomate)?getNumAutomatedParams():getNumNonAutomatedParams()));
         map[param->getGlobalIndex()]=root;
         indexMap[param->getGlobalIndex()]=i;
       }
@@ -2984,49 +2982,6 @@ private:
   }
   
 public:            
-   
-  ParamGroup* getParamGroup() const{
-    return paramGroup;
-  }
-
-  int getNumAutomatedParams() const{
-    return numAutomatedParams;
-  }
-  
-  int getNumNonAutomatedParams() const{
-    return numNonAutomatedParams;
-  }      
-
-  /** generates the mappings between all parameters in ParamGroups and 
-      the global list of parameters, by looking at paramGroup and
-      all its children */
-  void init(ParamGroup *rootParamGroup){ 
-    paramGroup=rootParamGroup;
-    
-    //please choose a non-empty rootParamGroup
-    if (!paramGroup) { jassertfalse; return; }
-    
-    paramGroup->setProcessor(this);
-    paramGroup->init();   
-    numAutomatedParams=paramGroup->getNumAutomatedParams();
-    numNonAutomatedParams=paramGroup->getNumNonAutomatedParams();
-    
-    //automated parameters:
-    //groupAutomated > associated ParamGroup
-    //indexInGroupAutomated > associated index inside the ParamGroup
-    groupAutomated=new ParamGroup*[numAutomatedParams];    
-    for (int i=0;i<numAutomatedParams;i++) groupAutomated[i]=nullptr;
-    indexInGroupAutomated=new int[numAutomatedParams];
-    mapGlobalIndex(paramGroup,true,groupAutomated,indexInGroupAutomated);
-    
-    //non automated parameters:
-    //groupNonAutomated > associated ParamGroup
-    //indexInGroupNonAutomated > associated index inside the ParamGroup    
-    groupNonAutomated=new ParamGroup*[numNonAutomatedParams];
-    for (int i=0;i<numNonAutomatedParams;i++) groupNonAutomated[i]=nullptr;
-    indexInGroupNonAutomated=new int[numNonAutomatedParams];
-    mapGlobalIndex(paramGroup,false,groupNonAutomated,indexInGroupNonAutomated);
-  }
     
   const String getName() const { return JucePlugin_Name; }
   
@@ -3081,37 +3036,25 @@ public:
   }
   
   int getNumParameters(){
-    //did you forget to call at the constructor of the inheriting class: void init(ParamGroup *rootParamGroup)?
-    if (!paramGroup) { jassertfalse; return 0; }    
-
-    return numAutomatedParams;
+    return getNumAutomatedParams();
   }
   
   const String getParameterName (int index){
-    //did you forget to call at the constructor of the inheriting class: void init(ParamGroup *rootParamGroup)?
-    if (!paramGroup) { jassertfalse; return ""; }    
-
-    if (index>=0 && index<numAutomatedParams)
+    if (index>=0 && index<getNumAutomatedParams())
       return groupAutomated[index]->getParam(indexInGroupAutomated[index])->getName(); 
     else   
       return String::empty;
   }  
 
   float getParameter (int index){
-    //did you forget to call at the constructor of the inheriting class: void init(ParamGroup *rootParamGroup)?
-    if (!paramGroup) { jassertfalse; return 0; }   
-
-    if (index>=0 && index<numAutomatedParams)  
+    if (index>=0 && index<getNumAutomatedParams())  
       return groupAutomated[index]->getParam(indexInGroupAutomated[index])->hostGet();
     else
       return 0.f;
   }
 
   void setParameter (int index, float newValue){     
-    //did you forget to call at the constructor of the inheriting class: void init(ParamGroup *rootParamGroup)?
-    if (!paramGroup) { jassertfalse; return; }   
-
-    if (index>=0 && index<numAutomatedParams){
+    if (index>=0 && index<getNumAutomatedParams()){
       ParamGroup * const paramGroup=groupAutomated[index];
       const int groupIndex=indexInGroupAutomated[index];
       Param * const param=paramGroup->getParam(groupIndex);      
@@ -3122,16 +3065,39 @@ public:
     } 
   }  
    
-  ExtendedAudioProcessor():
-    numAutomatedParams(0),
-    numNonAutomatedParams(0),
+  /** generates the mappings between all parameters in ParamGroups and 
+    the global list of parameters, by looking at paramGroup and
+    all its children */
+  void setup(){
+    setPluginProcessor(this);
+    init();
+
+    //automated parameters:
+    //groupAutomated > associated ParamGroup
+    //indexInGroupAutomated > associated index inside the ParamGroup
+    groupAutomated=new ParamGroup*[getNumAutomatedParams()];    
+    for (int i=0;i<getNumAutomatedParams();i++) groupAutomated[i]=nullptr;
+    indexInGroupAutomated=new int[getNumAutomatedParams()];
+    mapGlobalIndex(this,true,groupAutomated,indexInGroupAutomated);
+    
+    //non automated parameters:
+    //groupNonAutomated > associated ParamGroup
+    //indexInGroupNonAutomated > associated index inside the ParamGroup    
+    groupNonAutomated=new ParamGroup*[getNumNonAutomatedParams()];
+    for (int i=0;i<getNumNonAutomatedParams();i++) groupNonAutomated[i]=nullptr;
+    indexInGroupNonAutomated=new int[getNumNonAutomatedParams()];
+    mapGlobalIndex(this,false,groupNonAutomated,indexInGroupNonAutomated);  
+  }
+
+  PluginProcessor():
+    ParamGroup(JucePlugin_Name),
     groupAutomated(nullptr),
     indexInGroupAutomated(nullptr),
     groupNonAutomated(nullptr),
-    indexInGroupNonAutomated(nullptr),
-    paramGroup(nullptr){}
+    indexInGroupNonAutomated(nullptr){            
+  }
   
-  ~ExtendedAudioProcessor(){
+  ~PluginProcessor(){
     if (groupAutomated){
       delete[] groupAutomated;
       groupAutomated=nullptr;
@@ -3152,8 +3118,6 @@ public:
       indexInGroupNonAutomated=nullptr;
     }    
 
-    if (paramGroup)
-      deleteAndZero(paramGroup);
   }
 };
 

@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:07am
+  Creation date:  5 Apr 2013 4:05:34pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -45,7 +45,7 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 //[/Headers]
 
 #include "MidiDelayComponent.h"
@@ -55,8 +55,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MidiDelayComponent::MidiDelayComponent (ParamGroup *paramGroup)
-    : paramGroup(paramGroup),
+MidiDelayComponent::MidiDelayComponent (MidiDelay *midiDelay)
+    : midiDelay(midiDelay),
       label2 (0),
       delaySlider (0),
       label3 (0),
@@ -103,8 +103,8 @@ MidiDelayComponent::MidiDelayComponent (ParamGroup *paramGroup)
 
 
     //[Constructor] You can add your own custom stuff here..
-    FloatParam *delayParam=paramGroup->getFloatParam(MidiDelayParamGroup::delayIndex);
-    FloatParam *feedbackParam=paramGroup->getFloatParam(MidiDelayParamGroup::feedbackIndex);
+    FloatParam *delayParam=midiDelay->getFloatParam(MidiDelay::delayIndex);
+    FloatParam *feedbackParam=midiDelay->getFloatParam(MidiDelay::feedbackIndex);
     delaySlider->setRange(delayParam->getMin(),delayParam->getMax(),delaySlider->getInterval());
     feedbackSlider->setRange(feedbackParam->getMin(),feedbackParam->getMax(),feedbackSlider->getInterval());
 
@@ -159,13 +159,13 @@ void MidiDelayComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == delaySlider)
     {
         //[UserSliderCode_delaySlider] -- add your slider handling code here..
-        paramGroup->getFloatParam(MidiDelayParamGroup::delayIndex)->updateProcessorAndHostFromUi(delaySlider->getValue());
+        midiDelay->getFloatParam(MidiDelay::delayIndex)->updateProcessorAndHostFromUi(delaySlider->getValue());
         //[/UserSliderCode_delaySlider]
     }
     else if (sliderThatWasMoved == feedbackSlider)
     {
         //[UserSliderCode_feedbackSlider] -- add your slider handling code here..
-        paramGroup->getFloatParam(MidiDelayParamGroup::feedbackIndex)->updateProcessorAndHostFromUi(feedbackSlider->getValue());
+        midiDelay->getFloatParam(MidiDelay::feedbackIndex)->updateProcessorAndHostFromUi(feedbackSlider->getValue());
         //[/UserSliderCode_feedbackSlider]
     }
 
@@ -181,7 +181,7 @@ void MidiDelayComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == enableToggle)
     {
         //[UserButtonCode_enableToggle] -- add your button handler code here..
-        paramGroup->getBoolParam(MidiDelayParamGroup::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
+        midiDelay->getBoolParam(MidiDelay::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
         //[/UserButtonCode_enableToggle]
     }
 
@@ -195,17 +195,17 @@ void MidiDelayComponent::buttonClicked (Button* buttonThatWasClicked)
 
 void MidiDelayComponent::timerCallback()
 {
-    BoolParam *enableParam=paramGroup->getBoolParam(MidiDelayParamGroup::enableIndex);
+    BoolParam *enableParam=midiDelay->getBoolParam(MidiDelay::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
       enableToggle->setToggleState(enableParam->uiGet(),false);
     }
 
-    FloatParam *delayParam=paramGroup->getFloatParam(MidiDelayParamGroup::delayIndex);
+    FloatParam *delayParam=midiDelay->getFloatParam(MidiDelay::delayIndex);
     if (delaySlider && delayParam->updateUiRequested()){
       delaySlider->setValue (delayParam->uiGet(),false);
     }
 
-    FloatParam *feedbackParam=paramGroup->getFloatParam(MidiDelayParamGroup::feedbackIndex);
+    FloatParam *feedbackParam=midiDelay->getFloatParam(MidiDelay::feedbackIndex);
     if (feedbackSlider && feedbackParam->updateUiRequested()){
       feedbackSlider->setValue (feedbackParam->uiGet(),false);
     }
@@ -224,10 +224,10 @@ void MidiDelayComponent::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MidiDelayComponent" componentName=""
-                 parentClasses="public Component" constructorParams="ParamGroup *paramGroup"
-                 variableInitialisers="paramGroup(paramGroup)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330000013" fixedSize="1"
-                 initialWidth="800" initialHeight="120">
+                 parentClasses="public Component" constructorParams="MidiDelay *midiDelay"
+                 variableInitialisers="midiDelay(midiDelay)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330000013" fixedSize="1" initialWidth="800"
+                 initialHeight="120">
   <BACKGROUND backgroundColour="ffc4c4c4"/>
   <LABEL name="new label" id="4b0d09074b5a8fae" memberName="label2" virtualName=""
          explicitFocusOrder="0" pos="11 91 56 23" edTextCol="ff000000"

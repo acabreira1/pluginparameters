@@ -31,7 +31,7 @@
 #include "PluginParameters.h"
 
 
-class MidiDelay{
+class MidiDelay: public ParamGroup{
   double sampleRate;
   bool notesOn[128];
   
@@ -42,10 +42,16 @@ public:
   MidiBuffer delayBuffer;
   MidiBuffer delayBufferNew;
   int delayBufferStartSample;
-
-  void setSampleRate(double sampleRateArg){
+  
+  void prepareToPlay (double sampleRateArg, int /*estimatedSamplesPerBlockArg*/) {
     sampleRate=sampleRateArg;
-  }  
+  }
+
+  void releaseResources(){
+  }
+
+  void reset(){
+  }
 
   void applyGain(MidiBuffer& midiBuffer, float gain){
     MidiBuffer oldMidiBuffer=midiBuffer;
@@ -110,9 +116,26 @@ public:
         delayBufferStartSample-=buffer.getNumSamples();
       } else jassertfalse;
     }
+  }  
+
+  enum ParamGroups{
+    none = 0
+  };
+  enum Params{  
+    enableIndex = 0,                 
+    delayIndex,
+    feedbackIndex  
+  };
+
+  void init(){
+    //Parameters 
+    addBoolParam(enableIndex,"enable",true,true,&enable);
+    addFloatParam(delayIndex,"delay",true,true,&delay,0.001f,1.000f);
+    addFloatParam(feedbackIndex,"feedback",true,true,&feedback,0.f,1.f);
   }
 
   MidiDelay():
+  ParamGroup("MidiDelay"),
   enable(true),
   delay(0.5f),
   feedback(0.5f),
@@ -129,31 +152,5 @@ public:
   MidiDelay (const MidiDelay&);
   MidiDelay& operator=(const MidiDelay &other);
 };
-
-class MidiDelayParamGroup: public ParamGroup{
-  MidiDelay *midiDelay;
-public:
-  enum ParamGroups{
-    noParamGroups = 0
-  };
-  enum Params{  
-    enableIndex = 0,                 
-    delayIndex,
-    feedbackIndex  
-  };
-      
-  MidiDelayParamGroup(MidiDelay *midiDelay):
-  ParamGroup("MidiDelay"),
-  midiDelay(midiDelay){
-  }
-      
-  void init(){
-    //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&midiDelay->enable);
-    addFloatParam(delayIndex,"delay",true,true,&midiDelay->delay,0.001f,1.000f);
-    addFloatParam(feedbackIndex,"feedback",true,true,&midiDelay->feedback,0.f,1.f);
-  }
-
-};   
 
 #endif

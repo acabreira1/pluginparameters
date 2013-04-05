@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:16:11pm
+  Creation date:  5 Apr 2013 4:25:32pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -53,8 +53,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainComponent::MainComponent (PluginProcessor* processor)
-    : AudioProcessorEditor(processor), processor(processor), paramGroup(processor->getParamGroup()),
+MainComponent::MainComponent (MyPluginProcessor* processor)
+    : AudioProcessorEditor(processor), processor(processor),
       logSlider (0),
       logWith0Slider (0),
       symSignedLogSlider (0),
@@ -125,11 +125,11 @@ MainComponent::MainComponent (PluginProcessor* processor)
 
 
     //[UserPreSize]
-    FloatParam *floatParam=paramGroup->getFloatParam(PluginProcessor::MainParamGroup::floatIndex);
-    LogParam *logParam=paramGroup->getLogParam(PluginProcessor::MainParamGroup::logIndex);
-    LogWith0Param *logWith0Param=paramGroup->getLogWith0Param(PluginProcessor::MainParamGroup::logWith0Index);
-    LogWithSignParam *logWithSignParam=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::symSignedLogIndex);
-    LogWithSignParam *alogWithSignParam=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::asymSignedLogIndex);
+    FloatParam *floatParam=processor->getFloatParam(MyPluginProcessor::floatIndex);
+    LogParam *logParam=processor->getLogParam(MyPluginProcessor::logIndex);
+    LogWith0Param *logWith0Param=processor->getLogWith0Param(MyPluginProcessor::logWith0Index);
+    LogWithSignParam *logWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::symSignedLogIndex);
+    LogWithSignParam *alogWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::asymSignedLogIndex);
 
     floatSlider->setRange(floatParam->getMin(),floatParam->getMax(),floatSlider->getInterval());
     logSlider->setRange(logParam->getMin(),logParam->getMax(),logSlider->getInterval());
@@ -137,7 +137,7 @@ MainComponent::MainComponent (PluginProcessor* processor)
     symSignedLogSlider->setRange(logWithSignParam->getMin(),logWithSignParam->getMax(),symSignedLogSlider->getInterval());
     asymSignedLogSlider->setRange(alogWithSignParam->getMin(),alogWithSignParam->getMax(),asymSignedLogSlider->getInterval());
 
-    paramGroup->requestUpdateUiRecursively(true);
+    processor->requestUpdateUiRecursively(true);
 
     timerCallback();
     //[/UserPreSize]
@@ -205,35 +205,35 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == logSlider)
     {
         //[UserSliderCode_logSlider] -- add your slider handling code here..
-        LogParam *param=paramGroup->getLogParam(PluginProcessor::MainParamGroup::logIndex);
+        LogParam *param=processor->getLogParam(MyPluginProcessor::logIndex);
         param->updateProcessorAndHostFromUi(logSlider->getValue());
         //[/UserSliderCode_logSlider]
     }
     else if (sliderThatWasMoved == logWith0Slider)
     {
         //[UserSliderCode_logWith0Slider] -- add your slider handling code here..
-        LogWith0Param *param=paramGroup->getLogWith0Param(PluginProcessor::MainParamGroup::logWith0Index);
+        LogWith0Param *param=processor->getLogWith0Param(MyPluginProcessor::logWith0Index);
         param->updateProcessorAndHostFromUi(logWith0Slider->getValue());
         //[/UserSliderCode_logWith0Slider]
     }
     else if (sliderThatWasMoved == symSignedLogSlider)
     {
         //[UserSliderCode_symSignedLogSlider] -- add your slider handling code here..
-        LogWithSignParam *param=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::symSignedLogIndex);
+        LogWithSignParam *param=processor->getLogWithSignParam(MyPluginProcessor::symSignedLogIndex);
         param->updateProcessorAndHostFromUi(symSignedLogSlider->getValue());
         //[/UserSliderCode_symSignedLogSlider]
     }
     else if (sliderThatWasMoved == asymSignedLogSlider)
     {
         //[UserSliderCode_asymSignedLogSlider] -- add your slider handling code here..
-        LogWithSignParam *param=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::asymSignedLogIndex);
+        LogWithSignParam *param=processor->getLogWithSignParam(MyPluginProcessor::asymSignedLogIndex);
         param->updateProcessorAndHostFromUi(asymSignedLogSlider->getValue());
         //[/UserSliderCode_asymSignedLogSlider]
     }
     else if (sliderThatWasMoved == floatSlider)
     {
         //[UserSliderCode_floatSlider] -- add your slider handling code here..
-        FloatParam *param=paramGroup->getFloatParam(PluginProcessor::MainParamGroup::floatIndex);
+        FloatParam *param=processor->getFloatParam(MyPluginProcessor::floatIndex);
         param->updateProcessorAndHostFromUi(floatSlider->getValue());
         //[/UserSliderCode_floatSlider]
     }
@@ -251,7 +251,7 @@ void MainComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     {
         //[UserComboBoxCode_comboBox] -- add your combo box handling code here..
         if (comboBox->getSelectedId()>0){
-          IntParam* param=paramGroup->getIntParam(PluginProcessor::MainParamGroup::intIndex);
+          IntParam* param=processor->getIntParam(MyPluginProcessor::intIndex);
           param->updateProcessorAndHostFromUi(comboBox->getSelectedId()-1);
         }
         //[/UserComboBoxCode_comboBox]
@@ -269,14 +269,14 @@ void MainComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == toggleButton)
     {
         //[UserButtonCode_toggleButton] -- add your button handler code here..
-        BoolParam *param=paramGroup->getBoolParam(PluginProcessor::MainParamGroup::boolIndex);
+        BoolParam *param=processor->getBoolParam(MyPluginProcessor::boolIndex);
         param->updateProcessorAndHostFromUi(toggleButton->getToggleState());
         //[/UserButtonCode_toggleButton]
     }
     else if (buttonThatWasClicked == textButton)
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
-        BoolParam *param=paramGroup->getBoolParam(PluginProcessor::MainParamGroup::boolButtonIndex);
+        BoolParam *param=processor->getBoolParam(MyPluginProcessor::boolButtonIndex);
         param->updateProcessorAndHostFromUi(!param->uiGet());
         //[/UserButtonCode_textButton]
     }
@@ -290,37 +290,37 @@ void MainComponent::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void MainComponent::timerCallback(){
 
-    FloatParam *floatParam=paramGroup->getFloatParam(PluginProcessor::MainParamGroup::floatIndex);
+    FloatParam *floatParam=processor->getFloatParam(MyPluginProcessor::floatIndex);
     if (floatSlider && floatParam->updateUiRequested()){
       floatSlider->setValue (floatParam->uiGet(), false);
     }
 
-    LogParam *logParam=paramGroup->getLogParam(PluginProcessor::MainParamGroup::logIndex);
+    LogParam *logParam=processor->getLogParam(MyPluginProcessor::logIndex);
     if (logSlider && logParam->updateUiRequested()){
       logSlider->setValue (logParam->uiGet(), false);
     }
 
-    LogWith0Param *logWith0Param=paramGroup->getLogWith0Param(PluginProcessor::MainParamGroup::logWith0Index);
+    LogWith0Param *logWith0Param=processor->getLogWith0Param(MyPluginProcessor::logWith0Index);
     if (logWith0Slider && logWith0Param->updateUiRequested()){
       logWith0Slider->setValue (logWith0Param->uiGet(), false);
     }
 
-    LogWithSignParam *logWithSignParam=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::symSignedLogIndex);
+    LogWithSignParam *logWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::symSignedLogIndex);
     if (symSignedLogSlider && logWithSignParam->updateUiRequested()){
       symSignedLogSlider->setValue (logWithSignParam->uiGet(), false);
     }
 
-    logWithSignParam=paramGroup->getLogWithSignParam(PluginProcessor::MainParamGroup::asymSignedLogIndex);
+    logWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::asymSignedLogIndex);
     if (asymSignedLogSlider && logWithSignParam->updateUiRequested()){
       asymSignedLogSlider->setValue (logWithSignParam->uiGet(), false);
     }
 
-    IntParam *intParam=paramGroup->getIntParam(PluginProcessor::MainParamGroup::intIndex);
+    IntParam *intParam=processor->getIntParam(MyPluginProcessor::intIndex);
     if (comboBox && intParam->updateUiRequested()){
       comboBox->setSelectedId (intParam->uiGet()+1, true);
     }
 
-    BoolParam * const boolParam=paramGroup->getBoolParam(PluginProcessor::MainParamGroup::boolIndex);
+    BoolParam * const boolParam=processor->getBoolParam(MyPluginProcessor::boolIndex);
     if (toggleButton && boolParam->updateUiRequested()){
       toggleButton->setToggleState (boolParam->uiGet(), false);
     }
@@ -338,8 +338,8 @@ void MainComponent::timerCallback(){
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="PluginProcessor* processor"
-                 variableInitialisers="AudioProcessorEditor(processor), processor(processor), paramGroup(processor-&gt;getParamGroup())"
+                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="MyPluginProcessor* processor"
+                 variableInitialisers="AudioProcessorEditor(processor), processor(processor)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330000013"
                  fixedSize="1" initialWidth="400" initialHeight="200">
   <BACKGROUND backgroundColour="ff3c6292"/>

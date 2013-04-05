@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:07am
+  Creation date:  5 Apr 2013 4:05:34pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_38AFE3C8__
-#define __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_38AFE3C8__
+#ifndef __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__
+#define __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -49,7 +49,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 #include "MidiDelay.h"
 //[/Headers]
 
@@ -69,7 +69,7 @@ class MidiDelayComponent  : public Component,
 {
 public:
     //==============================================================================
-    MidiDelayComponent (ParamGroup *paramGroup);
+    MidiDelayComponent (MidiDelay *midiDelay);
     ~MidiDelayComponent();
 
     //==============================================================================
@@ -91,7 +91,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    ParamGroup *const paramGroup;
+    MidiDelay *midiDelay;
     //[/UserVariables]
 
     //==============================================================================
@@ -109,4 +109,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_38AFE3C8__
+#endif   // __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__

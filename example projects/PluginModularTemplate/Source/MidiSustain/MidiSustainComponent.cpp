@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:10am
+  Creation date:  5 Apr 2013 4:05:15pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -45,7 +45,7 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 //[/Headers]
 
 #include "MidiSustainComponent.h"
@@ -55,8 +55,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MidiSustainComponent::MidiSustainComponent (ParamGroup *paramGroup)
-    : paramGroup(paramGroup),
+MidiSustainComponent::MidiSustainComponent (MidiSustain *midiSustain)
+    : midiSustain(midiSustain),
       enableToggle (0)
 {
     addAndMakeVisible (enableToggle = new ToggleButton (L"new toggle button"));
@@ -114,7 +114,7 @@ void MidiSustainComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == enableToggle)
     {
         //[UserButtonCode_enableToggle] -- add your button handler code here..
-        paramGroup->getBoolParam(MidiSustainParamGroup::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
+        midiSustain->getBoolParam(MidiSustain::enableIndex)->updateProcessorAndHostFromUi(enableToggle->getToggleState());
         //[/UserButtonCode_enableToggle]
     }
 
@@ -128,7 +128,7 @@ void MidiSustainComponent::buttonClicked (Button* buttonThatWasClicked)
 
 void MidiSustainComponent::timerCallback()
 {
-    BoolParam *enableParam=paramGroup->getBoolParam(MidiSustainParamGroup::enableIndex);
+    BoolParam *enableParam=midiSustain->getBoolParam(MidiSustain::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
       enableToggle->setToggleState(enableParam->uiGet(),false);
     }
@@ -148,8 +148,8 @@ void MidiSustainComponent::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MidiSustainComponent" componentName=""
-                 parentClasses="public Component" constructorParams="ParamGroup *paramGroup"
-                 variableInitialisers="paramGroup(paramGroup)" snapPixels="8"
+                 parentClasses="public Component" constructorParams="MidiSustain *midiSustain"
+                 variableInitialisers="midiSustain(midiSustain)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330000013" fixedSize="1"
                  initialWidth="800" initialHeight="120">
   <BACKGROUND backgroundColour="ffc4c4c4"/>

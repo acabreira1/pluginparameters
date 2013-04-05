@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:09am
+  Creation date:  5 Apr 2013 4:04:56pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_D599C94__
-#define __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_D599C94__
+#ifndef __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__
+#define __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -49,7 +49,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 #include "MidiNoteGain.h"
 //[/Headers]
 
@@ -69,7 +69,7 @@ class MidiNoteGainComponent  : public Component,
 {
 public:
     //==============================================================================
-    MidiNoteGainComponent (ParamGroup *paramGroup);
+    MidiNoteGainComponent (MidiNoteGain *midiNoteGain);
     ~MidiNoteGainComponent();
 
     //==============================================================================
@@ -91,7 +91,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    ParamGroup *const paramGroup; 
+    MidiNoteGain *midiNoteGain;
     //[/UserVariables]
 
     //==============================================================================
@@ -129,4 +129,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_D599C94__
+#endif   // __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__

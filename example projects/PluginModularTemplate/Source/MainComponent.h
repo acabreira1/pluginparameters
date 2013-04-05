@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:15:57pm
+  Creation date:  5 Apr 2013 4:09:38pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_BB5B44C1__
-#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_BB5B44C1__
+#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__
+#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -49,7 +49,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 //[/Headers]
 
 
@@ -68,7 +68,7 @@ class MainComponent  : public AudioProcessorEditor,
 {
 public:
     //==============================================================================
-    MainComponent (PluginProcessor* processor);
+    MainComponent (MyPluginProcessor* processor);
     ~MainComponent();
 
     //==============================================================================
@@ -89,8 +89,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     // handy wrapper method to avoid having to cast the filter to a PluginProcessor
 	  // every time we need it..
-	  ParamGroup* const paramGroup;
-	  PluginProcessor *const processor;
+	  MyPluginProcessor *const processor;
     //[/UserVariables]
 
     //==============================================================================
@@ -106,4 +105,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_BB5B44C1__
+#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__

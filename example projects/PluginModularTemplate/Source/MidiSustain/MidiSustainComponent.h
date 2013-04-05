@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  4 Apr 2013 12:13:10am
+  Creation date:  5 Apr 2013 4:05:15pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_793FF71B__
-#define __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_793FF71B__
+#ifndef __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_9959C764__
+#define __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_9959C764__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -49,7 +49,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
+#include "MyPluginProcessor.h"
 #include "MidiSustain.h"
 //[/Headers]
 
@@ -68,7 +68,7 @@ class MidiSustainComponent  : public Component,
 {
 public:
     //==============================================================================
-    MidiSustainComponent (ParamGroup *paramGroup);
+    MidiSustainComponent (MidiSustain *midiSustain);
     ~MidiSustainComponent();
 
     //==============================================================================
@@ -89,7 +89,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    ParamGroup *const paramGroup;
+    MidiSustain *midiSustain;
     //[/UserVariables]
 
     //==============================================================================
@@ -103,4 +103,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_793FF71B__
+#endif   // __JUCER_HEADER_MIDISUSTAINCOMPONENT_MIDISUSTAINCOMPONENT_9959C764__

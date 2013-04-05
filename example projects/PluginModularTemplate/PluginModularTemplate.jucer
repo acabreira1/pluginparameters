@@ -10,6 +10,10 @@
               pluginAUViewClass="PluginModularTemplateAU_V1" pluginRTASCategory=""
               bundleIdentifier="com.4drX.PluginModularTemplate" jucerVersion="3.0.0">
   <MAINGROUP id="pYcGZu" name="PluginModularTemplate">
+    <FILE id="yClmYF" name="MyPluginProcessor.cpp" compile="1" resource="0"
+          file="Source/MyPluginProcessor.cpp"/>
+    <FILE id="thDRGu" name="MyPluginProcessor.h" compile="0" resource="0"
+          file="Source/MyPluginProcessor.h"/>
     <FILE id="Rsc7J6" name="PluginParameters.cpp" compile="1" resource="0"
           file="Source/PluginParameters.cpp"/>
     <FILE id="OO6diX" name="PluginParameters.h" compile="0" resource="0"
@@ -42,10 +46,6 @@
     <FILE id="gg2VRw" name="MainComponent.cpp" compile="1" resource="0"
           file="Source/MainComponent.cpp"/>
     <FILE id="ePqDu1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-    <FILE id="mU3oAS" name="PluginProcessor.cpp" compile="1" resource="0"
-          file="Source/PluginProcessor.cpp"/>
-    <FILE id="kkxdQX" name="PluginProcessor.h" compile="0" resource="0"
-          file="Source/PluginProcessor.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="/libscpp/vstsdk2.4" rtasFolder="~/SDKs/PT_80_SDK"
