@@ -136,7 +136,7 @@ public:
 
   MidiDelay():
   ParamGroup("MidiDelay"),
-  enable(true),
+  enable(false),
   delay(0.5f),
   feedback(0.5f),
   delayBufferStartSample(0){

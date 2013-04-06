@@ -66,9 +66,10 @@ public:
 
     //==============================================================================    
     void getStateInformation (MemoryBlock& destData);
-    void setStateInformation (const void* data, int sizeInBytes);          
+    void setStateInformation (const void* data, int sizeInBytes);        
    
     bool bypass;    
+    int selectedTab;
 
     MidiDelay midiDelay;
     MidiNoteGain midiNoteGain;
@@ -77,16 +78,19 @@ public:
     enum ParamGroups{
       midiDelayIndex=0,
       midiNoteGainIndex,
-      midiSustainIndex
+      midiSustainIndex,
+      numParamGroups
     };
       
     enum Params{        
-      bypassIndex=0
+      bypassIndex=0,
+      selectedTabIndex
     };
            
     void init(){        
       //Parameters   
       addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
+      addIntParam(selectedTabIndex,"selectedTab",false,true,&selectedTab,0,numParamGroups-1);
         
       //SubGroups
       addParamGroup(midiDelayIndex,midiDelay);

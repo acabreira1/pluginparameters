@@ -85,7 +85,7 @@ public:
 
   MidiNoteGain():
   ParamGroup("MidiNoteGain"),
-  enable(true),
+  enable(false),
   numNotes(12),
   noteVelocitiesParamArray("noteVelocities",true,true,noteVelocities,&numNotes,12,0,127){
     for (int i=0;i<12;i++)

@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  5 Apr 2013 4:09:38pm
+  Creation date:  6 Apr 2013 2:03:12pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -84,6 +84,8 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
 
 
     //[UserPreSize]
+    tabbedComponent->getTabbedButtonBar().addChangeListener(this);
+
     processor->requestUpdateUiRecursively(true);
     timerCallback();
     //[/UserPreSize]
@@ -157,13 +159,19 @@ void MainComponent::timerCallback(){
     bypassToggle->setToggleState (bypassParam->uiGet(), false);
   }
 
+  IntParam * const tabParam=processor->getIntParam(MyPluginProcessor::selectedTabIndex);
   if (tabbedComponent){
-    if (tabbedComponent->getCurrentTabIndex()==0)
-      dynamic_cast<MidiSustainComponent*>(tabbedComponent->getCurrentContentComponent())->timerCallback();
-    else if (tabbedComponent->getCurrentTabIndex()==1)
-      dynamic_cast<MidiDelayComponent*>(tabbedComponent->getCurrentContentComponent())->timerCallback();
-    else if (tabbedComponent->getCurrentTabIndex()==2)
-      dynamic_cast<MidiNoteGainComponent*>(tabbedComponent->getCurrentContentComponent())->timerCallback();
+    if (tabParam->updateUiRequested())
+      tabbedComponent->setCurrentTabIndex(tabParam->uiGet(),false);
+
+    Component *component=tabbedComponent->getCurrentContentComponent();
+
+    if (component==tabbedComponent->getTabContentComponent(0))
+      dynamic_cast<MidiSustainComponent*>(component)->timerCallback();
+    else if (component==tabbedComponent->getTabContentComponent(1))
+      dynamic_cast<MidiDelayComponent*>(component)->timerCallback();
+    else if (component==tabbedComponent->getTabContentComponent(2))
+      dynamic_cast<MidiNoteGainComponent*>(component)->timerCallback();
   }
 }
 //[/MiscUserCode]
@@ -178,8 +186,8 @@ void MainComponent::timerCallback(){
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
-                 parentClasses="public AudioProcessorEditor, public Timer" constructorParams="MyPluginProcessor* processor"
-                 variableInitialisers="AudioProcessorEditor(processor), processor(processor)"
+                 parentClasses="public AudioProcessorEditor, public Timer, public ChangeListener"
+                 constructorParams="MyPluginProcessor* processor" variableInitialisers="AudioProcessorEditor(processor), processor(processor)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330000013"
                  fixedSize="1" initialWidth="800" initialHeight="150">
   <BACKGROUND backgroundColour="ffffffff"/>

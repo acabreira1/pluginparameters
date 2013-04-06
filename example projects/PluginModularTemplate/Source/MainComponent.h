@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  5 Apr 2013 4:09:38pm
+  Creation date:  6 Apr 2013 2:03:12pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__
-#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__
+#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__
+#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -64,6 +64,7 @@
 */
 class MainComponent  : public AudioProcessorEditor,
                        public Timer,
+                       public ChangeListener,
                        public ButtonListener
 {
 public:
@@ -90,6 +91,12 @@ private:
     // handy wrapper method to avoid having to cast the filter to a PluginProcessor
 	  // every time we need it..
 	  MyPluginProcessor *const processor;
+
+    void 	changeListenerCallback (ChangeBroadcaster *source){
+      if (source==&tabbedComponent->getTabbedButtonBar()){
+        processor->getIntParam(MyPluginProcessor::selectedTabIndex)->updateProcessorAndHostFromUi(tabbedComponent->getCurrentTabIndex());
+      }
+    }
     //[/UserVariables]
 
     //==============================================================================
@@ -105,4 +112,4 @@ private:
 };
 
 
-#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_4C63651C__
+#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__

@@ -92,7 +92,7 @@ public:
 
   MidiSustain():
   ParamGroup("MidiSustain"),
-  enable(true),
+  enable(false),
   panicFlag(false),
   lastChannel(1){    
   }
