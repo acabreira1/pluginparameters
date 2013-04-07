@@ -3068,7 +3068,7 @@ public:
   /** generates the mappings between all parameters in ParamGroups and 
     the global list of parameters, by looking at paramGroup and
     all its children */
-  void setup(){
+  void initAll(){
     setPluginProcessor(this);
     init();
 

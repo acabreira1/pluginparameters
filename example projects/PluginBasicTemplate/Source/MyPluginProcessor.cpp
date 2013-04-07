@@ -55,7 +55,7 @@ intParamMatrix(nullptr)
     intParamArray = new IntParamArray("intArray",true,true,intArray,&intArraySize,10,0,127);
     intParamMatrix = new IntParamMatrix("intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
 
-    setup();
+    initAll();
 }
 
 MyPluginProcessor::~MyPluginProcessor()
