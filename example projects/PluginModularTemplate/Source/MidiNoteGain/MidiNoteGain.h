@@ -37,7 +37,6 @@ public:
   bool enable;
   
   int noteVelocities[12];
-  IntParamArray noteVelocitiesParamArray;
 
   int numNotes;
 
@@ -80,14 +79,13 @@ public:
     addBoolParam(enableIndex,"enable",true,true,&enable); 
     
     //ParamGroups
-    addParamGroup(noteVelocitiesIndex,noteVelocitiesParamArray);
+    addIntParamArray(noteVelocitiesIndex,"noteVelocities",true,true,noteVelocities,&numNotes,12,0,127);
   }  
 
   MidiNoteGain():
   ParamGroup("MidiNoteGain"),
   enable(false),
-  numNotes(12),
-  noteVelocitiesParamArray("noteVelocities",true,true,noteVelocities,&numNotes,12,0,127){
+  numNotes(12){
     for (int i=0;i<12;i++)
       noteVelocities[i]=127;
   }

@@ -78,17 +78,23 @@ public:
     bool boolVar;
     bool boolButtonVar;
 
-    ScopedPointer<IntParamArray> intParamArray;
     int* intArray;
     int intArraySize;
 
-    ScopedPointer<IntParamMatrix> intParamMatrix;
     int** intMatrix;
     int intMatrixRows,intMatrixCols;
 
+    String *stringArray;
+    int stringArraySize;
+    
+    String **stringMatrix;
+    int stringMatrixRows,stringMatrixCols;
+
     enum ParamGroups{
       intArrayIndex=0,
-      intMatrixIndex
+      intMatrixIndex,
+      stringArrayIndex,
+      stringMatrixIndex
     };
       
     enum Params{        
@@ -105,17 +111,19 @@ public:
     void init(){        
       //Parameters   
       addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
-      addLogParam(logIndex,"logIndex",true,true,&logVar,0.001f,6.f);
-      addLogWith0Param(logWith0Index,"logWith0Index",true,true,&logWith0Var,0.001f,6.f);
-      addLogWithSignParam(symSignedLogIndex,"symSignedLogIndex",true,true,&symSignedLogVar,-6.f,6.f,0.001f);
-      addLogWithSignParam(asymSignedLogIndex,"asymSignedLogIndex",true,true,&asymSignedLogVar,-4.f,3.f,0.001f);        
+      addLogParam(logIndex,"log",true,true,&logVar,0.001f,6.f);
+      addLogWith0Param(logWith0Index,"logWith0",true,true,&logWith0Var,0.001f,6.f);
+      addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,true,&symSignedLogVar,-6.f,6.f,0.001f);
+      addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,true,&asymSignedLogVar,-4.f,3.f,0.001f);        
       addIntParam(intIndex,"int",true,true,&intVar,0,4);
       addBoolParam(boolIndex,"bool",true,true,&boolVar);
       addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);
         
       //SubGroups
-      addParamGroup(intArrayIndex,*intParamArray);
-      addParamGroup(intMatrixIndex,*intParamMatrix);
+      addIntParamArray(intArrayIndex,"intArray",true,true,intArray,&intArraySize,10,0,127);
+      addIntParamMatrix(intMatrixIndex,"intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
+      addStringParamArray(stringArrayIndex,"stringArray",false,true,stringArray,&stringArraySize,10);
+      addStringParamMatrix(stringMatrixIndex,"stringMatrix",false,true,stringMatrix,&stringMatrixRows,&stringMatrixCols,10,10);
     }     
       
     void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){

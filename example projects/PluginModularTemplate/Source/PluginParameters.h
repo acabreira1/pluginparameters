@@ -272,7 +272,7 @@ public:
   }
   
   const double getMax() const{
-    return 0;
+    return 1;
   }
   
   HostFloatType preLoadXml(XmlElement *xml) {
@@ -1244,7 +1244,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(int)(*value));
+      xml->setAttribute(Param::getName(),(*value)?String("true"):String("false"));
   }
   
   BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
@@ -1257,6 +1257,22 @@ public:
 };
 
 //-----------------------------------------------------------------------------------
+
+class StringParamArray;
+class FloatParamArray;
+class LogParamArray;
+class LogWith0ParamArray;
+class LogWithSignParamArray;
+class IntParamArray;
+class BoolParamArray;
+
+class StringParamMatrix;
+class FloatParamMatrix;
+class LogParamMatrix;
+class LogWith0ParamMatrix;
+class LogWithSignParamMatrix;
+class IntParamMatrix;
+class BoolParamMatrix;
 
 /** Base class for all groups of parameters. Distinctions by type are made below. */
 class ParamGroup{  
@@ -1285,6 +1301,9 @@ private:
   
   /** List of all subgroups of parameters included in this group */
   OwnedArray<ParamGroup > paramGroupList;
+
+  /** List of all ParamGroups that were allocated internally with a new command */
+  OwnedArray<ParamGroup > unallocateAtDestructor;
   
   /** Adds a parameter to this group and checks its index in paramList. */
   void addParam(const int paramIndex,Param * const param){ 
@@ -1294,6 +1313,24 @@ private:
     paramList.add(param);    
   }  
   
+   void addParamGroup(const int paramGroupIndex, ParamGroup *paramGroup){
+    //Oh oh! You are not adding the parameter groups in the same order that you enumerated
+    //their indexes. Please go and fix it.
+    if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; return;}
+    
+    paramGroup->setPluginProcessor(getProcessor());
+    paramGroup->setParentParamGroup(this);
+    paramGroup->setNumAutomatedParams(numAutomatedParams);
+    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);
+    
+    paramGroup->init();
+    paramGroupList.add(paramGroup);
+    unallocateAtDestructor.add(paramGroup);
+        
+    numAutomatedParams=paramGroup->getNumAutomatedParams();
+    numNonAutomatedParams=paramGroup->getNumNonAutomatedParams();      
+  }   
+
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the host 
       with update */
   PluginProcessor* pluginProcessor;
@@ -1433,13 +1470,16 @@ public:
     return static_cast<StringParam *>(paramList[index]);
   }
   
-  void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value){
-      
-      if (automationFlag)
-        addParam(paramIndex,new StringParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
-      else
-        addParam(paramIndex,new StringParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));        
+  void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value){      
+    if (automationFlag)
+      addParam(paramIndex,new StringParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+    else
+      addParam(paramIndex,new StringParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));       
   }  
+
+  void addStringParamArray(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true,bool saveOnlyNonDefaultValuesFlag=true);
+
+  void addStringParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);   
   
   FloatParam *getFloatParam(const int index) const{
     /** wrong index */
@@ -1454,11 +1494,15 @@ public:
   }
   
   void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)){
-      if (automationFlag)
-        addParam(paramIndex,new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
-      else
-        addParam(paramIndex,new FloatParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));        
+    if (automationFlag)
+      addParam(paramIndex,new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+    else
+      addParam(paramIndex,new FloatParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));        
   }   
+
+  void addFloatParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+
+  void addFloatParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   LogParam *getLogParam(const int index) const{
     /** wrong index */
@@ -1473,11 +1517,15 @@ public:
   }
    
    void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
-      if (automationFlag)
-        addParam(paramIndex,new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
-      else
-        addParam(paramIndex,new LogParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+    if (automationFlag)
+      addParam(paramIndex,new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+    else
+      addParam(paramIndex,new LogParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
   }   
+
+  void addLogParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
+
+  void addLogParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
   
   LogWith0Param *getLogWith0Param(const int index) const{
     /** wrong index */
@@ -1492,11 +1540,15 @@ public:
   }  
    
    void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
-      if (automationFlag)
-        addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
-      else
-        addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
-  }      
+    if (automationFlag)
+      addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+    else
+      addParam(paramIndex,new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+  }
+
+  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+
+  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   LogWithSignParam *getLogWithSignParam(const int index) const{
     /** wrong index */
@@ -1511,11 +1563,15 @@ public:
   }  
    
    void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1),const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor = (PluginFloatType)(1)){
-      if (automationFlag)
-        addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
-      else
-        addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
-  }    
+   if (automationFlag)
+    addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+  else
+    addParam(paramIndex,new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+}  
+
+  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+
+  void addLogWithSignParamMatrix(const int paramIndex,const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   IntParam *getIntParam(const int index) const{
     /** wrong index */ 
@@ -1530,11 +1586,15 @@ public:
   }  
   
   void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginIntType *const value, const PluginIntType minValue=0,const PluginIntType maxValue=1){
-      if (automationFlag)
-        addParam(paramIndex,new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
-      else
-        addParam(paramIndex,new IntParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+    if (automationFlag)
+      addParam(paramIndex,new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+    else
+      addParam(paramIndex,new IntParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
   }    
+
+  void addIntParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType* const values,int *const size,const int maxSize,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
+
+  void addIntParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   BoolParam *getBoolParam(const int index) const{
     /** wrong index */
@@ -1549,11 +1609,15 @@ public:
   }  
   
   void addBoolParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag, bool *const value){
-      if (automationFlag)
-        addParam(paramIndex,new BoolParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
-      else
-        addParam(paramIndex,new BoolParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
-  }  
+    if (automationFlag)
+      addParam(paramIndex,new BoolParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+    else
+      addParam(paramIndex,new BoolParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+  }
+  
+  void addBoolParamArray(const int paramIndex,const bool automationFlag, const bool loadSaveXmlFlag, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true,bool saveOnlyNonDefaultValuesFlag=true);
+
+  void addBoolParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
     
   /** Adds a subgroup of parameters to this group and returns the number of parameters 
       in the list */
@@ -1699,6 +1763,7 @@ public:
   ~ParamGroup(){
     paramList.clear(true);
     paramGroupList.clear(false);
+    unallocateAtDestructor.clear(true);
 
     if (saveXmlFlagCopy){
       delete[] saveXmlFlagCopy;
@@ -2275,6 +2340,83 @@ public:
   {} 
 };
 
+
+/** ParamGroup containing an array of StringParams. */
+class StringParamArray : public ParamArray{
+private:
+  String* const values;
+
+public: 
+  
+  void init(){
+    for (int i=0;i<ParamArray::getMaxSize();i++){
+      ParamGroup::addStringParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]));
+    }
+  } 
+
+  /** Returns the value of position i in the array */
+  String getValue(int i) const{
+	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+		  return values[i];
+	  else return String::empty;
+  }    
+ 
+  /** Updates the value from its UI denormalized value */ 
+  void updateProcessorAndHostFromUi(int i,const String valueArg) const{
+    return ParamGroup::getStringParam(i)->updateProcessorAndHostFromUi(valueArg);
+  } 
+  
+  /** Stores the parameter values as an XML attribute.
+      If createChild is set to true it will create a child XML node 
+      (you want to disable it at the root node). 
+      This method expands the default one to save only the 
+      parameters with value other than defaultValue and/or 
+      the parameters of the sized array. */
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+    StringParam *param;
+    
+    jassert(saveXmlFlagCopy);
+    if (saveXmlFlagCopy){
+      for (int i=0;i<ParamArray::maxSize;i++){
+        saveXmlFlagCopy[i]=getParam(i)->saveXmlIsOn();
+      }
+    }
+    
+    if (ParamArray::saveOnlySizedArrayFlag){
+      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+        getParam(i)->setSaveXml(false);
+      }
+    }
+    
+    if (ParamArray::saveOnlyNonDefaultValuesFlag){
+      for (int i=0;i<ParamArray::maxSize;i++){        
+        param=getStringParam(i);
+        if (param->getValue()==param->getDefaultValue())
+          param->setSaveXml(false);
+      }
+    }
+    
+    ParamGroup::saveXml(xml,createChild,recursively);
+    
+    if (saveXmlFlagCopy){
+      for (int i=0;i<ParamArray::maxSize;i++){
+        getParam(i)->setSaveXml(saveXmlFlagCopy[i]);
+      }
+    }
+  }
+  
+  StringParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true,bool saveOnlyNonDefaultValuesFlag=true):
+  ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
+  values(values)
+  {
+    // Strings cannot be automated! 
+    // (They aren't supported at least in VST)
+    // Try again setting argument automationFlag=false
+    jassert(automationFlag==false);
+  } 
+};
+
+
 //-----------------------------------------------------------------------------------
 
 /** ParamGroup base class for a matrix of Params. */
@@ -2671,6 +2813,7 @@ private:
   const PluginFloatType factor;
   PluginFloatType minValue;
   PluginFloatType maxValue;
+  PluginFloatType minAbsValue;
   bool sparseCompressionFlag; 
   PluginFloatType mostProbableValue;
 
@@ -2679,7 +2822,7 @@ public:
   void init(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor);        
+        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,minAbsValue,factor);        
       }
     }
   }
@@ -2760,11 +2903,12 @@ public:
     }
   }
   
-  LogWithSignParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogWithSignParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
   maxValue(maxValue),
+  minAbsValue(minAbsValue),
   factor(factor)
   {} 
 };
@@ -2887,7 +3031,7 @@ public:
   } 
 
   /** Returns the value of position i,j in the array */
-  PluginIntType getValue(int i,int j) const{
+  bool getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -2952,6 +3096,94 @@ public:
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),  
   values(values)
   {} 
+};
+
+/** ParamGroup containing a matrix of StringParams. */
+class StringParamMatrix : public ParamMatrix{
+private:
+  String** const values;
+
+public: 
+  
+  void init(){
+    for (int i=0;i<ParamMatrix::getMaxRows();i++){
+      for (int j=0;j<ParamMatrix::getMaxCols();j++){
+        ParamGroup::addStringParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]));
+      }
+    }
+  } 
+
+  /** Returns the value of position i,j in the array */
+  String getValue(int i,int j) const{
+	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
+	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
+		  return values[i][j];
+	  else return String::empty;
+  }   
+ 
+  /** Updates the value from its UI denormalized value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const String valueArg) const{
+    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  } 
+  
+  /** Stores the parameter values as an XML attribute.
+      If createChild is set to true it will create a child XML node 
+      (you want to disable it at the root node). 
+      This method expands the default one to save only the 
+      parameters with value other than defaultValue and/or 
+      the parameters of the sized matrix. */
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+    StringParam *param;
+    
+    jassert(saveXmlFlagCopy);
+    if (saveXmlFlagCopy){
+      for (int i=0;i<ParamMatrix::maxRows*ParamMatrix::maxCols;i++){
+        saveXmlFlagCopy[i]=getParam(i)->saveXmlIsOn();
+      }
+    }
+    
+    if (saveOnlySizedMatrixFlag){
+      for (int i=0;i<*ParamMatrix::numRows;i++){        
+        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+          getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
+        }        
+      }
+      
+      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+        for (int j=0;j<maxCols;j++){
+          getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
+        }
+      }
+    }          
+    
+    if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
+      for (int i=0;i<ParamMatrix::maxRows;i++){
+        for (int j=0;j<ParamMatrix::maxCols;j++){    
+          param=getStringParam(ParamMatrix::maxCols*i+j);
+          if (param->getValue()==param->getDefaultValue())
+            param->setSaveXml(false);
+        }
+      }
+    }
+    
+    ParamGroup::saveXml(xml,createChild,recursively);
+    
+    if (saveXmlFlagCopy){
+      for (int i=0;i<maxRows*maxCols;i++){
+        getParam(i)->setSaveXml(saveXmlFlagCopy[i]);
+      }
+    }
+  } 
+  
+  StringParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),  
+  values(values)
+  {
+    // Strings cannot be automated! 
+    // (They aren't supported at least in VST)
+    // Try again setting argument automationFlag=false
+    jassert(automationFlag==false);
+  } 
 };
 
 
@@ -3068,7 +3300,7 @@ public:
   /** generates the mappings between all parameters in ParamGroups and 
     the global list of parameters, by looking at paramGroup and
     all its children */
-  void setup(){
+  void initAll(){
     setPluginProcessor(this);
     init();
 

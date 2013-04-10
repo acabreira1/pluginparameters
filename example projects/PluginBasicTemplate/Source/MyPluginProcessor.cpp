@@ -35,26 +35,37 @@ symSignedLogVar(0),
 asymSignedLogVar(0),
 intArray(nullptr),
 intMatrix(nullptr),
-intParamArray(nullptr),
-intParamMatrix(nullptr)
+stringArray(nullptr),
+stringMatrix(nullptr)
 {
     intArray=new int[10];
     for (int i=0;i<10;i++)
-      intArray[i]=0;
-    intArraySize=2;    
+      intArray[i]=i;
+    intArraySize=4;    
 
     intMatrix=new int*[10];
     for (int i=0;i<10;i++){
       intMatrix[i]=new int[10];
       for (int j=0;j<10;j++)
-        intMatrix[i][j]=0;
+        intMatrix[i][j]=i+j;
     }
-    intMatrixRows=2;
-    intMatrixCols=2;
+    intMatrixRows=4;
+    intMatrixCols=4;
 
-    intParamArray = new IntParamArray("intArray",true,true,intArray,&intArraySize,10,0,127);
-    intParamMatrix = new IntParamMatrix("intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
+    stringArray=new String[10];
+    for (int i=0;i<10;i++)
+      stringArray[i]=(String)i;
+    stringArraySize=4;    
 
+    stringMatrix=new String*[10];
+    for (int i=0;i<10;i++){
+      stringMatrix[i]=new String[10];
+      for (int j=0;j<10;j++)
+        stringMatrix[i][j]=(String)(i+j);
+    }
+    stringMatrixRows=4;
+    stringMatrixCols=4;    
+    
     initAll();
 }
 
@@ -67,6 +78,15 @@ MyPluginProcessor::~MyPluginProcessor()
     for (int i=0;i<10;i++)
       delete[] intMatrix[i];
     delete[] intMatrix;
+  }
+
+  if (stringArray)
+    delete[] stringArray;
+
+  if (stringMatrix){
+     for (int i=0;i<10;i++)
+      delete[] stringMatrix[i];
+    delete[] stringMatrix;
   }
 }
 
@@ -91,7 +111,7 @@ void MyPluginProcessor::getStateInformation (MemoryBlock& destData)
   XmlElement xml(JucePlugin_Name);
 
   // add some attributes to it..
-  saveXml(&xml,false,true);  
+  saveXml(&xml,false,true);
 
   // then use this helper function to stuff it into the binary blob and return it..
   copyXmlToBinary (xml, destData);
@@ -109,7 +129,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes)
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){  
            
     preLoadXml(xmlState, true);   
-    updateProcessorHostAndUiFromXml(true,true,true);     
+    updateProcessorHostAndUiFromXml(true,true,true);           
   }
 }
 
