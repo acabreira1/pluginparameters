@@ -292,12 +292,12 @@ public:
  StringParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, String * const value):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"String"),
   value(value),
-  defaultValue(*value){
+  defaultValue(*value),
+  xmlValue(*value){
     // Strings cannot be automated! 
     // (They aren't supported at least in VST)
     // Try again setting argument automationFlag=false
     jassert(automationFlag==false);
-    xmlValue=*value=defaultValue;
   }
 };
 
@@ -439,7 +439,8 @@ public:
   defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
-  value(value){
+  value(value){    
+    //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
   }
 
@@ -594,15 +595,17 @@ public:
   
   LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),const PluginFloatType factor=(PluginFloatType)(1)):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Log"),
-  defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(maxValue,defaultValue))),
+  defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(*value,maxValue))),
   minLogValue((PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
   factor(factor),
   value(value){
-    xmlValue=*value=defaultValue;
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
+
+    //force *value to the [minValue,maxValue] range
+    xmlValue=*value=defaultValue;
   }
 };
 
@@ -779,10 +782,12 @@ public:
   maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
   value(value),
   factor(factor){
-    xmlValue=*value=defaultValue;
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
+
+    //force *value to the [0,maxValue] range
+    xmlValue=*value=defaultValue;
   }
 };
 
@@ -1027,13 +1032,15 @@ public:
   centerValue((HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)minAbsValue))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)minAbsValue)))),
   value(value),
   factor(factor){   
-    xmlValue=*value=defaultValue;
     //minValue should be negative and maxValue positive, otherwise use LogWith0.
     jassert(minNegativeValue<0);
     jassert(maxPositiveValue>0);
     
     //log values are stricly positive, please define a strictly positive range
     jassert(minAbsValue>0);
+
+    //force *value to the [minNegativeValue,maxPositiveValue] range
+    xmlValue=*value=defaultValue;
   }
 };
 
@@ -1172,6 +1179,7 @@ public:
   defaultValue(jmax<PluginIntType>(minValue,jmin<PluginIntType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue){
+    //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
   }
 };
@@ -1250,8 +1258,8 @@ public:
   BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Bool"),
   defaultValue(*value),
+  xmlValue(*value),
   value(value){
-    xmlValue=*value=defaultValue;
   }
 
 };
