@@ -66,7 +66,7 @@ stringMatrix(nullptr)
     stringMatrixRows=4;
     stringMatrixCols=4;    
     
-    initAll();
+    initAllParameters();
 }
 
 MyPluginProcessor::~MyPluginProcessor()

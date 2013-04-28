@@ -87,15 +87,15 @@ public:
       selectedTabIndex
     };
            
-    void init(){        
+    void initParameters(){        
       //Parameters   
       addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
       addIntParam(selectedTabIndex,"selectedTab",false,true,&selectedTab,0,numParamGroups-1);
         
       //SubGroups
-      addParamGroup(midiDelayIndex,midiDelay);
-      addParamGroup(midiNoteGainIndex,midiNoteGain);
-      addParamGroup(midiSustainIndex,midiSustain);
+      addParamGroup(midiDelayIndex,&midiDelay);
+      addParamGroup(midiNoteGainIndex,&midiNoteGain);
+      addParamGroup(midiSustainIndex,&midiSustain);
     }                          
        
 private:

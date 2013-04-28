@@ -108,7 +108,7 @@ public:
       boolButtonIndex   
     };            
       
-    void init(){        
+    void initParameters(){        
       //Parameters   
       addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
       addLogParam(logIndex,"log",true,true,&logVar,0.001f,6.f);

@@ -127,7 +127,7 @@ public:
     feedbackIndex  
   };
 
-  void init(){
+  void initParameters(){
     //Parameters 
     addBoolParam(enableIndex,"enable",true,true,&enable);
     addFloatParam(delayIndex,"delay",true,true,&delay,0.001f,1.000f);

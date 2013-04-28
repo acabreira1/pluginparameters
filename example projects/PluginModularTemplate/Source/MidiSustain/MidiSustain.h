@@ -77,7 +77,7 @@ public:
     enableIndex = 0
   };
   
-  void init(){
+  void initParameters(){
     //Parameters 
     addBoolParam(enableIndex,"enable",true,true,&enable);     
   }      

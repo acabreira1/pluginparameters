@@ -29,7 +29,7 @@
 MyPluginProcessor::MyPluginProcessor():
   bypass(false)
 {
-  initAll();
+  initAllParameters();
 }
 
 MyPluginProcessor::~MyPluginProcessor(){  
