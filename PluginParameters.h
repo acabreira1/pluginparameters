@@ -1345,7 +1345,7 @@ public:
   /* Name of the file (without path) where saveXmlToDisk is recommended to write.
      It may read from its const String name (default) or from a StringParam 
      of this paramGroup (you will have to reimplement it). */
-  virtual const String getDefaultXmlFileName(){
+  virtual const String getXmlFileName(){
     return name;
   }
 
