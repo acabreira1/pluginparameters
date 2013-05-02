@@ -65,7 +65,7 @@ private:
       with load */
   PluginProcessor* pluginProcessor;
   
-  bool updateUiFlag;     
+  bool updateUiFlag;
   
   UpdateFromFlags updateFromFlag;    
   
@@ -1687,7 +1687,7 @@ public:
       //add a numeric suffix to make this tag name unique
       int counter=2;
       while (xml->getChildByName(tagName)!=0){                
-        tagName=getName()+(String)(counter++);
+        tagName=getName()+":"+(String)(counter++);
       }
       xml=xml->createNewChildElement(getTagName());
     }
