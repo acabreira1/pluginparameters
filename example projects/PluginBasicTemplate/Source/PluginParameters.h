@@ -124,10 +124,10 @@ public:
       If the parameter value can't be read from the XML it is set to its default value.
       Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this.
   */
-  virtual HostFloatType preLoadXml(XmlElement *xml) = 0;
+  virtual HostFloatType loadXml(XmlElement *xml) = 0;
 
   /** returns true if this parameter will be imported from xml */
-  bool loadXmlIsOn(){
+  bool loadXmlIsOn() const{
     return loadXmlFlag;
   }
 
@@ -137,7 +137,7 @@ public:
   }
   
   /** returns true if this parameter will be exported to xml */
-  bool saveXmlIsOn(){
+  bool saveXmlIsOn() const{
     return saveXmlFlag;
   }
   
@@ -186,10 +186,10 @@ public:
       */  
   void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag);
   
-  /** Write the xmlValue read with preLoadXml and return true if it was different */
+  /** Write the xmlValue read with loadXml and return true if it was different */
   virtual bool writeXmlValue() = 0;
   
-  /** Set a parameter to a new value from the preloaded values from Xml and notify the host and the UI 
+  /** Set a parameter to a new value from the loaded values from Xml and notify the host and the UI 
       (when it has changed).*/ 
   void updateProcessorHostAndUiFromXml(bool forceRunAfterChange=false,bool forceUpdateUi=false);
   
@@ -276,7 +276,7 @@ public:
     return 1;
   }
   
-  HostFloatType preLoadXml(XmlElement *xml) {
+  HostFloatType loadXml(XmlElement *xml) {
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -410,7 +410,7 @@ public:
     return maxValue;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){    
+  HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -565,7 +565,7 @@ public:
     return maxLogValue;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){                  
+  HostFloatType loadXml(XmlElement *xml){                  
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -739,7 +739,7 @@ public:
     return maxLogValue;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){   
+  HostFloatType loadXml(XmlElement *xml){   
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -975,7 +975,7 @@ public:
     return maxPosLogValue-minAbsLogValue+0.05;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){        
+  HostFloatType loadXml(XmlElement *xml){        
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -1151,7 +1151,7 @@ public:
     return maxValue;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){    
+  HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -1242,7 +1242,7 @@ public:
     return 1;
   }
 
-  HostFloatType preLoadXml(XmlElement *xml){    
+  HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
@@ -1285,7 +1285,7 @@ class BoolParamMatrix;
 
 /** Base class for all groups of parameters. Distinctions by type are made below. */
 class ParamGroup{  
-private:     
+private:       
   ParamGroup* parentParamGroup;
   
   void setParentParamGroup(ParamGroup *paramGroup){
@@ -1373,7 +1373,7 @@ public:
  const String getName() const { return name; }  
  
  /** Returns the tag under which this ParamGroup is added to its parent ParamGroup 
-     See preLoadXml(...) and saveXml(...) for more details. */ 
+     See loadXml(...) and saveXml(...) for more details. */ 
  virtual String getTagName() const { return tagName; }
 
   /** Returns the number of parameters included in this group (subgroups are ignored) */
@@ -1670,7 +1670,7 @@ public:
   void addBoolParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
   BoolParamArray *getBoolParamArray(const int index) const;
-  BoolParamMatrix *getBoolParamMatrix(const int index) const;  
+  BoolParamMatrix *getBoolParamMatrix(const int index) const;    
 
   /** Stores the parameter values as an XML attribute.
       If createChild is set to true it will create a child XML node 
@@ -1720,7 +1720,7 @@ public:
       advisable to run this on the Processing thread since it may
       take a little while to parse all this parameters from Xml 
       and normalize them. */
-  virtual void preLoadXml(XmlElement *xml, const bool recursively){
+  virtual void loadXml(XmlElement *xml, const bool recursively){
     //this child couldn't be found
     if (xml==nullptr)
       return;
@@ -1728,28 +1728,28 @@ public:
     Param *param;
     for (int i=0;i<getNumParams();i++){
       param=getParam(i);
-      if (param->loadXmlIsOn()) param->preLoadXml(xml);      
+      if (param->loadXmlIsOn()) param->loadXml(xml);      
     }      
     
     if (recursively){
       for (int g=0;g<getNumParamGroups();g++){
         XmlElement *childXml=xml->getChildByName(getParamGroup(g)->getTagName());
-        getParamGroup(g)->preLoadXml(childXml,recursively);
+        getParamGroup(g)->loadXml(childXml,recursively);
       }
     }        
   }   
   
   /** Load this paramGroup from disk (from an XML file by default). */
-  virtual bool preLoadXmlFromDisk(const File &file){  
+  virtual bool loadXmlFromDisk(const File &file){  
     XmlDocument myDocument (file);
     ScopedPointer <XmlElement> xml(myDocument.getDocumentElement());
     if (xml->getTagName()!=getName()) { return false; }          
-    preLoadXml(xml,true);
+    loadXml(xml,true);
     return true;
   }
   
-  /* Update all parameters from undoRedo after preLoadXml(...) has been called. 
-     This should be considerably faster than preLoadXml so you can risk to 
+  /* Update all parameters from undoRedo after loadXml(...) has been called. 
+     This should be considerably faster than loadXml so you can risk to 
      put it in the processing thread. */
   virtual void updateProcessorHostAndUiFromXml(const bool recursively,bool forceValueChanged, bool forceUpdateUi){              
     for (int i=0;i<getNumParams();i++){

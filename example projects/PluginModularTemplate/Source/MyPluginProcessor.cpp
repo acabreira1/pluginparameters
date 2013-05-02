@@ -73,7 +73,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes)
   // make sure that it's actually our type of XML object..
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){  
            
-    preLoadXml(xmlState, true);   
+    loadXml(xmlState, true);   
     updateProcessorHostAndUiFromXml(true,true,true);     
   }
 }
