@@ -155,6 +155,9 @@ public:
     updateFromFlag=UPDATE_FROM_HOST;    
   }
 
+  /** Reset the value of this Param to its defaultValue */
+  virtual void resetToDefaultValue() = 0;
+
   /** Returns the minimum range of this parameter */  
   virtual const double getMin() const = 0;
   
@@ -262,6 +265,10 @@ public:
   
   const String getDefaultValue() const{
     return defaultValue;
+  }
+
+  void resetToDefaultValue(){
+    *value=defaultValue;
   }
   
   String getValue() const{
@@ -392,6 +399,10 @@ public:
 
   const PluginFloatType getDefaultValue() const{
     return defaultValue;    
+  }
+
+  void resetToDefaultValue(){
+    *value=defaultValue;
   }
   
   PluginFloatType getPreloadvalue() const{
@@ -549,6 +560,10 @@ public:
     return defaultValue;
   }
   
+  void resetToDefaultValue(){
+    *value=defaultValue;
+  }
+  
   PluginFloatType getValue() const{
     return *value;
   }
@@ -699,6 +714,10 @@ public:
   
   const PluginFloatType getDefaultValue() const{
     return defaultValue;
+  }
+  
+  void resetToDefaultValue(){
+    *value=defaultValue;
   }
   
   PluginFloatType getValue() const{
@@ -913,6 +932,11 @@ public:
   const PluginFloatType getDefaultValue() const{
     return defaultValue;
   }
+
+  void resetToDefaultValue(){
+    *value=defaultValue;
+  }
+  
   
   PluginFloatType getValue() const{
     return *value;
@@ -1139,6 +1163,11 @@ public:
     return defaultValue;
   }
 
+  void resetToDefaultValue(){
+    *value=defaultValue;
+  }
+  
+
   PluginIntType getValue() const{
     return *value;
   }
@@ -1229,6 +1258,11 @@ public:
   const bool getDefaultValue() const{
     return defaultValue;
   }
+
+  void resetToDefaultValue(){
+    *value=defaultValue;
+  }
+  
   
   bool getValue() const{
     return *value;
@@ -1290,6 +1324,18 @@ private:
   
   void setParentParamGroup(ParamGroup *paramGroup){
     parentParamGroup=paramGroup;
+    
+    //produce a unique tag name:
+    //if there was already a child with tag getName()
+    //add a numeric suffix to make this tag name unique
+    int counter=2;
+    int g=0;
+    while (g<paramGroup->getNumParamGroups()){
+      if (paramGroup->getParamGroup(g)->getTagName()==tagName){
+        tagName=getName()+":"+(String)(counter++);
+        g=0;
+      } else g++;
+    }
   }
        
   /** Offset of the paramList' index in the plugin's global list of 
@@ -1387,6 +1433,18 @@ public:
     return paramGroupList.size(); 
   }  
 
+  /** Reset all parameters in this ParamGroup to their defaultValue.
+      If recursively=true do the same for the child ParamGroups */
+  void resetParamsToDefaultValue(const bool recursively){
+    for (int i=0;i<paramList.size();i++)
+      paramList[i]->resetToDefaultValue();
+      
+    if (recursively){
+      for (int i=0;i<paramGroupList.size();i++)
+        paramGroupList[i]->resetParamsToDefaultValue(recursively);
+    }
+  }  
+
   /** Import all its parameters from xml (set to true by default) when the user requests it */
   void setLoadXml(const bool enable, const bool recursively){
     for (int i=0;i<paramList.size();i++)
@@ -1454,8 +1512,8 @@ public:
     paramGroup->setPluginProcessor(getProcessor());
     paramGroup->setParentParamGroup(this);
     paramGroup->setNumAutomatedParams(numAutomatedParams);
-    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);
-    
+    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);            
+
     paramGroup->initParameters();
     paramGroupList.add(paramGroup);    
         
@@ -1682,13 +1740,7 @@ public:
     //contents to an already populated XmlElement.
 
     if (createChild){
-      //create a child with a unique tag 
-      //if there was already a child with tag getName()
-      //add a numeric suffix to make this tag name unique
-      int counter=2;
-      while (xml->getChildByName(tagName)!=0){                
-        tagName=getName()+":"+(String)(counter++);
-      }
+      //create a child      
       xml=xml->createNewChildElement(getTagName());
     }
 
