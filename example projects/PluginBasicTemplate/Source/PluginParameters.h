@@ -41,7 +41,26 @@ namespace PluginParameters{
 
 class PluginProcessor;
 
-//UPDATE_FROM_HOST will usally be associated to Automation
+/** * UPDATE_FROM_HOST in only set by default when the host sends automation changes.
+    * UPDATE_FROM_UI is meant to indicate when the value is changed from the User Interface. 
+      It is set when the following methods are called: 
+      getXXXParam(paramIndex)->updateProcessorAndHostFromUi(...), 
+      getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_UI), 
+      getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_UI) 
+      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_UI).
+    * UPDATE_FROM_PROCESSOR is meant to indicate when the value is changed in the processing thread. 
+      It is set when the following methods are called: 
+      getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_PROCESSOR), 
+      getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_PROCESSOR) 
+      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_PROCESSOR).
+    * UPDATE_FROM_XML is meant to indicate that the value was read from XML at the beginning of a session 
+      or when reading from a file) after executing loadXml(...) or loadXmlFile(...). 
+      It is set when the following methods are called: 
+      getParam(paramIndex)->updateProcessorHostAndUiFromXml(...), 
+      getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_XML), 
+      getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_XML) 
+      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_XML).
+*/
 enum UpdateFromFlags{
   UPDATE_FROM_HOST=0x01,
   UPDATE_FROM_UI=0x02,
@@ -58,6 +77,8 @@ private:
   const bool automationFlag;
 
   const String name;
+
+  String xmlName;
   
   const String type; 
     
@@ -91,6 +112,18 @@ public:
       
   /** Returns a string label for this parameter */
   const String getName() const { return name; }
+
+  /** Returns the attribute name under which this parameter is stored in XML.
+      xmlName is set to name by default but you can change it with setXmlName(...). 
+      See loadXml(...) and saveXml(...) for more details. */ 
+  const String getXmlName() const { return xmlName; }
+
+  /** Sets the attribute name under which this parameter is stored in XML 
+      xmlName is set to name by default. 
+      See loadXml(...) and saveXml(...) for more details. */ 
+  void setXmlName(const String xmlNameArg){
+    xmlName=xmlNameArg;
+  }
   
    /** Returns a string label for the type of this parameter */
   const String getType() const { return type; }
@@ -287,13 +320,13 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=xml->getStringAttribute(Param::getName(),defaultValue);
+      xmlValue=xml->getStringAttribute(Param::getXmlName(),defaultValue);
     return xmlHostValue=(HostFloatType)(0.f);
   }  
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(*value));
+      xml->setAttribute(Param::getXmlName(),(*value));
   }
 
 
@@ -425,7 +458,7 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getName(),defaultValue));
+      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
     if (maxValue==minValue)
       return xmlHostValue=(HostFloatType)(0.f);
     xmlHostValue=(HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
@@ -443,7 +476,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(double)(*value));
+      xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
   
   FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)):
@@ -584,7 +617,7 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getName(),defaultValue));      
+      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));      
     
     if (maxLogValue==minLogValue)
       return (HostFloatType)(0.f);
@@ -606,7 +639,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(double)(*value));
+      xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
   
   LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),const PluginFloatType factor=(PluginFloatType)(1)):
@@ -762,7 +795,7 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getName(),defaultValue));     
+      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));     
                      
     if (maxLogValue==minLogValue){ //do not let idiots make this crash
       return xmlHostValue=(HostFloatType)(0.f); //stupid question, stupid answer      
@@ -792,7 +825,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(double)(*value));
+      xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
   LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor=(PluginFloatType)(1)):
@@ -1003,7 +1036,7 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getName(),defaultValue));              
+      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
     if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
       if (xmlValue>0)
         return xmlHostValue=(HostFloatType)(1.f); //stupid question, stupid answer
@@ -1045,7 +1078,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(double)(*value));
+      xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
   LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor=(PluginFloatType)(1)):
@@ -1184,7 +1217,7 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=static_cast<PluginIntType>(xml->getIntAttribute(Param::getName(),defaultValue));    
+      xmlValue=static_cast<PluginIntType>(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
     xmlHostValue=(HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
     if (maxValue==minValue)
       return (HostFloatType)(0.f);
@@ -1200,7 +1233,7 @@ public:
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(int)(*value));
+      xml->setAttribute(Param::getXmlName(),(int)(*value));
   }
   
   IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType * const value, const PluginIntType minValue=0,const PluginIntType maxValue=1):
@@ -1280,14 +1313,14 @@ public:
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=xml->getBoolAttribute(Param::getName(),defaultValue);
+      xmlValue=xml->getBoolAttribute(Param::getXmlName(),defaultValue);
     xmlHostValue=(xmlValue)?(HostFloatType)(1.f):(HostFloatType)(0.f);
     return xmlHostValue;
   }
 
   void saveXml(XmlElement *xml) const{
     if (Param::saveXmlFlag)
-      xml->setAttribute(Param::getName(),(*value)?String("true"):String("false"));
+      xml->setAttribute(Param::getXmlName(),(*value)?String("true"):String("false"));
   }
   
   BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
@@ -1323,19 +1356,7 @@ private:
   ParamGroup* parentParamGroup;
   
   void setParentParamGroup(ParamGroup *paramGroup){
-    parentParamGroup=paramGroup;
-    
-    //produce a unique tag name:
-    //if there was already a child with tag getName()
-    //add a numeric suffix to make this tag name unique
-    int counter=2;
-    int g=0;
-    while (g<paramGroup->getNumParamGroups()){
-      if (paramGroup->getParamGroup(g)->getTagName()==tagName){
-        tagName=getName()+":"+(String)(counter++);
-        g=0;
-      } else g++;
-    }
+    parentParamGroup=paramGroup;        
   }
        
   /** Offset of the paramList' index in the plugin's global list of 
@@ -1349,7 +1370,9 @@ private:
   
   const String name;      
 
-  String tagName;
+  String xmlName;
+
+  String xmlFileName;
   
   bool updateUiFlag;  
 
@@ -1387,14 +1410,7 @@ protected:
   
   bool *saveXmlFlagCopy;  
   
-public:
-  /* Name of the file (without path) where saveXmlToDisk is recommended to write.
-     It may read from its const String name (default) or from a StringParam 
-     of this paramGroup (you will have to reimplement it). */
-  virtual const String getXmlFileName(){
-    return name;
-  }
-
+public:  
   /** Gets the ParamGroup to which this ParamGroup was added */
   ParamGroup* getParentParamGroup() const{
     return parentParamGroup;
@@ -1418,9 +1434,15 @@ public:
  /** Returns a String label for this ParamGroup */
  const String getName() const { return name; }  
  
- /** Returns the tag under which this ParamGroup is added to its parent ParamGroup 
+ /** Returns the tag name under which this ParamGroup is added to its parent ParamGroup 
      See loadXml(...) and saveXml(...) for more details. */ 
- virtual String getTagName() const { return tagName; }
+ String getXmlName() const { return xmlName; }
+
+ /** Sets the tag name under which this ParamGroup is added to its parent ParamGroup 
+     See loadXml(...) and saveXml(...) for more details. */ 
+ void setXmlName(const String xmlNameArg){
+   xmlName=xmlNameArg;
+ }
 
   /** Returns the number of parameters included in this group (subgroups are ignored) */
   const int getNumParams() const { 
@@ -1503,7 +1525,10 @@ public:
     return paramGroupList[groupIndex];
   }
   
-  /** Adds a subgroup of parameters to this group */
+  /** Adds a subgroup of parameters to this group. If there is another
+      ParamGroup child with the same tag name (xmlName), a numeric suffix 
+      will be added automatically to it to make it unique.
+   */
   void addParamGroup(const int paramGroupIndex, ParamGroup *paramGroup){
     //Oh oh! You are not adding the parameter groups in the same order that you enumerated
     //their indexes. Please go and fix it.
@@ -1513,6 +1538,19 @@ public:
     paramGroup->setParentParamGroup(this);
     paramGroup->setNumAutomatedParams(numAutomatedParams);
     paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);            
+
+    //produce a unique tag name:
+    //if there was already a child with the same xmlName tag
+    //add a numeric suffix to make this tag name unique
+    int counter=2;
+    int g=0;
+    String baseName=paramGroup->getXmlName();
+    while (g<paramGroupList.size()){
+      if (paramGroupList[g]->getXmlName()==paramGroup->getXmlName()){
+        paramGroup->setXmlName(baseName+":"+(String)(counter++));
+        g=0;
+      } else g++;
+    }
 
     paramGroup->initParameters();
     paramGroupList.add(paramGroup);    
@@ -1526,12 +1564,28 @@ public:
     return paramList[index];
   }
 
-  /** Adds a parameter to this group and checks its index in paramList. */
+  /** Adds a parameter to this group. If there is another Param child 
+      with the same attribute name (xmlName), a numeric suffix will be 
+      added automatically to it to make it unique. */
   void addParam(const int paramIndex,Param * const param){ 
     //Oh oh! You are not adding the parameters in the same order that you enumerated
     //their indexes. Please go and fix it.   
     if (paramIndex!=paramList.size()) {jassertfalse; return;}    
-    paramList.add(param);    
+
+    //produce a unique attribute name:
+    //if there was already a Param with the same xmlName attribute
+    //add a numeric suffix to make this attribute name unique
+    int counter=2;
+    int p=0;
+    String baseName=param->getXmlName();
+    while (p<paramList.size()){
+      if (paramList[p]->getXmlName()==param->getXmlName()){
+        param->setXmlName(baseName+":"+(String)(counter++));
+        p=0;
+      } else p++;
+    }
+
+    paramList.add(param);
   }          
   
   StringParam *getStringParam(const int index) const{
@@ -1732,16 +1786,14 @@ public:
 
   /** Stores the parameter values as an XML attribute.
       If createChild is set to true it will create a child XML node 
-      (you want to disable it at the root node). If there was already
-      a child with this paramGroup name, a numeric suffix will be appended 
-      to the paramGroup name to make each tag name unique*/
+      (you want to disable it at the root node).*/
   virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursive){
     //create a child XmlElement for this ParamGroup if you are adding xml
     //contents to an already populated XmlElement.
 
     if (createChild){
       //create a child      
-      xml=xml->createNewChildElement(getTagName());
+      xml=xml->createNewChildElement(getXmlName());
     }
 
     for (int i=0;i<getNumParams();i++)
@@ -1753,9 +1805,10 @@ public:
     }
   } 
   
-  /** Save this paramGroup to disk (as one XML file by default). */
-  virtual bool saveXmlToDisk(const File &file,const String &dtdToUse=""){
-    XmlElement xml(getName());    
+  /** Save this ParamGroup to disk as XML. It creates a 
+      root tag with the name of this ParamGroup */
+  virtual bool saveXmlFile(const File &file,const String &dtdToUse=""){
+    XmlElement xml(getName());
     saveXml(&xml,false,true);
     return xml.writeToFile(file,dtdToUse);
   }
@@ -1785,28 +1838,31 @@ public:
     
     if (recursively){
       for (int g=0;g<getNumParamGroups();g++){
-        XmlElement *childXml=xml->getChildByName(getParamGroup(g)->getTagName());
+        XmlElement *childXml=xml->getChildByName(getParamGroup(g)->getXmlName());
         getParamGroup(g)->loadXml(childXml,recursively);
       }
     }        
   }   
   
-  /** Load this paramGroup from disk (from an XML file by default). */
-  virtual bool loadXmlFromDisk(const File &file){  
+  /** Load this paramGroup from disk. If the file doesn't contain
+      XML with a tag that matches the name of this ParamGroup, 
+      it won't be loaded and it will return false. */
+  virtual bool loadXmlFile(const File &file){  
     XmlDocument myDocument (file);
     ScopedPointer <XmlElement> xml(myDocument.getDocumentElement());
-    if (xml->getTagName()!=getName()) { return false; }          
+    //this file doesn't contain xml with the same tag name it was saved
+    if (xml->getTagName()!=getName()) { jassertfalse; return false; }          
     loadXml(xml,true);
     return true;
   }
   
   /* Update all parameters from undoRedo after loadXml(...) has been called. 
-     This should be considerably faster than loadXml so you can risk to 
-     put it in the processing thread. */
+     This should be considerably faster than loadXml (which loads everything from
+     disk into memory) so you can risk to put it in the processing thread. */
   virtual void updateProcessorHostAndUiFromXml(const bool recursively,bool forceValueChanged, bool forceUpdateUi){              
     for (int i=0;i<getNumParams();i++){
       getParam(i)->updateProcessorHostAndUiFromXml(forceValueChanged,forceUpdateUi);      
-    }  
+    }
     
     if (recursively){
       for (int g=0;g<getNumParamGroups();g++){
@@ -1815,8 +1871,8 @@ public:
     }        
   }  
   
-  /** Implements what is executed after a parameter is updated with a different value
-      inside of the children paramGroup.
+  /** Implements what is executed after any parameter of this ParamGroup is updated 
+      with a different value inside of the children paramGroup.
       This method will be called by the host, probably on the audio thread, so
       it's absolutely time-critical. Don't use critical sections or anything
       UI-related, or anything at all that may block in any way! */
@@ -1845,7 +1901,7 @@ public:
     numAutomatedParams(0),
     numNonAutomatedParams(0),
     name(name),
-    tagName(name),
+    xmlName(name),
     updateUiFlag(false),
     pluginProcessor(nullptr),
     saveXmlFlagCopy(nullptr)

@@ -18,7 +18,8 @@
   ------------------------------------------------------------------------------
 
    To release a closed-source product which uses PluginParameters, commercial licenses 
-   are available: visit LINK for more information.
+   are available: visit http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122 
+   for more information.
 
   ==============================================================================
 */
@@ -125,10 +126,13 @@ public:
       addStringParamArray(stringArrayIndex,"stringArray",false,true,stringArray,&stringArraySize,10);
       addStringParamMatrix(stringMatrixIndex,"stringMatrix",false,true,stringMatrix,&stringMatrixRows,&stringMatrixCols,10,10);
     }     
-      
+    
     void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){
-      if (updateFromFlag&UPDATE_FROM_XML)
-        return;
+      //Generally you don't want to run any updates when you are loading from XML 
+      //because it is often more efficient to initialize everything all at once when 
+      //all the parameter values have been loaded by overriding 
+      //updateProcessorHostAndUiFromXml(...) (see below).
+      if (updateFromFlag&UPDATE_FROM_XML) return;
         
       switch(paramIndex){    
         case floatIndex: {
@@ -169,7 +173,21 @@ public:
         default: break;
       }
                 
-    }            
+    }
+    
+    void updateProcessorHostAndUiFromXml(const bool recursively, bool forceValueChanged, bool forceUpdateUi){            
+      ParamGroup::updateProcessorHostAndUiFromXml(recursively, forceValueChanged, forceUpdateUi);
+            
+      //Initialize the plugin from the values read from XML
+      logVar=floatVar;
+      getParam(logIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+      logWith0Var=floatVar;
+      getParam(logWith0Index)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+      symSignedLogVar=floatVar;
+      getParam(symSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+      asymSignedLogVar=floatVar;
+      getParam(asymSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+    }       
 
 private:
     //==============================================================================

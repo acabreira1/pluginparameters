@@ -18,7 +18,8 @@
   ------------------------------------------------------------------------------
 
    To release a closed-source product which uses PluginParameters, commercial licenses 
-   are available: visit LINK for more information.
+   are available: visit http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122  
+   for more information.
 
   ==============================================================================
 */
@@ -35,74 +36,50 @@ MyPluginProcessor::MyPluginProcessor():
 MyPluginProcessor::~MyPluginProcessor(){  
 }
 
-const String MyPluginProcessor::getParameterText (int index)
-{
-    // Instructions to format the parameter value
-    // Now all floating numbers are written with a string of maximum 2 characters
-    return String (getParameter (index), 2);
-}
-
-//------------------------------------------------------------------------------
-//save all parameters in sessions and xml presets
 //------------------------------------------------------------------------------
 
-void MyPluginProcessor::getStateInformation (MemoryBlock& destData)
-{   
-  // You should use this method to store your parameters in the memory block.
-  // Here's an example of how you can use XML to make it easy and more robust:
-
-  // Create an outer XML element..
-
+void MyPluginProcessor::getStateInformation (MemoryBlock& destData){   
+  //Save all the parameter values into an XML tag with name JucePlugin_Name.
   XmlElement xml(JucePlugin_Name);
-
-  // add some attributes to it..
   saveXml(&xml,false,true);  
-
-  // then use this helper function to stuff it into the binary blob and return it..
+  //Save it as binary data
   copyXmlToBinary (xml, destData);
 }
 
-void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
-  // You should use this method to restore your parameters from this memory block,
-  // whose contents will have been created by the getStateInformation() call.
-
-  // This getXmlFromBinary() helper function retrieves our XML from the binary blob..
+void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
+  //Convert the binary data saved in getStateInformation(...) back into XML.
   ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
-  // make sure that it's actually our type of XML object..
-  if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){  
-           
-    loadXml(xmlState, true);   
+  // Check that it is valid XML and that the tag has name JucePlugin_Name.
+  if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){         
+    //Preload XML values into memory
+    loadXml(xmlState, true);
+    //Update the parameter values from the preloaded XML values
     updateProcessorHostAndUiFromXml(true,true,true);     
   }
 }
 
 //------------------------------------------------------------------------------
 
-void MyPluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
-{
+void MyPluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock){
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     midiDelay.prepareToPlay(sampleRate,samplesPerBlock);
     midiNoteGain.prepareToPlay(sampleRate,samplesPerBlock);
 }
 
-void MyPluginProcessor::releaseResources()
-{
+void MyPluginProcessor::releaseResources(){
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-void MyPluginProcessor::reset()
-{
+void MyPluginProcessor::reset(){
     // Use this method as the place to clear any delay lines, buffers, etc, as it
     // means there's been a break in the audio's continuity.
     //reset the phase
 }
 
-void MyPluginProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
-{            
+void MyPluginProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages){            
     if (!bypass){      
       midiSustain.processBlock(buffer,midiMessages);
       midiDelay.processBlock(buffer,midiMessages);
@@ -111,36 +88,37 @@ void MyPluginProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midi
 }
 
 //------------------------------------------------------------------------------
-AudioProcessorEditor* MyPluginProcessor::createEditor()
-{
+
+const String MyPluginProcessor::getParameterText (int index){
+    // Instructions to format the parameter value
+    // Now all floating numbers are written with a string of maximum 2 characters
+    return String (getParameter (index), 2);
+}
+
+const String MyPluginProcessor::getInputChannelName (const int channelIndex) const{
+    return String (channelIndex + 1);
+}
+
+const String MyPluginProcessor::getOutputChannelName (const int channelIndex) const{
+    return String (channelIndex + 1);
+}
+
+bool MyPluginProcessor::isInputChannelStereoPair (int /*index*/) const{
+    return true;
+}
+
+bool MyPluginProcessor::isOutputChannelStereoPair (int /*index*/) const{
+    return true;
+}
+
+//------------------------------------------------------------------------------
+// Hook up the User Interface.
+AudioProcessorEditor* MyPluginProcessor::createEditor(){
     return new MainComponent (this);
 }
 
 //------------------------------------------------------------------------------
-
-const String MyPluginProcessor::getInputChannelName (const int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-const String MyPluginProcessor::getOutputChannelName (const int channelIndex) const
-{
-    return String (channelIndex + 1);
-}
-
-bool MyPluginProcessor::isInputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-bool MyPluginProcessor::isOutputChannelStereoPair (int /*index*/) const
-{
-    return true;
-}
-
-//------------------------------------------------------------------------------
-// This creates new instances of the plugin..
-AudioProcessor* JUCE_CALLTYPE createPluginFilter()
-{
+// This creates new instances of the plugin.
+AudioProcessor* JUCE_CALLTYPE createPluginFilter(){
     return new MyPluginProcessor();
 }
