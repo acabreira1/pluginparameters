@@ -2,7 +2,7 @@
 
 A library to automatically handle plugin parameters (in plugins developed with JUCE).
 
-* Documentation: https://github.com/4drX/pluginparameters/wiki.
+* Reference: https://github.com/4drX/pluginparameters/wiki.
 
 * Feedback and announcements: http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732#p63732
 
