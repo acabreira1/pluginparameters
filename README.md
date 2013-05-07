@@ -17,7 +17,7 @@ PluginParameters is a library to automatically handle plugin parameters (in plug
 
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
-##[Forum and announcements](http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732#p63732)
+##[Forum and announcements](http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732)
 
 ##License
 
