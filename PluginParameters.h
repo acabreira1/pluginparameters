@@ -132,8 +132,8 @@ public:
       the UI to query its state. */
   void requestUpdateUi(const bool enable);  
   
-  /** Called from the UI timer to determine if the widget associated to this parameter must be 
-  updated or not. It automatically sets the updateUi flag to "false" after it.*/
+  /** Called from the UI timer to determine if the widget associated to this parameter 
+      must be updated or not. It automatically sets the updateUi flag to "false" after it. */
   bool updateUiRequested(){
     if (updateUiFlag){
       updateUiFlag=false;
