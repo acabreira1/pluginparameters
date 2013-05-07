@@ -21,4 +21,4 @@ PluginParameters is a library to automatically handle plugin parameters (in plug
 
 ##License
 
-This library is released under the GPL but if you are interested in purchasing a commercial license to use it in proprietary code, please contact me with a PM at the juce forum.
+This library is released under the GPL but if you are interested in purchasing a commercial license to use it in proprietary code, please contact me with a PM at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347).
