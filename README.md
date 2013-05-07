@@ -1,6 +1,6 @@
 ##Description
 
-PluginParameters is a library to automatically handle plugin parameters (in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild. It should be simple to use with only a few lines doing the job and it provides two plugin templates which are convenient to create plugins from scratch. Finally, it is released with the GPL but if you are interested in purchasing a commercial license to use it in proprietary code, please PM for details.
+PluginParameters is a library to automatically handle plugin parameters (in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php)). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild. It should be simple to use with only a few lines doing the job and it provides two plugin templates which are convenient to create plugins from scratch. 
 
 ###What it does
 
@@ -15,11 +15,9 @@ PluginParameters is a library to automatically handle plugin parameters (in plug
 
 * Parameters are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
 
-##Links
+##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
-[[Reference](https://github.com/4drX/pluginparameters/wiki)]  
-
-[[Forum and announcements](http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732#p63732)]
+##[Forum and announcements](http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732#p63732)
 
 ##License
 
