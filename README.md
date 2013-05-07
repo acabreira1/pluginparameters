@@ -13,7 +13,7 @@ PluginParameters is a library to automatically handle plugin parameters (in plug
 
 ###What it doesn't do
 
-* Parameters are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
+* Parameters changes are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
 
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
