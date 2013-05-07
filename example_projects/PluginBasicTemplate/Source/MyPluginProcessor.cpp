@@ -18,7 +18,8 @@
   ------------------------------------------------------------------------------
 
    To release a closed-source product which uses PluginParameters, commercial licenses 
-   are available: visit LINK for more information.
+   are available: visit http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122 
+   for more information.
 
   ==============================================================================
 */
