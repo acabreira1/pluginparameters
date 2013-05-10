@@ -233,6 +233,7 @@ public:
   pluginProcessor(pluginProcessor),
   globalIndex(globalIndex),
   name(name),
+  xmlName(name),
   type(type),  
   automationFlag(automationFlag),
   updateUiFlag(false),  
@@ -1564,25 +1565,32 @@ public:
     return paramList[index];
   }
 
-  /** Adds a parameter to this group. If there is another Param child 
+  /** Adds a parameter to this group. 
+      If forceUniqueXmlName=true and there is another Param child 
       with the same attribute name (xmlName), a numeric suffix will be 
-      added automatically to it to make it unique. */
-  void addParam(const int paramIndex,Param * const param){ 
+      added automatically to it to make it unique.
+      Use forceUniqueXmlName=false only when you are 100% sure that
+      you are using different names for all childs and you want to improve
+      the initialization performance. Use with care, if you are wrong, it
+      will lead to undetectable errors. */
+  void addParam(const int paramIndex,Param * const param,bool forceUniqueXmlName=true){ 
     //Oh oh! You are not adding the parameters in the same order that you enumerated
     //their indexes. Please go and fix it.   
     if (paramIndex!=paramList.size()) {jassertfalse; return;}    
 
-    //produce a unique attribute name:
-    //if there was already a Param with the same xmlName attribute
-    //add a numeric suffix to make this attribute name unique
-    int counter=2;
-    int p=0;
-    String baseName=param->getXmlName();
-    while (p<paramList.size()){
-      if (paramList[p]->getXmlName()==param->getXmlName()){
-        param->setXmlName(baseName+":"+(String)(counter++));
-        p=0;
-      } else p++;
+    if (forceUniqueXmlName){
+      //produce a unique attribute name:
+      //if there was already a Param with the same xmlName attribute
+      //add a numeric suffix to make this attribute name unique
+      int counter=2;
+      int p=0;
+      String baseName=param->getXmlName();
+      while (p<paramList.size()){
+        if (paramList[p]->getXmlName()==param->getXmlName()){
+          param->setXmlName(baseName+":"+(String)(counter++));
+          p=0;
+        } else p++;
+      }
     }
 
     paramList.add(param);
@@ -1600,12 +1608,12 @@ public:
     return static_cast<StringParam *>(paramList[index]);
   }
   
-  void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value){      
+  void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value,bool forceUniqueXmlName=true){      
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }    
 
@@ -1628,12 +1636,12 @@ public:
     return static_cast<FloatParam *>(paramList[index]);
   }
   
-  void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)){
+  void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));        
+      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);        
     paramsToUnallocateAtDestructor.add(param);
   }   
 
@@ -1656,12 +1664,12 @@ public:
     return static_cast<LogParam *>(paramList[index]);
   }
    
-   void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
+   void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);        
     paramsToUnallocateAtDestructor.add(param);
   }   
 
@@ -1684,12 +1692,12 @@ public:
     return static_cast<LogWith0Param *>(paramList[index]);
   }  
    
-   void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1)){
+   void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));
+      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor));        
+      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);        
     paramsToUnallocateAtDestructor.add(param);
   }
 
@@ -1712,12 +1720,12 @@ public:
     return static_cast<LogWithSignParam *>(paramList[index]);
   }  
    
-   void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1),const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor = (PluginFloatType)(1)){
+   void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1),const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
    Param *param;
    if (automationFlag)
-    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
   else
-    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor));
+    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
   paramsToUnallocateAtDestructor.add(param);
 }  
 
@@ -1740,12 +1748,12 @@ public:
     return static_cast<IntParam *>(paramList[index]);
   }  
   
-  void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginIntType *const value, const PluginIntType minValue=0,const PluginIntType maxValue=1){
+  void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginIntType *const value, const PluginIntType minValue=0,const PluginIntType maxValue=1,bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue));
+      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }    
 
@@ -1768,12 +1776,12 @@ public:
     return static_cast<BoolParam *>(paramList[index]);
   }  
   
-  void addBoolParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag, bool *const value){
+  void addBoolParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag, bool *const value,bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
-      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     else
-      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value));
+      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numNonAutomatedParams++,automationFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }
   
@@ -1993,7 +2001,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addFloatParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue);
+      ParamGroup::addFloatParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,false);
     }
   }
 
@@ -2080,7 +2088,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor);
+      ParamGroup::addLogParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor,false);
     }
   }
 
@@ -2168,7 +2176,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor);
+      ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor,false);
     }
   }
 
@@ -2257,7 +2265,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,minAbsValue,factor);
+      ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,minAbsValue,factor,false);
     }
   }
 
@@ -2345,7 +2353,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addIntParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue);
+      ParamGroup::addIntParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,false);
     }
   } 
 
@@ -2434,7 +2442,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addBoolParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]));
+      ParamGroup::addBoolParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),false);
     }
   } 
 
@@ -2505,7 +2513,7 @@ public:
   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addStringParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]));
+      ParamGroup::addStringParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),false);
     }
   } 
 
@@ -2662,7 +2670,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addFloatParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue);        
+        ParamGroup::addFloatParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,false);        
       }
     }
   }
@@ -2766,7 +2774,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor);        
+        ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor,false);        
       }
     }
   }
@@ -2871,7 +2879,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor);        
+        ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor,false);        
       }
     }
   }
@@ -2977,7 +2985,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,minAbsValue,factor);        
+        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,minAbsValue,factor,false);        
       }
     }
   }
@@ -3080,7 +3088,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addIntParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue);        
+        ParamGroup::addIntParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,false);        
       }
     }
   }
@@ -3180,7 +3188,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addBoolParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]));
+        ParamGroup::addBoolParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),false);
       }
     }
   } 
@@ -3263,7 +3271,7 @@ public:
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addStringParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]));
+        ParamGroup::addStringParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::automationFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),false);
       }
     }
   } 
