@@ -175,8 +175,8 @@ public:
                 
     }
     
-    void updateProcessorHostAndUiFromXml(const bool recursively, bool forceValueChanged, bool forceUpdateUi){            
-      ParamGroup::updateProcessorHostAndUiFromXml(recursively, forceValueChanged, forceUpdateUi);
+    void updateProcessorHostAndUiFromXml(bool forceValueChanged, bool forceUpdateUi, const bool applyRecursively){
+      ParamGroup::updateProcessorHostAndUiFromXml(forceValueChanged, forceUpdateUi, applyRecursively);
             
       //Initialize the plugin from the values read from XML
       logVar=floatVar;

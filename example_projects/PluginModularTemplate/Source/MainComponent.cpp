@@ -86,7 +86,7 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
     //[UserPreSize]
     tabbedComponent->getTabbedButtonBar().addChangeListener(this);
 
-    processor->requestUpdateUiRecursively(true);
+    processor->requestAllParamsUpdateUi(true,true);
     timerCallback();
     //[/UserPreSize]
 

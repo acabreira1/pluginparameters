@@ -100,8 +100,8 @@ protected:
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
   Param (const Param&);
-  Param& operator=(const Param &other);      
-    
+  Param& operator=(const Param &other);
+
 public:      
   /** returns true if this parameter is automated or not */
   bool automationIsOn() const { return automationFlag; }
@@ -1457,53 +1457,58 @@ public:
   }  
 
   /** Reset all parameters in this ParamGroup to their defaultValue.
-      If recursively=true do the same for the child ParamGroups */
-  void resetParamsToDefaultValue(const bool recursively){
+      If applyRecursively=true do the same for the child ParamGroups */
+  void resetParamsToDefaultValue(const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->resetToDefaultValue();
       
-    if (recursively){
+    if (applyRecursively){
       for (int i=0;i<paramGroupList.size();i++)
-        paramGroupList[i]->resetParamsToDefaultValue(recursively);
+        paramGroupList[i]->resetParamsToDefaultValue(true);
     }
   }  
 
   /** Import all its parameters from xml (set to true by default) when the user requests it */
-  void setLoadXml(const bool enable, const bool recursively){
+  void setLoadXml(const bool enable, const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->setLoadXml(enable);
       
-    if (recursively){
+    if (applyRecursively){
       for (int i=0;i<paramGroupList.size();i++)
-        paramGroupList[i]->setLoadXml(enable,recursively);
+        paramGroupList[i]->setLoadXml(enable,true);
     }
   } 
   
   /** Export all its parameters to xml (set to true by default) when the user requests it */
-  void setSaveXml(const bool enable, const bool recursively){
+  void setSaveXml(const bool enable, const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->setSaveXml(enable);
     
-    if (recursively){  
+    if (applyRecursively){  
       for (int i=0;i<paramGroupList.size();i++)
-        paramGroupList[i]->setSaveXml(enable,recursively);
+        paramGroupList[i]->setSaveXml(enable,true);
     }
   }
 
-  /** Used to submit a request for an update in the UI. updateUiRequested() must be called then from
-      the UI to query its state.*/
+  /** Used to submit a request for an update of the ParamGroup in the UI. 
+      updateUiRequested() must be called then from the UI to query its state.
+      Note that this command doesn't affect the Params declared in this ParamGroup.
+      For that purpose please use: requestAllParamsUpdateUi(...)*/
   void requestUpdateUi(const bool enable){
     updateUiFlag=enable;
   }  
   
-  /** Set the updateUi flags of all its parameters and parameter subgroups to true 
-      recursively. */
-  void requestUpdateUiRecursively(const bool enable){
+  /** Set the updateUi flags of all its parameters to true only in this ParamGroup
+      or applyRecursively. */
+  void requestAllParamsUpdateUi(const bool enable,const bool applyRecursively){
     requestUpdateUi(enable);
     for (int i=0;i<paramList.size();i++)
-      paramList[i]->requestUpdateUi(enable);      
-    for (int g=0;g<paramGroupList.size();g++)
-      paramGroupList[g]->requestUpdateUiRecursively(enable);
+      paramList[i]->requestUpdateUi(enable); 
+    
+    if (applyRecursively){     
+      for (int g=0;g<paramGroupList.size();g++)
+        paramGroupList[g]->requestAllParamsUpdateUi(enable,true);
+    }
   }
   
   /** Called from the UI timer to determine if the general UI of this parameter group 
@@ -1795,7 +1800,7 @@ public:
   /** Stores the parameter values as an XML attribute.
       If createChild is set to true it will create a child XML node 
       (you want to disable it at the root node).*/
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursive){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     //create a child XmlElement for this ParamGroup if you are adding xml
     //contents to an already populated XmlElement.
 
@@ -1807,9 +1812,9 @@ public:
     for (int i=0;i<getNumParams();i++)
       paramList[i]->saveXml(xml);
       
-    if (recursive){
+    if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++)
-        paramGroupList[g]->saveXml(xml,true,recursive);
+        paramGroupList[g]->saveXml(xml,true,true);
     }
   } 
   
@@ -1833,7 +1838,7 @@ public:
       advisable to run this on the Processing thread since it may
       take a little while to parse all this parameters from Xml 
       and normalize them. */
-  virtual void loadXml(XmlElement *xml, const bool recursively){
+  virtual void loadXml(XmlElement *xml, const bool applyRecursively){
     //this child couldn't be found
     if (xml==nullptr)
       return;
@@ -1844,10 +1849,10 @@ public:
       if (param->loadXmlIsOn()) param->loadXml(xml);      
     }      
     
-    if (recursively){
+    if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
         XmlElement *childXml=xml->getChildByName(getParamGroup(g)->getXmlName());
-        getParamGroup(g)->loadXml(childXml,recursively);
+        getParamGroup(g)->loadXml(childXml,true);
       }
     }        
   }   
@@ -1859,7 +1864,7 @@ public:
     XmlDocument myDocument (file);
     ScopedPointer <XmlElement> xml(myDocument.getDocumentElement());
     //this file doesn't contain xml with the same tag name it was saved
-    if (xml->getTagName()!=getName()) { jassertfalse; return false; }          
+    if (xml==nullptr || xml->getTagName()!=getName()) { jassertfalse; return false; }          
     loadXml(xml,true);
     return true;
   }
@@ -1867,14 +1872,14 @@ public:
   /* Update all parameters from undoRedo after loadXml(...) has been called. 
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
-  virtual void updateProcessorHostAndUiFromXml(const bool recursively,bool forceValueChanged, bool forceUpdateUi){              
+  virtual void updateProcessorHostAndUiFromXml(bool forceValueChanged, bool forceUpdateUi,const bool applyRecursively){
     for (int i=0;i<getNumParams();i++){
       getParam(i)->updateProcessorHostAndUiFromXml(forceValueChanged,forceUpdateUi);      
     }
     
-    if (recursively){
+    if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
-        getParamGroup(g)->updateProcessorHostAndUiFromXml(recursively,forceValueChanged,forceUpdateUi);
+        getParamGroup(g)->updateProcessorHostAndUiFromXml(forceValueChanged,forceUpdateUi,true);
       }
     }        
   }  
@@ -2035,7 +2040,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     FloatParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2059,7 +2064,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2122,7 +2127,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2146,7 +2151,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2210,7 +2215,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogWith0Param *param;
     
     jassert(saveXmlFlagCopy);
@@ -2234,7 +2239,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2299,7 +2304,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogWithSignParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2323,7 +2328,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2392,7 +2397,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     IntParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2416,7 +2421,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2464,7 +2469,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     BoolParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2488,7 +2493,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2535,7 +2540,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized array. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     StringParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2559,7 +2564,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<ParamArray::maxSize;i++){
@@ -2708,7 +2713,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     FloatParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2742,7 +2747,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -2812,7 +2817,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -2846,7 +2851,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -2917,7 +2922,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogWith0Param *param;
     
     jassert(saveXmlFlagCopy);
@@ -2951,7 +2956,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -3023,7 +3028,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     LogWithSignParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -3057,7 +3062,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -3126,7 +3131,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     IntParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -3160,7 +3165,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -3212,7 +3217,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     BoolParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -3246,7 +3251,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -3295,7 +3300,7 @@ public:
       This method expands the default one to save only the 
       parameters with value other than defaultValue and/or 
       the parameters of the sized matrix. */
-  virtual void saveXml(XmlElement *xml, const bool createChild, const bool recursively){
+  virtual void saveXml(XmlElement *xml, const bool createChild, const bool applyRecursively){
     StringParam *param;
     
     jassert(saveXmlFlagCopy);
@@ -3329,7 +3334,7 @@ public:
       }
     }
     
-    ParamGroup::saveXml(xml,createChild,recursively);
+    ParamGroup::saveXml(xml,createChild,applyRecursively);
     
     if (saveXmlFlagCopy){
       for (int i=0;i<maxRows*maxCols;i++){
@@ -3361,7 +3366,7 @@ private:
   ParamGroup **groupNonAutomated;
   int *indexInGroupNonAutomated;  
    
-  /** compues recursively all the mappings between the global index 
+  /** computes applyRecursively all the mappings between the global index 
     of parameters and their ParamGroup and index in the ParamGroup */
   void mapGlobalIndex(ParamGroup *root, bool countIfAutomate, ParamGroup **map,int *indexMap)  {
     for (int i=0;i<root->getNumParams();i++){      
