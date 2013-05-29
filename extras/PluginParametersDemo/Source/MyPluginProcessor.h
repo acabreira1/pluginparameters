@@ -28,7 +28,6 @@
 #define __PLUGINPROCESSOR_H_526ED7A9__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginParameters.h"
 
 //==============================================================================
 /**
@@ -45,6 +44,10 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock);
     void releaseResources();
     void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+    double getTailLengthSeconds(void) const{
+      return 0;
+    } 
+
     void reset();
 
     //==============================================================================
@@ -120,7 +123,7 @@ public:
       addBoolParam(boolIndex,"bool",true,true,&boolVar);
       addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);
         
-      //SubGroups
+      //Parameter Groups
       addIntParamArray(intArrayIndex,"intArray",true,true,intArray,&intArraySize,10,0,127);
       addIntParamMatrix(intMatrixIndex,"intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
       addStringParamArray(stringArrayIndex,"stringArray",false,true,stringArray,&stringArraySize,10);

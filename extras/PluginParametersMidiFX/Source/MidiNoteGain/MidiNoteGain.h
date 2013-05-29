@@ -23,24 +23,23 @@
   ==============================================================================
 */
 
-#ifndef __MIDISUSTAIN_H
-#define __MIDISUSTAIN_H
+#ifndef __MIDINOTEVELOCITY_H
+#define __MIDINOTEVELOCITY_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "PluginParameters.h"
-
-class MidiSustain: public ParamGroup{
-  bool panicFlag;
-  int lastChannel;
+class MidiNoteGain: public ParamGroup{
+  double sampleRate;
+  
 public:
   bool enable;
+  
+  int noteVelocities[12];
 
-  void panic(){
-    panicFlag=true;
-  }
+  int numNotes;
 
-  void prepareToPlay (double /*sampleRateArg*/, int /*estimatedSamplesPerBlockArg*/) {
+  void prepareToPlay (double sampleRateArg, int /*estimatedSamplesPerBlockArg*/) {
+    sampleRate=sampleRateArg;
   }
 
   void releaseResources(){
@@ -50,60 +49,52 @@ public:
   }
 
   void processBlock(AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages){ 
-    if (panicFlag){
-      midiMessages.addEvent(MidiMessage::allNotesOff(lastChannel),0);
-      panicFlag=false;
-    }
-
     if (enable){           
       MidiBuffer oldMidiBuffer=midiMessages;
       midiMessages.clear();    
       MidiBuffer::Iterator nextMidiMessage(oldMidiBuffer);
       MidiMessage midiMessage;
       int samplePosition;
-      while (nextMidiMessage.getNextEvent(midiMessage,samplePosition)){        
-        if (!midiMessage.isNoteOff()){
-          lastChannel=midiMessage.getChannel();
-          midiMessages.addEvent(midiMessage,samplePosition);
-        }
+      while (nextMidiMessage.getNextEvent(midiMessage,samplePosition)){
+        if (midiMessage.isNoteOn()){
+          midiMessage.multiplyVelocity(noteVelocities[midiMessage.getNoteNumber()%12]/127.f);
+          if (midiMessage.getVelocity()>0)
+            midiMessages.addEvent(midiMessage,samplePosition);
+        } else midiMessages.addEvent(midiMessage,samplePosition);
       }
     }
   }
 
   enum ParamGroups{
-    none = 0
+    noteVelocitiesIndex = 0
   };
   enum Params{
     enableIndex = 0
   };
-  
+
   void initParameters(){
     //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&enable);     
-  }      
-
-  void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){
-    if (updateFromFlag&UPDATE_FROM_XML)
-      return;
+    addBoolParam(enableIndex,"enable",true,true,&enable); 
     
-    if (index==enableIndex && enable==false)
-      panic();
-  }
+    //Parameter Groups
+    addIntParamArray(noteVelocitiesIndex,"noteVelocities",true,true,noteVelocities,&numNotes,12,0,127);
+  }  
 
-  MidiSustain():
-  ParamGroup("MidiSustain"),
+  MidiNoteGain():
+  ParamGroup("MidiNoteGain"),
   enable(false),
-  panicFlag(false),
-  lastChannel(1){    
+  numNotes(12){
+    for (int i=0;i<12;i++)
+      noteVelocities[i]=127;
   }
   
-  ~MidiSustain(){
+  ~MidiNoteGain(){
   }
 
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
-  MidiSustain (const MidiSustain&);
-  MidiSustain& operator=(const MidiSustain &other);
+  MidiNoteGain (const MidiNoteGain&);
+  MidiNoteGain& operator=(const MidiNoteGain &other);
 };
 
 #endif

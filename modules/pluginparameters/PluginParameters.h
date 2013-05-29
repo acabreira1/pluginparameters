@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-   This file is part of the PluginParameters library
+   This file is part of the PluginParameters module
    Copyright 2012-13 by MarC
 
   ------------------------------------------------------------------------------
@@ -24,20 +24,42 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_PARAMETERTOOLS
-#define __JUCER_HEADER_PARAMETERTOOLS
+// Your project must contain an AppConfig.h file with your project-specific settings in it,
+// and your header search path must make it accessible to the module's files.
+#include "AppConfig.h"
+
+#ifndef PluginParameters_Epsilon
+  #define PluginParameters_Epsilon (PluginParameters_HostFloatType)1e-6
+#endif
+
+#ifndef DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE
+  #define DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE 0
+#endif
+
+#ifndef DEFINE_DEFAULT_HOST_TYPES
+  typedef float PluginParameters_HostFloatType;
+#endif
+
+#ifndef DEFINE_DEFAULT_PLUGIN_TYPES
+  typedef float PluginParameters_PluginFloatType;
+  typedef int PluginParameters_PluginIntType;
+#endif
+
+#ifndef PLUGINPARAMETERS
+#define PLUGINPARAMETERS
 
 #include <cmath>
+#include "../juce_audio_basics/juce_audio_basics.h"
+#include "../juce_audio_plugin_client/juce_audio_plugin_client.h"
+#include "../juce_audio_plugin_client/juce_audio_plugin_client.h"
+#include "../juce_core/juce_core.h"
+#include "../juce_data_structures/juce_data_structures.h"
+#include "../juce_events/juce_events.h"
+#include "../juce_audio_processors/juce_audio_processors.h"
 
-#include "../JuceLibraryCode/JuceHeader.h"
+namespace PluginParameters {
 
-typedef float HostFloatType;
-typedef float PluginFloatType;
-typedef int PluginIntType;
-
-namespace PluginParameters{
-  const PluginFloatType epsilon=(PluginFloatType)1e-6; //used to avoid rounding errors
-};
+using namespace juce;
 
 class PluginProcessor;
 
@@ -91,11 +113,11 @@ private:
   UpdateFromFlags updateFromFlag;    
   
 protected: 
-  void updateHostFromUi(HostFloatType newValue);  
+  void updateHostFromUi(PluginParameters_HostFloatType newValue);  
   
   bool loadXmlFlag,saveXmlFlag;
   
-  HostFloatType xmlHostValue;
+  PluginParameters_HostFloatType xmlHostValue;
     
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -149,7 +171,7 @@ public:
   
   /**  Returns the parameter value to set the host.
   */
-  virtual HostFloatType hostGet() const = 0;  
+  virtual PluginParameters_HostFloatType hostGet() const = 0;  
 
   /** Preloads an XML attribute into undoRedo and returns its normalized parameter value.
       This value is stored in an auxiliary internal variable but it doesn't change the
@@ -157,7 +179,7 @@ public:
       If the parameter value can't be read from the XML it is set to its default value.
       Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this.
   */
-  virtual HostFloatType loadXml(XmlElement *xml) = 0;
+  virtual PluginParameters_HostFloatType loadXml(XmlElement *xml) = 0;
 
   /** returns true if this parameter will be imported from xml */
   bool loadXmlIsOn() const{
@@ -204,11 +226,11 @@ public:
        returns true: if it is set to a new value or forceLoad,skipLoad is enabled.
               false: if it set to the same value.
   */
-  virtual bool hostSet(const HostFloatType hostValue) = 0;  
+  virtual bool hostSet(const PluginParameters_HostFloatType hostValue) = 0;  
   
   /** Set a parameter from the Processor to a new value and notify the host and the UI (when it has changed)
   */  
-  void updateProcessorHostAndUi(HostFloatType newValue, UpdateFromFlags updateFromFlag);  
+  void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag);  
   
   /** Notify the host about the current value of a parameter and update the UI.
       This is useful when you change the value of this parameter (maybe several times) 
@@ -280,7 +302,7 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType ){       
+  bool hostSet(const PluginParameters_HostFloatType ){       
     return false;
   }
    
@@ -293,8 +315,8 @@ public:
     return (*value);
   }
 
-  HostFloatType hostGet() const{
-    return (HostFloatType)(0.f);
+  PluginParameters_HostFloatType hostGet() const{
+    return (PluginParameters_HostFloatType)(0.f);
   }  
   
   const String getDefaultValue() const{
@@ -317,12 +339,12 @@ public:
     return 1;
   }
   
-  HostFloatType loadXml(XmlElement *xml) {
+  PluginParameters_HostFloatType loadXml(XmlElement *xml) {
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
       xmlValue=xml->getStringAttribute(Param::getXmlName(),defaultValue);
-    return xmlHostValue=(HostFloatType)(0.f);
+    return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
   }  
 
   void saveXml(XmlElement *xml) const{
@@ -345,8 +367,8 @@ public:
 
 class FloatParam : public Param{
 private:
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
 
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -354,9 +376,9 @@ private:
   FloatParam& operator=(const FloatParam &other);
   
 protected:
-  PluginFloatType * const value;
-  const PluginFloatType defaultValue;
-  PluginFloatType xmlValue;  
+  PluginParameters_PluginFloatType * const value;
+  const PluginParameters_PluginFloatType defaultValue;
+  PluginParameters_PluginFloatType xmlValue;  
   
 public:
   bool writeXmlValue(){
@@ -367,16 +389,16 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){    
-    PluginFloatType oldValue=*value;
+  bool hostSet(const PluginParameters_HostFloatType hostValue){    
+    PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
       *value=maxValue;
     else if (hostValue<0)
       *value=minValue;
     else
-      *value=minValue+(PluginFloatType)(hostValue)*(maxValue-minValue);
+      *value=minValue+(PluginParameters_PluginFloatType)(hostValue)*(maxValue-minValue);
 
-    if (fabs(*value-oldValue)>PluginParameters::epsilon)
+    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
 		  return true;
 		
 		return false;
@@ -395,21 +417,21 @@ public:
       return (double)(*value);
   }
 
-  HostFloatType hostGet() const{    
+  PluginParameters_HostFloatType hostGet() const{    
     if (maxValue==minValue)
-      return (HostFloatType)(0.f);
-    HostFloatType newHostValue=(HostFloatType)(*value-minValue)/(maxValue-minValue);
+      return (PluginParameters_HostFloatType)(0.f);
+    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(*value-minValue)/(maxValue-minValue);
     if (newHostValue<0){
       *value=minValue;
-      return (HostFloatType)(0.f);
+      return (PluginParameters_HostFloatType)(0.f);
     } else if (newHostValue>1){
       *value=maxValue;
-      return (HostFloatType)(1.f);
+      return (PluginParameters_HostFloatType)(1.f);
     } else
       return newHostValue;
   }  
 
-  void setMin(PluginFloatType minValueArg){        
+  void setMin(PluginParameters_PluginFloatType minValueArg){        
     if (defaultValue>=minValueArg){
       minValue=minValueArg;
       if (*value<minValueArg)
@@ -420,7 +442,7 @@ public:
       jassertfalse;
   }
 
-  void setMax(PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg){    
     if (defaultValue<=maxValueArg){
       maxValue=maxValueArg;
       if (*value>maxValueArg)
@@ -431,7 +453,7 @@ public:
       jassertfalse;
   }
 
-  const PluginFloatType getDefaultValue() const{
+  const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;    
   }
 
@@ -439,11 +461,11 @@ public:
     *value=defaultValue;
   }
   
-  PluginFloatType getPreloadvalue() const{
+  PluginParameters_PluginFloatType getPreloadvalue() const{
     return xmlValue;
   }
   
-  PluginFloatType getValue() const{
+  PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
 
@@ -455,21 +477,21 @@ public:
     return maxValue;
   }
 
-  HostFloatType loadXml(XmlElement *xml){    
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
+      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
     if (maxValue==minValue)
-      return xmlHostValue=(HostFloatType)(0.f);
-    xmlHostValue=(HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+    xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
     if (xmlHostValue<0){
       xmlValue=minValue;
-      return xmlHostValue=(HostFloatType)(0.f);
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
     }
     else if (xmlHostValue>1){
       xmlValue=maxValue;
-      return xmlHostValue=(HostFloatType)(1.f);
+      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
     }
     else
       return xmlHostValue;
@@ -480,9 +502,9 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
   
-  FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0)):
+  FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Float"),
-  defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(*value,maxValue))),
+  defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
   value(value){    
@@ -494,9 +516,9 @@ public:
 
 class LogParam : public Param{
 private:
-  PluginFloatType minLogValue;
-  PluginFloatType maxLogValue;
-  const PluginFloatType factor;
+  PluginParameters_PluginFloatType minLogValue;
+  PluginParameters_PluginFloatType maxLogValue;
+  const PluginParameters_PluginFloatType factor;
   
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -504,9 +526,9 @@ private:
   LogParam& operator=(const LogParam &other);
 
 protected:
-  PluginFloatType * const value;
-  const PluginFloatType defaultValue; 
-  PluginFloatType xmlValue;  
+  PluginParameters_PluginFloatType * const value;
+  const PluginParameters_PluginFloatType defaultValue; 
+  PluginParameters_PluginFloatType xmlValue;  
   
 public:
   bool writeXmlValue(){
@@ -517,16 +539,16 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){
-    PluginFloatType oldValue=*value;
+  bool hostSet(const PluginParameters_HostFloatType hostValue){
+    PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
       *value=maxLogValue;
     else if (hostValue<0)
       *value=minLogValue;
     else
-      *value=(PluginFloatType)pow(10,(double)((minLogValue+hostValue*(maxLogValue-minLogValue))/factor));    
+      *value=(PluginParameters_PluginFloatType)pow(10,(double)((minLogValue+hostValue*(maxLogValue-minLogValue))/factor));    
 
-    if (fabs(*value-oldValue)>PluginParameters::epsilon)
+    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
 		  return true;
 		
 		return false;
@@ -550,27 +572,27 @@ public:
     }
   }
 
-  HostFloatType hostGet() const{        
+  PluginParameters_HostFloatType hostGet() const{        
     if (maxLogValue==minLogValue)
-      return (HostFloatType)(0.f);
+      return (PluginParameters_HostFloatType)(0.f);
     if (*value<=0){
-      *value=(PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return (HostFloatType)(0.f);
+      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
+      return (PluginParameters_HostFloatType)(0.f);
     }
-    HostFloatType newHostValue=(HostFloatType)(factor*log10(fabs((double)*value))-minLogValue)/(maxLogValue-minLogValue);
+    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)*value))-minLogValue)/(maxLogValue-minLogValue);
     if (newHostValue<0){
-      *value=(PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return (HostFloatType)(0.f);
+      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
+      return (PluginParameters_HostFloatType)(0.f);
     } else if (newHostValue>1){
-      *value=(PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return (HostFloatType)(1.f);
+      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+      return (PluginParameters_HostFloatType)(1.f);
     } else
       return newHostValue;
   }  
 
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     if (defaultValue>=minValueArg && minValueArg>0){
-      minLogValue=(PluginFloatType)(factor*log10((double)(minValueArg)));
+      minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
       if (*value<minValueArg)
         *value=minValueArg;
       if (xmlValue<minValueArg)
@@ -579,9 +601,9 @@ public:
       jassertfalse;
   }
 
-  void setMax(PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxLogValue=(PluginFloatType)(factor*log10((double)(maxValueArg)));
+      maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
         *value=maxValueArg;
       if (xmlValue>maxValueArg)
@@ -590,7 +612,7 @@ public:
       jassertfalse;
   }
   
-  const PluginFloatType getDefaultValue() const{
+  const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;
   }
   
@@ -598,11 +620,11 @@ public:
     *value=defaultValue;
   }
   
-  PluginFloatType getValue() const{
+  PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
   
-  const PluginFloatType getFactor() const{
+  const PluginParameters_PluginFloatType getFactor() const{
     return factor;
   }  
   
@@ -614,26 +636,26 @@ public:
     return maxLogValue;
   }
 
-  HostFloatType loadXml(XmlElement *xml){                  
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){                  
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));      
+      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));      
     
     if (maxLogValue==minLogValue)
-      return (HostFloatType)(0.f);
+      return (PluginParameters_HostFloatType)(0.f);
     
     if (xmlValue<=0){
-      xmlValue=(PluginFloatType)(pow(10,(double)(minLogValue/factor))); //minValue
-      return (HostFloatType)(0.f);
+      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor))); //minValue
+      return (PluginParameters_HostFloatType)(0.f);
     }    
-    xmlHostValue=(HostFloatType)(factor*log10(fabs((double)xmlValue))-minLogValue)/(maxLogValue-minLogValue);
+    xmlHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)xmlValue))-minLogValue)/(maxLogValue-minLogValue);
     if (xmlHostValue<0){
-      xmlValue=(PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return xmlHostValue=(HostFloatType)(0.f);
+      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
     }else if (xmlHostValue>1){
-      xmlValue=(PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return xmlHostValue=(HostFloatType)(1.f);
+      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
     } else
       return xmlHostValue;
   }
@@ -643,11 +665,11 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
   
-  LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),const PluginFloatType factor=(PluginFloatType)(1)):
+  LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Log"),
-  defaultValue(jmax<PluginFloatType>(minValue,jmin<PluginFloatType>(*value,maxValue))),
-  minLogValue((PluginFloatType)(factor*log10((double)(minValue)))),
-  maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
+  defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
+  minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
+  maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
   factor(factor),
   value(value){
     //log values are stricly positive, please define a strictly positive range
@@ -661,11 +683,11 @@ public:
 
 class LogWith0Param : public Param{
 private:
-  const PluginFloatType factor;
-  PluginFloatType minLogValue;
-  PluginFloatType maxLogValue;  
-  PluginFloatType minValue;
-  PluginFloatType maxValue;  
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minLogValue;
+  PluginParameters_PluginFloatType maxLogValue;  
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;  
   
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -673,9 +695,9 @@ private:
   LogWith0Param& operator=(const LogWith0Param &other);
   
 protected:
-  PluginFloatType * const value;
-  const PluginFloatType defaultValue;  
-  PluginFloatType xmlValue;   
+  PluginParameters_PluginFloatType * const value;
+  const PluginParameters_PluginFloatType defaultValue;  
+  PluginParameters_PluginFloatType xmlValue;   
 
 public: 
   bool writeXmlValue(){
@@ -686,17 +708,17 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){
-    PluginFloatType oldValue=*value;
+  bool hostSet(const PluginParameters_HostFloatType hostValue){
+    PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
       *value=maxLogValue;
     else if (hostValue<0.03){
       //leave a margin of 0.02 to avoid precision errors to confuse +/-minLog with 0
-      *value=(PluginFloatType)(0);
+      *value=(PluginParameters_PluginFloatType)(0);
     } else {
-      *value=(PluginFloatType)pow(10,(double)((minLogValue+(jmax<double>((HostFloatType)0.05,hostValue)-(HostFloatType)0.05)*(maxLogValue-minLogValue)/0.95)/factor));
+      *value=(PluginParameters_PluginFloatType)pow(10,(double)((minLogValue+(jmax<double>((PluginParameters_HostFloatType)0.05,hostValue)-(PluginParameters_HostFloatType)0.05)*(maxLogValue-minLogValue)/0.95)/factor));
     }
-    if (fabs(*value-oldValue)>PluginParameters::epsilon)
+    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
 		  return true;
 		
 		return false;
@@ -720,9 +742,9 @@ public:
     return jmin<double>(maxLogValue,uiValue);
   }
   
-  HostFloatType hostGet() const{    
+  PluginParameters_HostFloatType hostGet() const{    
     if (maxLogValue==minLogValue){ //do not let idiots make this crash
-      return (HostFloatType)(0.f); //stupid question, stupid answer
+      return (PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
     }
     
     //using the host parameter scale of [0,1]
@@ -730,23 +752,23 @@ public:
     //all values in the range of [0,minLogValue] will be stored as 0
     //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
     if (*value<=0){
-      *value=(PluginFloatType)0;
-      return (HostFloatType)(0.f);
+      *value=(PluginParameters_PluginFloatType)0;
+      return (PluginParameters_HostFloatType)(0.f);
     }
             
-    HostFloatType newHostValue=(HostFloatType)(0.05+(factor*log10(fabs((double)*value))-minLogValue)*0.95/(maxLogValue-minLogValue));
+    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(0.05+(factor*log10(fabs((double)*value))-minLogValue)*0.95/(maxLogValue-minLogValue));
     
     if (newHostValue<0){
-      *value=(PluginFloatType)0;
-      return (HostFloatType)(0.f);
+      *value=(PluginParameters_PluginFloatType)0;
+      return (PluginParameters_HostFloatType)(0.f);
     }else if (newHostValue>1){
-      *value=(PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return (HostFloatType)(1.f);
+      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+      return (PluginParameters_HostFloatType)(1.f);
     } else
       return newHostValue;    
   }
   
-  const PluginFloatType getDefaultValue() const{
+  const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;
   }
   
@@ -754,17 +776,17 @@ public:
     *value=defaultValue;
   }
   
-  PluginFloatType getValue() const{
+  PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
   
-  const PluginFloatType getFactor() const{
+  const PluginParameters_PluginFloatType getFactor() const{
     return factor;
   }
     
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     if (defaultValue>=minValueArg && minValueArg>0){
-      minLogValue=(PluginFloatType)(factor*log10((double)(minValueArg)));
+      minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
       if (*value<minValueArg)
         *value=0;
       if (xmlValue<minValueArg)
@@ -773,9 +795,9 @@ public:
       jassertfalse;
   }
 
-  void setMax(PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxLogValue=(PluginFloatType)(factor*log10((double)(maxValueArg)));
+      maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
         *value=maxValueArg;
       if (xmlValue>maxValueArg)
@@ -792,14 +814,14 @@ public:
     return maxLogValue;
   }
 
-  HostFloatType loadXml(XmlElement *xml){   
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){   
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));     
+      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));     
                      
     if (maxLogValue==minLogValue){ //do not let idiots make this crash
-      return xmlHostValue=(HostFloatType)(0.f); //stupid question, stupid answer      
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer      
     }
     //using the host parameter scale of [0,1]
     //store positive log value above 0.05 
@@ -807,19 +829,19 @@ public:
     //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)     
     if (xmlValue<=0){
       xmlValue=0;
-      return xmlHostValue=(HostFloatType)(0);
+      return xmlHostValue=(PluginParameters_HostFloatType)(0);
     } else {
       double xmlLogValue=factor*log10(fabs((double)xmlValue));
       if (xmlLogValue<minLogValue){
         xmlValue=0;
-        xmlHostValue=(HostFloatType)(0);
+        xmlHostValue=(PluginParameters_HostFloatType)(0);
       }else{
-        xmlHostValue=(HostFloatType)(0.05+(xmlLogValue-minLogValue)*0.95/(maxLogValue-minLogValue));
+        xmlHostValue=(PluginParameters_HostFloatType)(0.05+(xmlLogValue-minLogValue)*0.95/(maxLogValue-minLogValue));
       }     
     }
     if (xmlHostValue>1){
-      xmlValue=(PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return xmlHostValue=(HostFloatType)(1.f);      
+      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);      
     }
     return xmlHostValue;        
   }
@@ -829,11 +851,11 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
-  LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor=(PluginFloatType)(1)):
+  LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWith0"),
-  defaultValue(jmax<PluginFloatType>(0,jmin<PluginFloatType>(*value,maxValue))),
-  minLogValue((PluginFloatType)(factor*log10((double)(minValue)))),
-  maxLogValue((PluginFloatType)(factor*log10((double)(maxValue)))),
+  defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
+  minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
+  maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
   value(value),
   factor(factor){
     //log values are stricly positive, please define a strictly positive range
@@ -847,11 +869,11 @@ public:
 
 class LogWithSignParam : public Param{
 private:  
-  PluginFloatType maxNegLogValue;
-  PluginFloatType maxPosLogValue;  
-  PluginFloatType minAbsLogValue;
-  const PluginFloatType factor;
-  const HostFloatType centerValue;
+  PluginParameters_PluginFloatType maxNegLogValue;
+  PluginParameters_PluginFloatType maxPosLogValue;  
+  PluginParameters_PluginFloatType minAbsLogValue;
+  const PluginParameters_PluginFloatType factor;
+  const PluginParameters_HostFloatType centerValue;
   
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -859,9 +881,9 @@ private:
   LogWithSignParam& operator=(const LogWithSignParam &other);
   
 protected:
-  PluginFloatType * const value;
-  const PluginFloatType defaultValue;  
-  PluginFloatType xmlValue;   
+  PluginParameters_PluginFloatType * const value;
+  const PluginParameters_PluginFloatType defaultValue;  
+  PluginParameters_PluginFloatType xmlValue;   
 
 public:
   bool writeXmlValue(){
@@ -872,8 +894,8 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){  
-    PluginFloatType oldValue=*value;    
+  bool hostSet(const PluginParameters_HostFloatType hostValue){  
+    PluginParameters_PluginFloatType oldValue=*value;    
     if (hostValue>1)
       *value=maxPosLogValue;
     else if (hostValue<0)
@@ -881,14 +903,14 @@ public:
     else{
       //leave a margin of 0.02 to avoid precision errors to confuse +/-minLog with 0
       if (hostValue>centerValue+0.03){
-        *value=(PluginFloatType)pow(10,((double)(minAbsLogValue+(jmax<double>(0,hostValue-(centerValue+0.05)))*(maxPosLogValue-minAbsLogValue)/(1-centerValue-0.05))/(factor)));
+        *value=(PluginParameters_PluginFloatType)pow(10,((double)(minAbsLogValue+(jmax<double>(0,hostValue-(centerValue+0.05)))*(maxPosLogValue-minAbsLogValue)/(1-centerValue-0.05))/(factor)));
       } else if (hostValue<centerValue-0.03) {
-        *value=-(PluginFloatType)pow(10,((double)(minAbsLogValue+((centerValue-0.05)-jmin<double>((centerValue-0.05),hostValue))*(maxNegLogValue-minAbsLogValue)/(centerValue-0.05))/(factor)));
+        *value=-(PluginParameters_PluginFloatType)pow(10,((double)(minAbsLogValue+((centerValue-0.05)-jmin<double>((centerValue-0.05),hostValue))*(maxNegLogValue-minAbsLogValue)/(centerValue-0.05))/(factor)));
       } else
-        *value=(PluginFloatType)(0);
+        *value=(PluginParameters_PluginFloatType)(0);
     }      
 
-    if (fabs(*value-oldValue)>PluginParameters::epsilon)
+    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
 		  return true;
 		
 		return false;
@@ -923,14 +945,14 @@ public:
     }
   }
 
-  HostFloatType hostGet() const{    
+  PluginParameters_HostFloatType hostGet() const{    
     if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
       if (*value>0)
-        return (HostFloatType)(1.f); //stupid question, stupid answer
+        return (PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
       else
-        return (HostFloatType)(0.f); //stupid question, stupid answer
+        return (PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
     }
-    HostFloatType newHostValue; 
+    PluginParameters_HostFloatType newHostValue; 
     
     //using the host parameter scale of [0,1]
     //store positive log value above 0.55 and negative log values below 0.45
@@ -948,22 +970,22 @@ public:
     }
     
     if (*value>0){
-      newHostValue=(HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
+      newHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
     } else {
-      newHostValue=(HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
+      newHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
     }
     
     if (newHostValue<0){
-      *value=-(PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
-      return (HostFloatType)(0.f);
+      *value=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
+      return (PluginParameters_HostFloatType)(0.f);
     }else if (newHostValue>1){
-      *value=(PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
-      return (HostFloatType)(1.f);
+      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
+      return (PluginParameters_HostFloatType)(1.f);
     } else
       return newHostValue;   
   }  
   
-  const PluginFloatType getDefaultValue() const{
+  const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;
   }
 
@@ -972,17 +994,17 @@ public:
   }
   
   
-  PluginFloatType getValue() const{
+  PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
   
-  const PluginFloatType getFactor() const{
+  const PluginParameters_PluginFloatType getFactor() const{
     return factor;
   }
   
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     if (defaultValue>=minValueArg && minValueArg<0){
-      maxNegLogValue=(PluginFloatType)(factor*log10(fabs((double)(minValueArg))));
+      maxNegLogValue=(PluginParameters_PluginFloatType)(factor*log10(fabs((double)(minValueArg))));
       if (*value<minValueArg)
         *value=minValueArg;
       if (xmlValue<minValueArg)
@@ -991,9 +1013,9 @@ public:
       jassertfalse;
   }
   
-  void setMinAbs(PluginFloatType minAbsValueArg){    
+  void setMinAbs(PluginParameters_PluginFloatType minAbsValueArg){    
     if (fabs(defaultValue)<=minAbsValueArg && minAbsValueArg>0){
-      minAbsLogValue=(PluginFloatType)(factor*log10((double)(minAbsValueArg)));
+      minAbsLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minAbsValueArg)));
       if (fabs(*value)>minAbsValueArg){
         if (*value<0)
           *value=-minAbsValueArg;
@@ -1010,9 +1032,9 @@ public:
       jassertfalse;
   }  
 
-  void setMax(PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxPosLogValue=(PluginFloatType)(factor*log10((double)(maxValueArg)));
+      maxPosLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
         *value=maxValueArg;
       if (xmlValue>maxValueArg)
@@ -1033,16 +1055,16 @@ public:
     return maxPosLogValue-minAbsLogValue+0.05;
   }
 
-  HostFloatType loadXml(XmlElement *xml){        
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){        
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=(PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
+      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
     if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
       if (xmlValue>0)
-        return xmlHostValue=(HostFloatType)(1.f); //stupid question, stupid answer
+        return xmlHostValue=(PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
       else
-        return xmlHostValue=(HostFloatType)(0.f); //stupid question, stupid answer
+        return xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
     }        
     
     //using the host parameter scale of [0,1]
@@ -1062,17 +1084,17 @@ public:
     }
     
     if (xmlValue>0){
-      xmlHostValue=(HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
+      xmlHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
     } else { // (xmlValue<0)
-      xmlHostValue=(HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
+      xmlHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
     }
     
     if (xmlHostValue<0){
-      xmlValue=-(PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
-      return xmlHostValue=(HostFloatType)(0.f);
+      xmlValue=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
     } else if (xmlHostValue>1){
-      xmlValue=(PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
-      return xmlHostValue=(HostFloatType)(1.f);
+      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
+      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
     }
     return xmlHostValue;     
   }
@@ -1082,13 +1104,13 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
-  LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType * const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor=(PluginFloatType)(1)):
+  LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWithSign"),
-  defaultValue(jmax<PluginFloatType>(minNegativeValue,jmin<PluginFloatType>(*value,maxPositiveValue))),
-  maxNegLogValue((PluginFloatType)(factor*log10(-(double)minNegativeValue))),
-  maxPosLogValue((PluginFloatType)(factor*log10((double)maxPositiveValue))),
-  minAbsLogValue((PluginFloatType)(factor*log10((double)minAbsValue))),
-  centerValue((HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)minAbsValue))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)minAbsValue)))),
+  defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue))),
+  maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
+  maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
+  minAbsLogValue((PluginParameters_PluginFloatType)(factor*log10((double)minAbsValue))),
+  centerValue((PluginParameters_HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)minAbsValue))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)minAbsValue)))),
   value(value),
   factor(factor){   
     //minValue should be negative and maxValue positive, otherwise use LogWith0.
@@ -1105,8 +1127,8 @@ public:
 
 class IntParam : public Param{
 private:
-  PluginIntType minValue;
-  PluginIntType maxValue;
+  PluginParameters_PluginIntType minValue;
+  PluginParameters_PluginIntType maxValue;
   
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -1114,9 +1136,9 @@ private:
   IntParam& operator=(const IntParam &other);
 
 protected:
-  PluginIntType * const value;
-  const PluginIntType defaultValue;
-  PluginIntType xmlValue;   
+  PluginParameters_PluginIntType * const value;
+  const PluginParameters_PluginIntType defaultValue;
+  PluginParameters_PluginIntType xmlValue;   
 
 public:
   bool writeXmlValue(){
@@ -1127,17 +1149,17 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){    
-    PluginIntType oldValue=*value;
+  bool hostSet(const PluginParameters_HostFloatType hostValue){    
+    PluginParameters_PluginIntType oldValue=*value;
     if (hostValue>1)
       *value=maxValue;
     else if (hostValue<0)
       *value=minValue;
     else{
-      *value=roundToInt<HostFloatType>(minValue+hostValue*(maxValue-minValue));
+      *value=roundToInt<PluginParameters_HostFloatType>(minValue+hostValue*(maxValue-minValue));
     }
 
-    if (abs(*value-oldValue)>PluginParameters::epsilon)
+    if (abs(*value-oldValue)>PluginParameters_Epsilon)
 		  return true;
 		
 		return false;
@@ -1156,22 +1178,22 @@ public:
       return (int)(*value);
   }
 
-  HostFloatType hostGet() const{
+  PluginParameters_HostFloatType hostGet() const{
     if (maxValue==minValue)
-      return (HostFloatType)(0.f);
-    HostFloatType newHostValue=(HostFloatType)(*value-minValue)/(maxValue-minValue);
+      return (PluginParameters_HostFloatType)(0.f);
+    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(*value-minValue)/(maxValue-minValue);
     if (newHostValue<0){
       *value=minValue;
-      return (HostFloatType)(0.f);
+      return (PluginParameters_HostFloatType)(0.f);
     } else if (newHostValue>1){
       *value=maxValue;
-      return (HostFloatType)(1.f);
+      return (PluginParameters_HostFloatType)(1.f);
     } else{
       return newHostValue;
     }
   }
   
- void setMin(PluginIntType minValueArg){        
+ void setMin(PluginParameters_PluginIntType minValueArg){        
     if (defaultValue>=minValueArg){
       minValue=minValueArg;
       if (*value<minValueArg)
@@ -1182,7 +1204,7 @@ public:
       jassertfalse;
   }
 
-  void setMax(PluginIntType maxValueArg){    
+  void setMax(PluginParameters_PluginIntType maxValueArg){    
     if (defaultValue<=maxValueArg){
       maxValue=maxValueArg;
       if (*value>maxValueArg)
@@ -1193,7 +1215,7 @@ public:
       jassertfalse;
   }
 
-  const PluginIntType getDefaultValue() const{
+  const PluginParameters_PluginIntType getDefaultValue() const{
     return defaultValue;
   }
 
@@ -1202,7 +1224,7 @@ public:
   }
   
 
-  PluginIntType getValue() const{
+  PluginParameters_PluginIntType getValue() const{
     return *value;
   }
   
@@ -1214,20 +1236,20 @@ public:
     return maxValue;
   }
 
-  HostFloatType loadXml(XmlElement *xml){    
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
-      xmlValue=static_cast<PluginIntType>(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
-    xmlHostValue=(HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
+      xmlValue=(PluginParameters_PluginIntType)(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
+    xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
     if (maxValue==minValue)
-      return (HostFloatType)(0.f);
+      return (PluginParameters_HostFloatType)(0.f);
     if (xmlHostValue<0){
       xmlValue=minValue;
-      return xmlHostValue=(HostFloatType)(0.f);
+      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
     }else if (xmlHostValue>1){
       xmlValue=maxValue;
-      return xmlHostValue=(HostFloatType)(1.f);
+      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
     }else
       return xmlHostValue;
   }
@@ -1237,10 +1259,10 @@ public:
       xml->setAttribute(Param::getXmlName(),(int)(*value));
   }
   
-  IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType * const value, const PluginIntType minValue=0,const PluginIntType maxValue=1):
+  IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Int"),
   value(value),
-  defaultValue(jmax<PluginIntType>(minValue,jmin<PluginIntType>(*value,maxValue))),
+  defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue){
     //force *value to the [minValue,maxValue] range
@@ -1267,7 +1289,7 @@ public:
     return false;
   }
   
-  bool hostSet(const HostFloatType hostValue){    
+  bool hostSet(const PluginParameters_HostFloatType hostValue){    
     bool oldValue=*value;
     *value=(hostValue>0.5)?true:false;
 
@@ -1285,8 +1307,8 @@ public:
     return *value;
   }
 
-  HostFloatType hostGet() const{
-    return (*value)?(HostFloatType)(1.f):(HostFloatType)(0.f);
+  PluginParameters_HostFloatType hostGet() const{
+    return (*value)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
   }
 
   const bool getDefaultValue() const{
@@ -1310,12 +1332,12 @@ public:
     return 1;
   }
 
-  HostFloatType loadXml(XmlElement *xml){    
+  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
     if (xml==nullptr)
       xmlValue=defaultValue;
     else
       xmlValue=xml->getBoolAttribute(Param::getXmlName(),defaultValue);
-    xmlHostValue=(xmlValue)?(HostFloatType)(1.f):(HostFloatType)(0.f);
+    xmlHostValue=(xmlValue)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
     return xmlHostValue;
   }
 
@@ -1610,7 +1632,7 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="String");   
-    return static_cast<StringParam *>(paramList[index]);
+    return dynamic_cast<StringParam *>(paramList[index]);
   }
   
   void addStringParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, String *const value,bool forceUniqueXmlName=true){      
@@ -1638,10 +1660,10 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="Float");   
-    return static_cast<FloatParam *>(paramList[index]);
+    return dynamic_cast<FloatParam *>(paramList[index]);
   }
   
-  void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(0),bool forceUniqueXmlName=true){
+  void addFloatParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
       addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
@@ -1650,9 +1672,9 @@ public:
     paramsToUnallocateAtDestructor.add(param);
   }   
 
-  void addFloatParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addFloatParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
-  void addFloatParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addFloatParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
   FloatParamArray *getFloatParamArray(const int index) const;
   FloatParamMatrix *getFloatParamMatrix(const int index) const;
@@ -1666,10 +1688,10 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="Log");    
-    return static_cast<LogParam *>(paramList[index]);
+    return dynamic_cast<LogParam *>(paramList[index]);
   }
    
-   void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
       addParam(paramIndex,param=new LogParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
@@ -1678,9 +1700,9 @@ public:
     paramsToUnallocateAtDestructor.add(param);
   }   
 
-  void addLogParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
+  void addLogParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
 
-  void addLogParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
+  void addLogParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
   
   LogParamArray *getLogParamArray(const int index) const;
   LogParamMatrix *getLogParamMatrix(const int index) const;
@@ -1694,10 +1716,10 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="LogWith0");    
-    return static_cast<LogWith0Param *>(paramList[index]);
+    return dynamic_cast<LogWith0Param *>(paramList[index]);
   }  
    
-   void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minValue=(PluginFloatType)(0.001),const PluginFloatType maxValue=(PluginFloatType)(1),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWith0Param(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
       addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
@@ -1706,9 +1728,9 @@ public:
     paramsToUnallocateAtDestructor.add(param);
   }
 
-  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
-  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   LogWith0ParamArray *getLogWith0ParamArray(const int index) const;
   LogWith0ParamMatrix *getLogWith0ParamMatrix(const int index) const;
@@ -1722,10 +1744,10 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="LogWithSign");    
-    return static_cast<LogWithSignParam *>(paramList[index]);
+    return dynamic_cast<LogWithSignParam *>(paramList[index]);
   }  
    
-   void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType *const value, const PluginFloatType minNegativeValue=(PluginFloatType)(-1),const PluginFloatType maxPositiveValue=(PluginFloatType)(1),const PluginFloatType minAbsValue=(PluginFloatType)(0.001),const PluginFloatType factor = (PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWithSignParam(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
    Param *param;
    if (automationFlag)
     addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
@@ -1734,9 +1756,9 @@ public:
   paramsToUnallocateAtDestructor.add(param);
 }  
 
-  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
-  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
 
   LogWithSignParamArray *getLogWithSignParamArray(const int index) const;
   LogWithSignParamMatrix *getLogWithSignParamMatrix(const int index) const;
@@ -1750,10 +1772,10 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="Int");    
-    return static_cast<IntParam *>(paramList[index]);
+    return dynamic_cast<IntParam *>(paramList[index]);
   }  
   
-  void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginIntType *const value, const PluginIntType minValue=0,const PluginIntType maxValue=1,bool forceUniqueXmlName=true){
+  void addIntParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag,PluginParameters_PluginIntType *const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1,bool forceUniqueXmlName=true){
     Param *param;
     if (automationFlag)
       addParam(paramIndex,param=new IntParam(pluginProcessor,name,numAutomatedParams++,automationFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
@@ -1762,9 +1784,9 @@ public:
     paramsToUnallocateAtDestructor.add(param);
   }    
 
-  void addIntParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType* const values,int *const size,const int maxSize,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
+  void addIntParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true);  
 
-  void addIntParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
+  void addIntParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true);
   
   IntParamArray *getIntParamArray(const int index) const;
   IntParamMatrix *getIntParamMatrix(const int index) const;
@@ -1778,7 +1800,7 @@ public:
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
     jassert(paramList[index]->getType()=="Bool");
-    return static_cast<BoolParam *>(paramList[index]);
+    return dynamic_cast<BoolParam *>(paramList[index]);
   }  
   
   void addBoolParam(const int paramIndex,const String &name,const bool automationFlag, const bool loadSaveXmlFlag, bool *const value,bool forceUniqueXmlName=true){
@@ -1945,7 +1967,7 @@ public:
 /** ParamGroup base class for array of Params. */
 class ParamArray : public ParamGroup{       
 protected:
-  PluginIntType *const size;    
+  PluginParameters_PluginIntType *const size;    
   const int maxSize;
   const bool automationFlag;
   const bool loadSaveXmlFlag;
@@ -1956,12 +1978,12 @@ public:
   virtual void initParameters() = 0;
   
   /** Returns the size of the "visible" array */
-  PluginIntType getSize() const{
+  PluginParameters_PluginIntType getSize() const{
 	  return *size;
   }
   
   /** Returns the maximum (allocated) size of the array */
-  PluginIntType getMaxSize() const{
+  PluginParameters_PluginIntType getMaxSize() const{
 	  return maxSize;
 	}
 	
@@ -1998,9 +2020,9 @@ public:
 /** ParamGroup containing an array of FloatParams. */
 class FloatParamArray : public ParamArray{
 private:
-  PluginFloatType* const values;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType* const values;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
 
 public: 
   
@@ -2011,20 +2033,20 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginFloatType getValue(int i) const{
+  PluginParameters_PluginFloatType getValue(int i) const{
 	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
 		  return values[i];
 	  else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getFloatParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getFloatParam(i)->setMax(maxValueArg);
   }
@@ -2073,7 +2095,7 @@ public:
     }
   }
   
-  FloatParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  FloatParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2084,10 +2106,10 @@ public:
 /** ParamGroup containing an array of LogParams. */
 class LogParamArray : public ParamArray{
 private:
-  PluginFloatType* const values;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
-  const PluginFloatType factor;
+  PluginParameters_PluginFloatType* const values;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
+  const PluginParameters_PluginFloatType factor;
   
 public: 
   
@@ -2098,20 +2120,20 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginFloatType getValue(int i) const{
+  PluginParameters_PluginFloatType getValue(int i) const{
 	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
 		  return values[i];
 	  else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogParam(i)->setMax(maxValueArg);
   }
@@ -2160,7 +2182,7 @@ public:
     }
   }
   
-  LogParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2172,10 +2194,10 @@ public:
 /** ParamGroup containing an array of LogWith0Params. */
 class LogWith0ParamArray : public ParamArray{
 private:
-  PluginFloatType* const values;
-  const PluginFloatType factor;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType* const values;
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
 
 public: 
   
@@ -2186,20 +2208,20 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginFloatType getValue(int i) const{
+  PluginParameters_PluginFloatType getValue(int i) const{
 	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
 		  return values[i];
 	  else return 0;
   }    
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWith0Param(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWith0Param(i)->setMax(maxValueArg);
   }
@@ -2248,7 +2270,7 @@ public:
     }
   }
   
-  LogWith0ParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogWith0ParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2260,11 +2282,11 @@ public:
 /** ParamGroup containing an array of LogWithSignParams. */
 class LogWithSignParamArray : public ParamArray{
 private:
-  PluginFloatType* const values;
-  const PluginFloatType factor;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
-  PluginFloatType minAbsValue;
+  PluginParameters_PluginFloatType* const values;
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
+  PluginParameters_PluginFloatType minAbsValue;
 
 public: 
   
@@ -2275,20 +2297,20 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginFloatType getValue(int i) const{
+  PluginParameters_PluginFloatType getValue(int i) const{
 	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
 		  return values[i];
 	  else return 0;
   }
  
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWithSignParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWithSignParam(i)->setMax(maxValueArg);
   }
@@ -2337,7 +2359,7 @@ public:
     }
   }
   
-  LogWithSignParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogWithSignParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2350,9 +2372,9 @@ public:
 /** ParamGroup containing an array of IntParams. */
 class IntParamArray : public ParamArray{
 private:
-  PluginIntType* const values;
-  PluginIntType minValue;
-  PluginIntType maxValue;
+  PluginParameters_PluginIntType* const values;
+  PluginParameters_PluginIntType minValue;
+  PluginParameters_PluginIntType maxValue;
 
 public: 
   
@@ -2363,20 +2385,20 @@ public:
   } 
 
   /** Returns the value of position i in the array */
-  PluginIntType getValue(int i) const{
+  PluginParameters_PluginIntType getValue(int i) const{
 	  if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
 		  return values[i];
 	  else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginIntType minValueArg){
+  void setMin(PluginParameters_PluginIntType minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getIntParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginIntType maxValueArg){
+  void setMax(PluginParameters_PluginIntType maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getIntParam(i)->setMax(maxValueArg);
   }
@@ -2430,7 +2452,7 @@ public:
     }
   }
   
-  IntParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType* const values,int *const size,const int maxSize,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  IntParamArray(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamArray(name,automationFlag,loadSaveXmlFlag,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2590,8 +2612,8 @@ public:
 /** ParamGroup base class for a matrix of Params. */
 class ParamMatrix : public ParamGroup{
 protected:
-  PluginIntType *const numRows;
-  PluginIntType *const numCols;
+  PluginParameters_PluginIntType *const numRows;
+  PluginParameters_PluginIntType *const numCols;
   const int maxRows;
   const int maxCols;      
   const bool automationFlag;  
@@ -2603,21 +2625,21 @@ public:
   virtual void initParameters() = 0;
   
   /** Returns the number of rows of the "visible" array */
-  PluginIntType getNumRows() const{
+  PluginParameters_PluginIntType getNumRows() const{
 	  return *numRows;
   }
   
   /** Returns the number of columns of the "visible" array */
-  PluginIntType getNumCols() const{
+  PluginParameters_PluginIntType getNumCols() const{
 	  return *numCols;
   }
   
   /** Returns the maximum (allocated) size of the array */
-  PluginIntType getMaxRows() const{
+  PluginParameters_PluginIntType getMaxRows() const{
 	  return maxRows;
 	}
 	
-	PluginIntType getMaxCols() const{
+	PluginParameters_PluginIntType getMaxCols() const{
 	  return maxCols;
 	}  
 	
@@ -2667,9 +2689,9 @@ public:
 /** ParamGroup containing a matrix of FloatParams. */
 class FloatParamMatrix : public ParamMatrix{
 private:
-  PluginFloatType** const values;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType** const values;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
 public: 
   
   void initParameters(){
@@ -2681,7 +2703,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginFloatType getValue(int i,int j) const{
+  PluginParameters_PluginFloatType getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -2689,14 +2711,14 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
@@ -2756,7 +2778,7 @@ public:
     }
   }
   
-  FloatParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  FloatParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2767,12 +2789,12 @@ public:
 /** ParamGroup containing a matrix of LogParams. */
 class LogParamMatrix : public ParamMatrix{
 private:
-  PluginFloatType** const values;
-  const PluginFloatType factor;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType** const values;
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
   bool sparseCompressionFlag; 
-  PluginFloatType mostProbableValue;
+  PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
   
@@ -2785,7 +2807,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginFloatType getValue(int i,int j) const{
+  PluginParameters_PluginFloatType getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -2793,14 +2815,14 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
@@ -2860,7 +2882,7 @@ public:
     }
   }
   
-  LogParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2872,12 +2894,12 @@ public:
 /** ParamGroup containing a matrix of LogWith0Params. */
 class LogWith0ParamMatrix : public ParamMatrix{
 private:
-  PluginFloatType** const values;
-  const PluginFloatType factor;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
+  PluginParameters_PluginFloatType** const values;
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
   bool sparseCompressionFlag; 
-  PluginFloatType mostProbableValue;
+  PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
   
@@ -2890,7 +2912,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginFloatType getValue(int i,int j) const{
+  PluginParameters_PluginFloatType getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -2898,14 +2920,14 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
@@ -2965,7 +2987,7 @@ public:
     }
   }
   
-  LogWith0ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogWith0ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -2977,13 +2999,13 @@ public:
 /** ParamGroup containing a matrix of LogWithSignParams. */
 class LogWithSignParamMatrix : public ParamMatrix{
 private:
-  PluginFloatType** const values;
-  const PluginFloatType factor;
-  PluginFloatType minValue;
-  PluginFloatType maxValue;
-  PluginFloatType minAbsValue;
+  PluginParameters_PluginFloatType** const values;
+  const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minValue;
+  PluginParameters_PluginFloatType maxValue;
+  PluginParameters_PluginFloatType minAbsValue;
   bool sparseCompressionFlag; 
-  PluginFloatType mostProbableValue;
+  PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
   
@@ -2996,7 +3018,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginFloatType getValue(int i,int j) const{
+  PluginParameters_PluginFloatType getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -3004,14 +3026,14 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginFloatType maxValueArg){
+  void setMax(PluginParameters_PluginFloatType maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
@@ -3071,7 +3093,7 @@ public:
     }
   }
   
-  LogWithSignParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue=(PluginFloatType)(0),const PluginFloatType maxValue=(PluginFloatType)(1), const PluginFloatType minAbsValue=(PluginFloatType)(0.001), const PluginFloatType factor=(PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  LogWithSignParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -3084,9 +3106,9 @@ public:
 /** ParamGroup containing a matrix of IntParams. */
 class IntParamMatrix : public ParamMatrix{
 private:
-  PluginIntType** const values;  
-  PluginIntType minValue;
-  PluginIntType maxValue;
+  PluginParameters_PluginIntType** const values;  
+  PluginParameters_PluginIntType minValue;
+  PluginParameters_PluginIntType maxValue;
 
 public: 
   
@@ -3099,7 +3121,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginIntType getValue(int i,int j) const{
+  PluginParameters_PluginIntType getValue(int i,int j) const{
 	  if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
 	      && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
 		  return values[i][j];
@@ -3107,14 +3129,14 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginIntType minValueArg){
+  void setMin(PluginParameters_PluginIntType minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginIntType maxValueArg){
+  void setMax(PluginParameters_PluginIntType maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);
@@ -3174,7 +3196,7 @@ public:
     }
   } 
   
-  IntParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginIntType minValue=static_cast<PluginIntType>(0),const PluginIntType maxValue=static_cast<PluginIntType>(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  IntParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
   ParamMatrix(name,automationFlag,loadSaveXmlFlag,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag),
   values(values),
   minValue(minValue),
@@ -3385,23 +3407,29 @@ public:
     
   const String getName() const { return JucePlugin_Name; }
   
-  bool acceptsMidi() const
-  {
+  bool acceptsMidi() const{
   #if JucePlugin_WantsMidiInput
-      return true;
+    return true;
   #else
-      return false;
+    return false;
   #endif
   }
 
-  bool producesMidi() const
-  {
+  bool producesMidi() const{
   #if JucePlugin_ProducesMidiOutput
-      return true;
+    return true;
   #else
-      return false;
+    return false;
   #endif
   } 
+
+  bool silenceInProducesSilenceOut() const{
+  #if JucePlugin_SilenceInProducesSilenceOut
+    return true;
+  #else
+    return false;
+  #endif
+  }
   
   /** generalization of setParameterNotifyingHost to be able to deal transparently
       with automated and non automated parameters */ 
@@ -3520,5 +3548,11 @@ public:
 
   }
 };
+
+}
+
+#if ! DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE
+  using namespace PluginParameters;
+#endif
 
 #endif

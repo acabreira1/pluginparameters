@@ -197,17 +197,17 @@ void MidiDelayComponent::timerCallback()
 {
     BoolParam *enableParam=midiDelay->getBoolParam(MidiDelay::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
-      enableToggle->setToggleState(enableParam->uiGet(),false);
+      enableToggle->setToggleState(enableParam->uiGet(),dontSendNotification);
     }
 
     FloatParam *delayParam=midiDelay->getFloatParam(MidiDelay::delayIndex);
     if (delaySlider && delayParam->updateUiRequested()){
-      delaySlider->setValue (delayParam->uiGet(),false);
+      delaySlider->setValue (delayParam->uiGet(),dontSendNotification);
     }
 
     FloatParam *feedbackParam=midiDelay->getFloatParam(MidiDelay::feedbackIndex);
     if (feedbackSlider && feedbackParam->updateUiRequested()){
-      feedbackSlider->setValue (feedbackParam->uiGet(),false);
+      feedbackSlider->setValue (feedbackParam->uiGet(),dontSendNotification);
     }
 }
 

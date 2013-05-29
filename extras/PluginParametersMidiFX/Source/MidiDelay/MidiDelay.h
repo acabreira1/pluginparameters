@@ -28,9 +28,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "PluginParameters.h"
-
-
 class MidiDelay: public ParamGroup{
   double sampleRate;
   bool notesOn[128];

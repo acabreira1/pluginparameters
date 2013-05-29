@@ -1,6 +1,6 @@
 ##Description
 
-PluginParameters is a library to automatically handle plugin parameters (in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php)). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild. It should be simple to use with only a few lines doing the job and it provides two plugin templates which are convenient to create plugins from scratch. 
+PluginParameters is a library which handles plugin parameters automatically in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild and it provides two plugin templates which are convenient to create plugins from scratch. 
 
 ###What it does
 

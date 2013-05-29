@@ -292,27 +292,27 @@ void MainComponent::timerCallback(){
 
     FloatParam *floatParam=processor->getFloatParam(MyPluginProcessor::floatIndex);
     if (floatSlider && floatParam->updateUiRequested()){
-      floatSlider->setValue (floatParam->uiGet(), false);
+      floatSlider->setValue (floatParam->uiGet(), dontSendNotification);
     }
 
     LogParam *logParam=processor->getLogParam(MyPluginProcessor::logIndex);
     if (logSlider && logParam->updateUiRequested()){
-      logSlider->setValue (logParam->uiGet(), false);
+      logSlider->setValue (logParam->uiGet(), dontSendNotification);
     }
 
     LogWith0Param *logWith0Param=processor->getLogWith0Param(MyPluginProcessor::logWith0Index);
     if (logWith0Slider && logWith0Param->updateUiRequested()){
-      logWith0Slider->setValue (logWith0Param->uiGet(), false);
+      logWith0Slider->setValue (logWith0Param->uiGet(), dontSendNotification);
     }
 
     LogWithSignParam *logWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::symSignedLogIndex);
     if (symSignedLogSlider && logWithSignParam->updateUiRequested()){
-      symSignedLogSlider->setValue (logWithSignParam->uiGet(), false);
+      symSignedLogSlider->setValue (logWithSignParam->uiGet(), dontSendNotification);
     }
 
     logWithSignParam=processor->getLogWithSignParam(MyPluginProcessor::asymSignedLogIndex);
     if (asymSignedLogSlider && logWithSignParam->updateUiRequested()){
-      asymSignedLogSlider->setValue (logWithSignParam->uiGet(), false);
+      asymSignedLogSlider->setValue (logWithSignParam->uiGet(), dontSendNotification);
     }
 
     IntParam *intParam=processor->getIntParam(MyPluginProcessor::intIndex);

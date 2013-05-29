@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-   This file is part of the PluginParameters library
+   This file is part of the PluginParameters module
    Copyright 2012-13 by MarC
 
   ------------------------------------------------------------------------------
@@ -26,6 +26,8 @@
 
 #include "PluginParameters.h"
 
+using namespace PluginParameters;
+
 /*
 Only methods who implicate a circular reference and therefore
 can't be written in the header file are placed here.
@@ -33,7 +35,7 @@ can't be written in the header file are placed here.
 
 //protected
 
-void Param::updateHostFromUi(HostFloatType newHostValue){
+void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
   if (!pluginProcessor) return;  
   updateFromFlag=UPDATE_FROM_UI;
   pluginProcessor->updateHostAndUi(this,newHostValue,true,false); 
@@ -64,7 +66,7 @@ void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterChange,bool forceU
 	}
 }
 
-void Param::updateProcessorHostAndUi(HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    
+void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    
   if (hostSet(newHostValue)){  
     if (!pluginProcessor) return;
     updateFromFlag=updateFromFlagArg;     
@@ -92,8 +94,8 @@ void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagA
 void StringParam::updateProcessorAndHostFromUi(const String valueArg) {    
   if (*value!=valueArg){
     *value=valueArg;
-    Param::updateHostFromUi(static_cast<HostFloatType>(0.f));    
-    //this parameter can't be automated (maped as a HostFloatType)
+    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));    
+    //this parameter can't be automated (maped as a PluginParameters_HostFloatType)
     //so hostSet doesn't do anything, we must update *value manually
     //and notify the host always with 0    
   }     
@@ -101,12 +103,12 @@ void StringParam::updateProcessorAndHostFromUi(const String valueArg) {
 
 void FloatParam::updateProcessorAndHostFromUi(const double valueArg){  
   if (maxValue==minValue)
-    Param::updateHostFromUi(static_cast<HostFloatType>(0.f));
-  HostFloatType newHostValue=static_cast<HostFloatType>(valueArg-minValue)/(maxValue-minValue);
+    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
   if (newHostValue<0)
-    newHostValue=static_cast<HostFloatType>(0.f);
+    newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
-    newHostValue=static_cast<HostFloatType>(1.f);
+    newHostValue=(PluginParameters_HostFloatType)(1.f);
     
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
@@ -115,12 +117,12 @@ void FloatParam::updateProcessorAndHostFromUi(const double valueArg){
 void LogParam::updateProcessorAndHostFromUi(const double valueArg){
   
   if (maxLogValue==minLogValue)
-    Param::updateHostFromUi(static_cast<HostFloatType>(0.f));
-  HostFloatType newHostValue=static_cast<HostFloatType>(valueArg-minLogValue)/(maxLogValue-minLogValue);
+    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minLogValue)/(maxLogValue-minLogValue);
   if (newHostValue<0)
-    newHostValue=static_cast<HostFloatType>(0.f);
+    newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
-    newHostValue=static_cast<HostFloatType>(1.f);
+    newHostValue=(PluginParameters_HostFloatType)(1.f);
   
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
@@ -129,11 +131,11 @@ void LogParam::updateProcessorAndHostFromUi(const double valueArg){
 void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){  
   if (maxLogValue==minLogValue){ //do not let idiots make this crash
     if (valueArg>0)
-      Param::updateHostFromUi(static_cast<HostFloatType>(1.f)); //stupid question, stupid answer
+      Param::updateHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
     else
-      Param::updateHostFromUi(static_cast<HostFloatType>(0.f)); //stupid question, stupid answer
+      Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
   }
-  HostFloatType newHostValue; 
+  PluginParameters_HostFloatType newHostValue; 
   //using the host parameter scale of [0,1]
   //store positive log value above 0.05 
   //all values in the range of [0,minLogValue] will be stored as 0
@@ -141,14 +143,14 @@ void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){
   
   //[minLogValue-0.05,minLogValue] represent -inf in the UI
   if (valueArg>=minLogValue){      
-    newHostValue=static_cast<HostFloatType>(0.05+(valueArg-minLogValue)*0.95/(maxLogValue-minLogValue));
+    newHostValue=(PluginParameters_HostFloatType)(0.05+(valueArg-minLogValue)*0.95/(maxLogValue-minLogValue));
   } else {
-    newHostValue=static_cast<HostFloatType>(0);
+    newHostValue=(PluginParameters_HostFloatType)(0);
   }           
   if (newHostValue<0)
-    newHostValue=static_cast<HostFloatType>(0.f);
+    newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
-    newHostValue=static_cast<HostFloatType>(1.f);
+    newHostValue=(PluginParameters_HostFloatType)(1.f);
   
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
@@ -157,11 +159,11 @@ void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){
 void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
   if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
       if (valueArg>0)
-        Param::updateHostFromUi(static_cast<HostFloatType>(1.f)); //stupid question, stupid answer
+        Param::updateHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
       else
-        Param::updateHostFromUi(static_cast<HostFloatType>(0.f)); //stupid question, stupid answer
+        Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
     }  
-  HostFloatType newHostValue; 
+  PluginParameters_HostFloatType newHostValue; 
   //using the host parameter scale of [0,1]
   //store positive log value above 0.55 and negative log values below 0.45
   //all values in the range of [-minLogValue,minLogValue] will be stored as 0
@@ -171,16 +173,16 @@ void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
   //and a negative range of [-(0.05+maxNegLogValue-minAbsLogValue),-0.05]
   //(-0.05,0.05) represents -inf     
   if (valueArg>=0.05){        
-    newHostValue=(HostFloatType)(centerValue+0.05+(valueArg-0.05)*(1-centerValue-0.05)/(maxPosLogValue-minAbsLogValue));
+    newHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(valueArg-0.05)*(1-centerValue-0.05)/(maxPosLogValue-minAbsLogValue));
   } else if (valueArg<=-0.05){
-    newHostValue=(HostFloatType)(centerValue-0.05+(valueArg+0.05)*(centerValue-0.05)/(maxNegLogValue-minAbsLogValue));
+    newHostValue=(PluginParameters_HostFloatType)(centerValue-0.05+(valueArg+0.05)*(centerValue-0.05)/(maxNegLogValue-minAbsLogValue));
   } else {
     newHostValue=centerValue;
   }       
   if (newHostValue<0)
-    newHostValue=static_cast<HostFloatType>(0.f);
+    newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
-    newHostValue=static_cast<HostFloatType>(1.f);
+    newHostValue=(PluginParameters_HostFloatType)(1.f);
   
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
@@ -188,19 +190,19 @@ void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
 
 void IntParam::updateProcessorAndHostFromUi(const int valueArg){  
   if (maxValue==minValue)
-    Param::updateHostFromUi(static_cast<HostFloatType>(0.f));
-  HostFloatType newHostValue=static_cast<HostFloatType>(valueArg-minValue)/(maxValue-minValue);
+    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
   if (newHostValue<0)
-    newHostValue=static_cast<HostFloatType>(0.f);
+    newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
-    newHostValue=static_cast<HostFloatType>(1.f);
+    newHostValue=(PluginParameters_HostFloatType)(1.f);
   
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
 }
 
 void BoolParam::updateProcessorAndHostFromUi(const bool valueArg){  
-  HostFloatType newHostValue=(valueArg)?static_cast<HostFloatType>(1.f):static_cast<HostFloatType>(0.f);
+  PluginParameters_HostFloatType newHostValue=(valueArg)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
   
   if (hostSet(newHostValue))
     Param::updateHostFromUi(newHostValue);  
@@ -236,13 +238,13 @@ StringParamMatrix *ParamGroup::getStringParamMatrix(const int index) const{
   return dynamic_cast<StringParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addFloatParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue,const PluginFloatType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addFloatParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new FloatParamArray(name,automationFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginFloatType minValue,const PluginFloatType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new FloatParamMatrix(name,automationFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
@@ -267,13 +269,13 @@ FloatParamMatrix *ParamGroup::getFloatParamMatrix(const int index) const{
 }
 
 
-void ParamGroup::addLogParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogParamArray(name,automationFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogParamMatrix(name,automationFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
@@ -297,13 +299,13 @@ LogParamMatrix *ParamGroup::getLogParamMatrix(const int index) const{
   return dynamic_cast<LogParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addLogWith0ParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWith0ParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogWith0ParamArray(name,automationFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogWith0ParamMatrix(name,automationFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
@@ -328,13 +330,13 @@ LogWith0ParamMatrix *ParamGroup::getLogWith0ParamMatrix(const int index) const{
 }
 
 
-void ParamGroup::addLogWithSignParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType* const values,int *const size,const int maxSize,const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType minAbsValue, const PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWithSignParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogWithSignParamArray(name,automationFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,minAbsValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginFloatType minValue,const PluginFloatType maxValue, const PluginFloatType minAbsValue, const PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new LogWithSignParamMatrix(name,automationFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,minAbsValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
@@ -358,13 +360,13 @@ LogWithSignParamMatrix *ParamGroup::getLogWithSignParamMatrix(const int index) c
   return dynamic_cast<LogWithSignParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addIntParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType* const values,int *const size,const int maxSize,const PluginIntType minValue,const PluginIntType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addIntParamArray(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new IntParamArray(name,automationFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginIntType minValue,const PluginIntType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
   ParamGroup *paramGroup;
   addParamGroup(paramIndex,paramGroup=new IntParamMatrix(name,automationFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);

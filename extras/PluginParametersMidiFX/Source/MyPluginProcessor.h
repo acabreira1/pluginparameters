@@ -28,7 +28,6 @@
 #define __PLUGINPROCESSOR_H_526ED7A9__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginParameters.h"
 #include "MidiNoteGain/MidiNoteGain.h"
 #include "MidiDelay/MidiDelay.h"
 #include "MidiSustain/MidiSustain.h"
@@ -44,6 +43,9 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock);
     void releaseResources();
     void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+    double getTailLengthSeconds(void) const{
+      return midiDelay.delay;
+    } 
     void reset();
 
     //==============================================================================
@@ -93,7 +95,7 @@ public:
       addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
       addIntParam(selectedTabIndex,"selectedTab",false,true,&selectedTab,0,numParamGroups-1);
         
-      //SubGroups
+      //Parameter Groups
       addParamGroup(midiDelayIndex,&midiDelay);
       addParamGroup(midiNoteGainIndex,&midiNoteGain);
       addParamGroup(midiSustainIndex,&midiSustain);

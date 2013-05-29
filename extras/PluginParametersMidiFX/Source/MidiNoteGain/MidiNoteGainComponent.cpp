@@ -467,68 +467,68 @@ void MidiNoteGainComponent::timerCallback()
 {
     BoolParam *enableParam=midiNoteGain->getBoolParam(MidiNoteGain::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
-      enableToggle->setToggleState(enableParam->uiGet(),false);
+      enableToggle->setToggleState(enableParam->uiGet(),dontSendNotification);
     }
 
     IntParam *param;
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(0);
     if (slider1 && param->updateUiRequested()){
-      slider1->setValue (param->uiGet(),false);
+      slider1->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(1);
     if (slider2 && param->updateUiRequested()){
-      slider2->setValue (param->uiGet(),false);
+      slider2->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(2);
     if (slider3 && param->updateUiRequested()){
-      slider3->setValue (param->uiGet(),false);
+      slider3->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(3);
     if (slider4 && param->updateUiRequested()){
-      slider4->setValue (param->uiGet(),false);
+      slider4->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(4);
     if (slider5 && param->updateUiRequested()){
-      slider5->setValue (param->uiGet(),false);
+      slider5->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(5);
     if (slider6 && param->updateUiRequested()){
-      slider6->setValue (param->uiGet(),false);
+      slider6->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(6);
     if (slider7 && param->updateUiRequested()){
-      slider7->setValue (param->uiGet(),false);
+      slider7->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(7);
     if (slider8 && param->updateUiRequested()){
-      slider8->setValue (param->uiGet(),false);
+      slider8->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(8);
     if (slider9 && param->updateUiRequested()){
-      slider9->setValue (param->uiGet(),false);
+      slider9->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(9);
     if (slider10 && param->updateUiRequested()){
-      slider10->setValue (param->uiGet(),false);
+      slider10->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(10);
     if (slider11 && param->updateUiRequested()){
-      slider11->setValue (param->uiGet(),false);
+      slider11->setValue (param->uiGet(),dontSendNotification);
     }
 
     param=midiNoteGain->getParamGroup(MidiNoteGain::noteVelocitiesIndex)->getIntParam(11);
     if (slider12 && param->updateUiRequested()){
-      slider12->setValue (param->uiGet(),false);
+      slider12->setValue (param->uiGet(),dontSendNotification);
     }
 
 }
