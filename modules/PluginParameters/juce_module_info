@@ -1,8 +1,8 @@
 {
-  "id":             "pluginparameters",
+  "id":             "PluginParameters",
   "name":           "PluginParameters",
   "version":        "2.0.40",
-  "description":    "Use this library to handle plugin parameters automatically in JUCE",
+  "description":    "Use this library to manage plugin parameters automatically in JUCE",
   "website":        "http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122",
   "license":        "GPL/Commercial",
 

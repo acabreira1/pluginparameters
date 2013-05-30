@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-   This file is part of the PluginParameters library
+   This file is part of the PluginParameters module
    Copyright 2012-13 by MarC
 
   ------------------------------------------------------------------------------
