@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['addparam',['addParam',['../class_param_group.html#a6478154fb126c0dccdece52241e27e7b',1,'ParamGroup']]],
-  ['addparamgroup',['addParamGroup',['../class_param_group.html#ac47624e8e24f7ab587b20811e5cb828d',1,'ParamGroup']]],
-  ['automationison',['automationIsOn',['../class_param.html#a0df35fccde167496f5009dad2ef012ed',1,'Param']]]
+  ['addparam',['addParam',['../class_plugin_parameters_1_1_param_group.html#ae57ec27218f929a7b3d22161d1f39b45',1,'PluginParameters::ParamGroup']]],
+  ['addparamgroup',['addParamGroup',['../class_plugin_parameters_1_1_param_group.html#a240cd0091b692209bd65cbcc9de85f2a',1,'PluginParameters::ParamGroup']]],
+  ['automationison',['automationIsOn',['../class_plugin_parameters_1_1_param.html#a61eb907da5aef3eba36e01855922faeb',1,'PluginParameters::Param']]]
 ];
