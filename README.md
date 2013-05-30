@@ -17,7 +17,9 @@ PluginParameters is a JUCE module which manages plugin parameters automatically 
 
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
-This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "extras" folder: [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersDemo) [PluginParametersMidiFX](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersMidiFX)
+This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "extras" folder: 
+* [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersDemo) 
+* [PluginParametersMidiFX](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersMidiFX)
 
 ##[Doxygen Documentation](http://4drx.github.io/pluginparameters/annotated.html)
 
