@@ -90,5 +90,6 @@
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="pluginparameters" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="PluginParameters" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
 </JUCERPROJECT>

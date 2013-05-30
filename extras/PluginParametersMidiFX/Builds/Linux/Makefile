@@ -70,7 +70,7 @@ OBJECTS := \
   $(OBJDIR)/juce_gui_extra_719bc24a.o \
   $(OBJDIR)/juce_PluginUtilities_31553fd6.o \
   $(OBJDIR)/juce_VST_Wrapper_e9df50df.o \
-  $(OBJDIR)/PluginParameters_41d270aa.o \
+  $(OBJDIR)/PluginParameters_2fbef86a.o \
 
 .PHONY: clean
 
@@ -196,7 +196,7 @@ $(OBJDIR)/juce_VST_Wrapper_e9df50df.o: ../../../../../../../soft/libscpp/juce/mo
 	@echo "Compiling juce_VST_Wrapper.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/PluginParameters_41d270aa.o: ../../../../../../../soft/libscpp/juce/modules/pluginparameters/PluginParameters.cpp
+$(OBJDIR)/PluginParameters_2fbef86a.o: ../../../../../../../soft/libscpp/juce/modules/PluginParameters/PluginParameters.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling PluginParameters.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
