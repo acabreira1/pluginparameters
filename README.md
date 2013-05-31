@@ -1,6 +1,10 @@
 ##Description
 
-PluginParameters is a JUCE module which manages plugin parameters automatically in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild and it provides two plugin templates which are convenient to create plugins from scratch. 
+PluginParameters is a JUCE module which manages different types of plugin parameters automatically in plugins developed with [JUCE](http://rawmaterialsoftware.com/juce.php). It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild. 
+
+## Installation
+
+If you are new to JUCE, first download [JUCE](http://www.juce.com/downloads) into a local folder. Next drag-and-drop the "modules" folder to your local JUCE folder. When you create a new project in JUCE, the Introjucer will detect automatically the PluginParameters module. Switch it on and you are ready to go!
 
 ###What it does
 
@@ -17,9 +21,9 @@ PluginParameters is a JUCE module which manages plugin parameters automatically 
 
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
-This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "extras" folder: 
-* [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersDemo) 
-* [PluginParametersMidiFX](https://github.com/4drX/pluginparameters/tree/master/extras/PluginParametersMidiFX)
+This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "plugins" folder: 
+* [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersDemo) 
+* [MidiFX](https://github.com/4drX/pluginparameters/tree/master/plugins/MidiFX)
 
 ##[Doxygen Documentation](http://4drx.github.io/pluginparameters/annotated.html)
 
