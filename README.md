@@ -4,7 +4,7 @@ PluginParameters is a [JUCE](http://rawmaterialsoftware.com/juce.php) module whi
 
 ## Installation
 
-If you are new to JUCE, first download [JUCE](http://www.juce.com/downloads) into a local folder. Next drag-and-drop the "modules" folder to your local JUCE folder. When you create a new project in JUCE, the Introjucer will detect automatically the PluginParameters module. Switch it on and you are ready to go!
+If you are new to JUCE, first [download JUCE](http://www.juce.com/downloads) into a local folder. Next drag-and-drop the "modules" folder to your local JUCE folder. When you create a new project in JUCE, the Introjucer will detect automatically the PluginParameters module. Switch it on and you are ready to go!
 
 ###What it does
 
