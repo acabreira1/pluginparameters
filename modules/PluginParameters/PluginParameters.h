@@ -1515,21 +1515,21 @@ public:
   /** Used to submit a request for an update of the ParamGroup in the UI. 
       updateUiRequested() must be called then from the UI to query its state.
       Note that this command doesn't affect the Params declared in this ParamGroup.
-      For that purpose please use: requestAllParamsUpdateUi(...)*/
+      For that purpose please use: requestUpdateUiForAllParams(...)*/
   void requestUpdateUi(const bool enable){
     updateUiFlag=enable;
   }  
   
   /** Set the updateUi flags of all its parameters to true only in this ParamGroup
       or applyRecursively. */
-  void requestAllParamsUpdateUi(const bool enable,const bool applyRecursively){
+  void requestUpdateUiForAllParams(const bool enable,const bool applyRecursively){
     requestUpdateUi(enable);
     for (int i=0;i<paramList.size();i++)
       paramList[i]->requestUpdateUi(enable); 
     
     if (applyRecursively){     
       for (int g=0;g<paramGroupList.size();g++)
-        paramGroupList[g]->requestAllParamsUpdateUi(enable,true);
+        paramGroupList[g]->requestUpdateUiForAllParams(enable,true);
     }
   }
   
