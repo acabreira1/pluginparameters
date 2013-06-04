@@ -51,7 +51,7 @@ void Param::requestUpdateUi(const bool enable){
 
 void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterChange,bool forceUpdateUi){      
   if (!pluginProcessor) return;
-  if (loadXmlIsOn()){
+  if (loadXmlFlag){
     if (writeXmlValue()){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue);    

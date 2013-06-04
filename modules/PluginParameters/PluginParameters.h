@@ -179,7 +179,7 @@ public:
       If the parameter value can't be read from the XML it is set to its default value.
       Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this.
   */
-  virtual PluginParameters_HostFloatType loadXml(XmlElement *xml) = 0;
+  virtual void loadXml(XmlElement *xml) = 0;
 
   /** returns true if this parameter will be imported from xml */
   bool loadXmlIsOn() const{
@@ -339,12 +339,14 @@ public:
     return 1;
   }
   
-  PluginParameters_HostFloatType loadXml(XmlElement *xml) {
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=xml->getStringAttribute(Param::getXmlName(),defaultValue);
-    return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+  void loadXml(XmlElement *xml) {
+    if (loadXmlFlag){
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=xml->getStringAttribute(Param::getXmlName(),defaultValue);
+    }
+    xmlHostValue=(PluginParameters_HostFloatType)(0.f);
   }  
 
   void saveXml(XmlElement *xml) const{
@@ -477,24 +479,28 @@ public:
     return maxValue;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
-    if (maxValue==minValue)
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-    xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
-    if (xmlHostValue<0){
-      xmlValue=minValue;
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+  void loadXml(XmlElement *xml){    
+    if (loadXmlFlag){
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
+      if (maxValue==minValue){
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }
+      xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
+      if (xmlHostValue<0){
+        xmlValue=minValue;
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }
+      else if (xmlHostValue>1){
+        xmlValue=maxValue;
+        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
+        return;
+      }      
     }
-    else if (xmlHostValue>1){
-      xmlValue=maxValue;
-      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-    }
-    else
-      return xmlHostValue;
   }
 
   void saveXml(XmlElement *xml) const{
@@ -636,28 +642,33 @@ public:
     return maxLogValue;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){                  
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));      
+  void loadXml(XmlElement *xml){
+    if (loadXmlFlag){                  
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));          
+      if (maxLogValue==minLogValue){
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }
     
-    if (maxLogValue==minLogValue)
-      return (PluginParameters_HostFloatType)(0.f);
-    
-    if (xmlValue<=0){
-      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor))); //minValue
-      return (PluginParameters_HostFloatType)(0.f);
-    }    
-    xmlHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)xmlValue))-minLogValue)/(maxLogValue-minLogValue);
-    if (xmlHostValue<0){
-      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-    }else if (xmlHostValue>1){
-      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-    } else
-      return xmlHostValue;
+      if (xmlValue<=0){
+        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor))); //minValue
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }    
+      xmlHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)xmlValue))-minLogValue)/(maxLogValue-minLogValue);
+      if (xmlHostValue<0){
+        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      } else if (xmlHostValue>1){
+        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }
+    }
   }
 
   void saveXml(XmlElement *xml) const{
@@ -814,36 +825,39 @@ public:
     return maxLogValue;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){   
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));     
+  void loadXml(XmlElement *xml){   
+    if (loadXmlFlag){
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));  
                      
-    if (maxLogValue==minLogValue){ //do not let idiots make this crash
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer      
-    }
-    //using the host parameter scale of [0,1]
-    //store positive log value above 0.05 
-    //all values in the range of [0,minLogValue] will be stored as 0
-    //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)     
-    if (xmlValue<=0){
-      xmlValue=0;
-      return xmlHostValue=(PluginParameters_HostFloatType)(0);
-    } else {
-      double xmlLogValue=factor*log10(fabs((double)xmlValue));
-      if (xmlLogValue<minLogValue){
+      if (maxLogValue==minLogValue){ //do not let idiots make this crash
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
+        return; 
+      }
+      //using the host parameter scale of [0,1]
+      //store positive log value above 0.05 
+      //all values in the range of [0,minLogValue] will be stored as 0
+      //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)     
+      if (xmlValue<=0){
         xmlValue=0;
         xmlHostValue=(PluginParameters_HostFloatType)(0);
-      }else{
-        xmlHostValue=(PluginParameters_HostFloatType)(0.05+(xmlLogValue-minLogValue)*0.95/(maxLogValue-minLogValue));
-      }     
-    }
-    if (xmlHostValue>1){
-      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);      
-    }
-    return xmlHostValue;        
+        return;
+      } else {
+        double xmlLogValue=factor*log10(fabs((double)xmlValue));
+        if (xmlLogValue<minLogValue){
+          xmlValue=0;
+          xmlHostValue=(PluginParameters_HostFloatType)(0);
+        }else{
+          xmlHostValue=(PluginParameters_HostFloatType)(0.05+(xmlLogValue-minLogValue)*0.95/(maxLogValue-minLogValue));
+        }     
+      }
+      if (xmlHostValue>1){
+        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
+        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
+      }
+    }       
   }
 
   void saveXml(XmlElement *xml) const{
@@ -1055,48 +1069,56 @@ public:
     return maxPosLogValue-minAbsLogValue+0.05;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){        
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
-    if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
-      if (xmlValue>0)
-        return xmlHostValue=(PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
+  void loadXml(XmlElement *xml){  
+    if (loadXmlFlag){      
+      if (xml==nullptr)
+        xmlValue=defaultValue;
       else
-        return xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
-    }        
+        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
+      if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
+        if (xmlValue>0){
+          xmlHostValue=(PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
+          return;
+        } else{
+          xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
+          return;
+        }
+      }        
     
-    //using the host parameter scale of [0,1]
-    //store positive log value above 0.55 and negative log values below 0.45
-    //all values in the range of [-minLogValue,minLogValue] will be stored as 0
-    //at 0.5 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
-    if (xmlValue==0){
-      xmlValue=0;
-      return xmlHostValue=centerValue;
+      //using the host parameter scale of [0,1]
+      //store positive log value above 0.55 and negative log values below 0.45
+      //all values in the range of [-minLogValue,minLogValue] will be stored as 0
+      //at 0.5 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
+      if (xmlValue==0){
+        xmlValue=0;
+        xmlHostValue=centerValue;
+        return;
+      }    
+    
+      double logValue=factor*log10(fabs((double)(xmlValue)));
+    
+      if (logValue<minAbsLogValue){
+        xmlValue=0;
+        xmlHostValue=centerValue;
+        return;
+      }
+    
+      if (xmlValue>0){
+        xmlHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
+      } else { // (xmlValue<0)
+        xmlHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
+      }
+    
+      if (xmlHostValue<0){
+        xmlValue=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      } else if (xmlHostValue>1){
+        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
+        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
+        return;
+      }
     }    
-    
-    double logValue=factor*log10(fabs((double)(xmlValue)));
-    
-    if (logValue<minAbsLogValue){
-      xmlValue=0;
-      return xmlHostValue=centerValue;
-    }
-    
-    if (xmlValue>0){
-      xmlHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
-    } else { // (xmlValue<0)
-      xmlHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
-    }
-    
-    if (xmlHostValue<0){
-      xmlValue=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-    } else if (xmlHostValue>1){
-      xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
-      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-    }
-    return xmlHostValue;     
   }
 
   void saveXml(XmlElement *xml) const{
@@ -1236,22 +1258,27 @@ public:
     return maxValue;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=(PluginParameters_PluginIntType)(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
-    xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
-    if (maxValue==minValue)
-      return (PluginParameters_HostFloatType)(0.f);
-    if (xmlHostValue<0){
-      xmlValue=minValue;
-      return xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-    }else if (xmlHostValue>1){
-      xmlValue=maxValue;
-      return xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-    }else
-      return xmlHostValue;
+  void loadXml(XmlElement *xml){    
+    if (loadXmlFlag){
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=(PluginParameters_PluginIntType)(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
+      xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
+      if (maxValue==minValue){
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }
+      if (xmlHostValue<0){
+        xmlValue=minValue;
+        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
+        return;
+      }else if (xmlHostValue>1){
+        xmlValue=maxValue;
+        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
+        return;
+      }
+    }
   }
 
   void saveXml(XmlElement *xml) const{
@@ -1332,13 +1359,14 @@ public:
     return 1;
   }
 
-  PluginParameters_HostFloatType loadXml(XmlElement *xml){    
-    if (xml==nullptr)
-      xmlValue=defaultValue;
-    else
-      xmlValue=xml->getBoolAttribute(Param::getXmlName(),defaultValue);
-    xmlHostValue=(xmlValue)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
-    return xmlHostValue;
+  void loadXml(XmlElement *xml){    
+    if (loadXmlFlag){
+      if (xml==nullptr)
+        xmlValue=defaultValue;
+      else
+        xmlValue=xml->getBoolAttribute(Param::getXmlName(),defaultValue);
+      xmlHostValue=(xmlValue)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
+    }    
   }
 
   void saveXml(XmlElement *xml) const{
@@ -1868,7 +1896,7 @@ public:
     Param *param;
     for (int i=0;i<getNumParams();i++){
       param=getParam(i);
-      if (param->loadXmlIsOn()) param->loadXml(xml);      
+      param->loadXml(xml);      
     }      
     
     if (applyRecursively){
