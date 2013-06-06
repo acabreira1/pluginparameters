@@ -152,7 +152,7 @@ public:
 
   /** Submit a request for an update in the UI. updateUiRequested() must be called then from
       the UI to query its state. */
-  void requestUpdateUi(const bool enable);  
+  void updateUi(const bool enable);  
   
   /** Called from the UI timer to determine if the widget associated to this parameter must be 
   updated or not. It automatically sets the updateUi flag to "false" after it.*/
@@ -249,7 +249,7 @@ public:
   
   /** Set a parameter to a new value from the loaded values from Xml and notify the host and the UI 
       (when it has changed).*/ 
-  void updateProcessorHostAndUiFromXml(bool forceRunAfterChange=false,bool forceUpdateUi=false);
+  void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
   
   Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
   pluginProcessor(pluginProcessor),
@@ -1544,16 +1544,16 @@ public:
       updateUiRequested() must be called then from the UI to query its state.
       Note that this command doesn't affect the Params declared in this ParamGroup.
       For that purpose please use: requestUpdateUiForAllParams(...)*/
-  void requestUpdateUi(const bool enable){
+  void updateUi(const bool enable){
     updateUiFlag=enable;
   }  
   
   /** Set the updateUi flags of all its parameters to true only in this ParamGroup
       or applyRecursively. */
   void requestUpdateUiForAllParams(const bool enable,const bool applyRecursively){
-    requestUpdateUi(enable);
+    updateUi(enable);
     for (int i=0;i<paramList.size();i++)
-      paramList[i]->requestUpdateUi(enable); 
+      paramList[i]->updateUi(enable); 
     
     if (applyRecursively){     
       for (int g=0;g<paramGroupList.size();g++)
@@ -1922,14 +1922,14 @@ public:
   /* Update all parameters from undoRedo after loadXml(...) has been called. 
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
-  virtual void updateProcessorHostAndUiFromXml(bool forceValueChanged, bool forceUpdateUi,const bool applyRecursively){
+  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
     for (int i=0;i<getNumParams();i++){
-      getParam(i)->updateProcessorHostAndUiFromXml(forceValueChanged,forceUpdateUi);      
+      getParam(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);      
     }
     
     if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
-        getParamGroup(g)->updateProcessorHostAndUiFromXml(forceValueChanged,forceUpdateUi,true);
+        getParamGroup(g)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
       }
     }        
   }  
@@ -2688,15 +2688,15 @@ public:
 	}	
   
   /** Update the host and the UI about all parameters in this row */
-  void updateHostAndUiRow(int row,bool forceValueChanged,UpdateFromFlags updateFromFlag){
+  void updateHostAndUiRow(int row,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag){
     for (int col=0;col<getNumCols();col++)
-      getParam(row*getNumCols()+col)->updateHost(forceValueChanged,updateFromFlag);
+      getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
   
   /** Update the host and the UI about all parameters in this column */
-  void updateHostAndUiCol(int col,bool forceValueChanged,UpdateFromFlags updateFromFlag){
+  void updateHostAndUiCol(int col,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag){
     for (int row=0;row<getNumRows();row++)
-      getParam(row*getNumCols()+col)->updateHost(forceValueChanged,updateFromFlag);
+      getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
   
   ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
@@ -3486,7 +3486,7 @@ public:
         localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup,paramIndex,param->getUpdateFromFlag());
     }
     if (updateUi){
-      param->requestUpdateUi(true);
+      param->updateUi(true);
     }
     
   }
@@ -3515,7 +3515,7 @@ public:
       const int groupIndex=indexInGroupAutomated[index];
       Param * const param=paramGroup->getParam(groupIndex);      
       if (param->hostSet(newValue)){
-        param->requestUpdateUi(true);
+        param->updateUi(true);
         paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
       }      
     } 

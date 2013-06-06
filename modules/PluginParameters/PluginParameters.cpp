@@ -44,24 +44,24 @@ void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
 
 //public
 
-void Param::requestUpdateUi(const bool enable){
+void Param::updateUi(const bool requestFlag){
   if (!pluginProcessor) return;
-  updateUiFlag=enable;
+  updateUiFlag=requestFlag;
 }
 
-void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterChange,bool forceUpdateUi){      
+void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool forceUpdateUi){      
   if (!pluginProcessor) return;
   if (loadXmlFlag){
     if (writeXmlValue()){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue);    
       resetUpdateInfoFlags();
-    } else if (forceRunAfterChange){
+    } else if (forceRunAfterParamChange){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue,true,forceUpdateUi);    
       resetUpdateInfoFlags();
-    }else if (forceUpdateUi){
-      requestUpdateUi(true);
+    } else if (forceUpdateUi){
+      updateUi(true);
     }   
 	}
 }
