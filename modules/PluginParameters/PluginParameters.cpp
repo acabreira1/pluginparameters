@@ -221,20 +221,20 @@ void ParamGroup::addStringParamMatrix(const int paramIndex, const String &name, 
 }
 
 StringParamArray *ParamGroup::getStringParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="String");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<StringParamArray *>(paramGroupList[index]);
 }
 
 StringParamMatrix *ParamGroup::getStringParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="String");
-  /** Double check this ParamGroup. This might not be a ParamMatrix */   
+  /* Double check this ParamGroup. This might not be a ParamMatrix */   
   return dynamic_cast<StringParamMatrix *>(paramGroupList[index]);
 }
 
@@ -251,20 +251,20 @@ void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, c
 }
 
 FloatParamArray *ParamGroup::getFloatParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<FloatParamArray *>(paramGroupList[index]);
 }
 
 FloatParamMatrix *ParamGroup::getFloatParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<FloatParamMatrix *>(paramGroupList[index]);
 }
 
@@ -282,20 +282,20 @@ void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, con
 }
 
 LogParamArray *ParamGroup::getLogParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<LogParamArray *>(paramGroupList[index]);
 }
 
 LogParamMatrix *ParamGroup::getLogParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<LogParamMatrix *>(paramGroupList[index]);
 }
 
@@ -312,20 +312,20 @@ void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name
 }
 
 LogWith0ParamArray *ParamGroup::getLogWith0ParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<LogWith0ParamArray *>(paramGroupList[index]);
 }
 
 LogWith0ParamMatrix *ParamGroup::getLogWith0ParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<LogWith0ParamMatrix *>(paramGroupList[index]);
 }
 
@@ -343,20 +343,20 @@ void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &na
 }
 
 LogWithSignParamArray *ParamGroup::getLogWithSignParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<LogWithSignParamArray *>(paramGroupList[index]);
 }
 
 LogWithSignParamMatrix *ParamGroup::getLogWithSignParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<LogWithSignParamMatrix *>(paramGroupList[index]);
 }
 
@@ -373,20 +373,20 @@ void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, cons
 }
 
 IntParamArray *ParamGroup::getIntParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Int");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<IntParamArray *>(paramGroupList[index]);
 }
 
 IntParamMatrix *ParamGroup::getIntParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Int");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<IntParamMatrix *>(paramGroupList[index]);
 }
 
@@ -403,19 +403,19 @@ void ParamGroup::addBoolParamMatrix(const int paramIndex,const String &name, con
 }
 
 BoolParamArray *ParamGroup::getBoolParamArray(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch an array with elements of another type... */
+  /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
-  /** Double check this ParamGroup. This might not be a ParamArray */
+  /* Double check this ParamGroup. This might not be a ParamArray */
   return dynamic_cast<BoolParamArray *>(paramGroupList[index]);
 }
 
 BoolParamMatrix *ParamGroup::getBoolParamMatrix(const int index) const{
-  /** wrong index */
+  /* wrong index */
   jassert(index>=0 && index<paramGroupList.size());
-  /** You are trying to fetch a matrix with elements of another type... */
+  /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
-  /** Double check this ParamGroup. This might not be a ParamMatrix */
+  /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<BoolParamMatrix *>(paramGroupList[index]);
 }
