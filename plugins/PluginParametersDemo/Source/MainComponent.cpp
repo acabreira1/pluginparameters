@@ -137,7 +137,7 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
     symSignedLogSlider->setRange(logWithSignParam->getMin(),logWithSignParam->getMax(),symSignedLogSlider->getInterval());
     asymSignedLogSlider->setRange(alogWithSignParam->getMin(),alogWithSignParam->getMax(),asymSignedLogSlider->getInterval());
 
-    processor->requestAllParamsUpdateUi(true,true);
+    processor->updateUi(true,true);
 
     timerCallback();
     //[/UserPreSize]

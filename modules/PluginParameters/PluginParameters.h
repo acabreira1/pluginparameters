@@ -173,7 +173,7 @@ public:
   */
   virtual PluginParameters_HostFloatType hostGet() const = 0;  
 
-  /** Preloads an XML attribute into undoRedo and returns its normalized parameter value.
+  /** Preloads an XML attribute into xmlValue and returns its normalized parameter value.
       This value is stored in an auxiliary internal variable but it doesn't change the
       parameter value.
       If the parameter value can't be read from the XML it is set to its default value.
@@ -1507,16 +1507,22 @@ public:
   }  
 
   /** Reset all parameters in this ParamGroup to their defaultValue.
-      If applyRecursively=true do the same for the child ParamGroups */
-  void resetParamsToDefaultValue(const bool applyRecursively){
+      If applyRecursively=true do the same for the child ParamGroups. */
+  void resetToDefaultValue(const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->resetToDefaultValue();
       
     if (applyRecursively){
       for (int i=0;i<paramGroupList.size();i++)
-        paramGroupList[i]->resetParamsToDefaultValue(true);
+        paramGroupList[i]->resetToDefaultValue(true);
     }
   }  
+
+  /** Used to reset all the variables of any class that inherits from ParamGroup.
+      This method is useful when it contains variables not initialized as parameters. */
+  virtual void resetAllVariables(){
+    resetToDefaultValue(true);
+  }
 
   /** Import all its parameters from xml (set to true by default) when the user requests it */
   void setLoadXml(const bool enable, const bool applyRecursively){
@@ -1539,42 +1545,18 @@ public:
         paramGroupList[i]->setSaveXml(enable,true);
     }
   }
-
-  /** Used to submit a request for an update of the ParamGroup in the UI. 
-      updateUiRequested() must be called then from the UI to query its state.
-      Note that this command doesn't affect the Params declared in this ParamGroup.
-      For that purpose please use: requestUpdateUiForAllParams(...)*/
-  void updateUi(const bool enable){
-    updateUiFlag=enable;
-  }  
-  
+ 
   /** Set the updateUi flags of all its parameters to true only in this ParamGroup
       or applyRecursively. */
-  void requestUpdateUiForAllParams(const bool enable,const bool applyRecursively){
-    updateUi(enable);
+  void updateUi(const bool enable,const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->updateUi(enable); 
     
     if (applyRecursively){     
       for (int g=0;g<paramGroupList.size();g++)
-        paramGroupList[g]->requestUpdateUiForAllParams(enable,true);
+        paramGroupList[g]->updateUi(enable,true);
     }
-  }
-  
-  /** Called from the UI timer to determine if the general UI of this parameter group 
-      (NOT the widgets of each parameter and all of the subgroups Uis contained in it) 
-      must be updated  */
-  bool updateUiRequested(){
-    if (updateUiFlag){
-      updateUiFlag=false;
-      return true;
-    }
-    return false;
-  }    
-  
-  bool updateUiIsOn(){
-    return updateUiFlag;
-  }    
+  }  
      
   ParamGroup *getParamGroup(const int groupIndex) const{
     jassert(groupIndex>=0 && groupIndex<paramGroupList.size());
@@ -1884,7 +1866,7 @@ public:
     return file.deleteFile();   
   }
   
-  /** Preload Xml values from all parameters into undoRedo. It is not 
+  /** Preload Xml values from all parameters into xmlValue. It is not 
       advisable to run this on the Processing thread since it may
       take a little while to parse all this parameters from Xml 
       and normalize them. */
@@ -1919,7 +1901,7 @@ public:
     return true;
   }
   
-  /* Update all parameters from undoRedo after loadXml(...) has been called. 
+  /* Update all parameters from xmlValue after loadXml(...) has been called. 
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
   virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
