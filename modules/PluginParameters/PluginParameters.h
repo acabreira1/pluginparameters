@@ -1634,9 +1634,9 @@ public:
   }          
   
   StringParam *getStringParam(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1662,9 +1662,9 @@ public:
   StringParamMatrix *getStringParamMatrix(const int index) const;
   
   FloatParam *getFloatParam(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1690,9 +1690,9 @@ public:
   FloatParamMatrix *getFloatParamMatrix(const int index) const;
   
   LogParam *getLogParam(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1718,9 +1718,9 @@ public:
   LogParamMatrix *getLogParamMatrix(const int index) const;
 
   LogWith0Param *getLogWith0Param(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1746,9 +1746,9 @@ public:
   LogWith0ParamMatrix *getLogWith0ParamMatrix(const int index) const;
 
   LogWithSignParam *getLogWithSignParam(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1774,9 +1774,9 @@ public:
   LogWithSignParamMatrix *getLogWithSignParamMatrix(const int index) const;
   
   IntParam *getIntParam(const int index) const{
-    /** wrong index */ 
+    /* wrong index */ 
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
@@ -1802,9 +1802,9 @@ public:
   IntParamMatrix *getIntParamMatrix(const int index) const;
 
   BoolParam *getBoolParam(const int index) const{
-    /** wrong index */
+    /* wrong index */
     jassert(index>=0 && index<paramList.size());
-    /** You are trying to fetch a parameter with another type... 
+    /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
