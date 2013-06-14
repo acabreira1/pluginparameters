@@ -25,7 +25,7 @@
    <div id="projectname">PluginParameters
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Utilities to manage different types of audio plugin parameters automatically in JUCE</div>
+   <div id="projectbrief">JUCE module which provides utilities to manage automatically different types of audio plugin parameters</div>
   </td>
  </tr>
  </tbody>
@@ -129,8 +129,8 @@ String&#160;</td><td class="memItemRight" valign="bottom"><b>getValue</b> () con
 <tr class="separator:ac927406ce577f13ee3f98f8f5649f409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1904396b9d50a80c1f7eeee332bac922"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_string_param.html#a1904396b9d50a80c1f7eeee332bac922">getMax</a> () const </td></tr>
 <tr class="separator:a1904396b9d50a80c1f7eeee332bac922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0535cbabd547c838fa1b0895b0ffb290"><td class="memItemLeft" align="right" valign="top">PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_string_param.html#a0535cbabd547c838fa1b0895b0ffb290">loadXml</a> (XmlElement *xml)</td></tr>
-<tr class="separator:a0535cbabd547c838fa1b0895b0ffb290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7679a7f9439c1f690f085585e2adcc33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_string_param.html#a7679a7f9439c1f690f085585e2adcc33">loadXml</a> (XmlElement *xml)</td></tr>
+<tr class="separator:a7679a7f9439c1f690f085585e2adcc33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ddefa980b8b4e27942196049109ba06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_string_param.html#a3ddefa980b8b4e27942196049109ba06">saveXml</a> (XmlElement *xml) const </td></tr>
 <tr class="separator:a3ddefa980b8b4e27942196049109ba06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c3e8cbda33a442d161c024ffea08853"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c3e8cbda33a442d161c024ffea08853"></a>
@@ -149,8 +149,8 @@ String&#160;</td><td class="memItemRight" valign="bottom"><b>getValue</b> () con
 <tr class="separator:a1f0da266b976f1a4ae4320a20914ba6b inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19d952c090b29ed7541981588ba357c4 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">const String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a19d952c090b29ed7541981588ba357c4">getType</a> () const </td></tr>
 <tr class="separator:a19d952c090b29ed7541981588ba357c4 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a482f892adc1ca6e7a74673ca48a86a8a inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a482f892adc1ca6e7a74673ca48a86a8a">requestUpdateUi</a> (const bool enable)</td></tr>
-<tr class="separator:a482f892adc1ca6e7a74673ca48a86a8a inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25bb346a56b484ce44f5d7209be07d96 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a25bb346a56b484ce44f5d7209be07d96">updateUi</a> (const bool enable)</td></tr>
+<tr class="separator:a25bb346a56b484ce44f5d7209be07d96 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c602ab88fcc128d5178a7742c30f483 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a4c602ab88fcc128d5178a7742c30f483">updateUiRequested</a> ()</td></tr>
 <tr class="separator:a4c602ab88fcc128d5178a7742c30f483 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a985b6cba3c8bc0ad715d526eb6fd6b1c inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a985b6cba3c8bc0ad715d526eb6fd6b1c"></a>
@@ -175,8 +175,8 @@ UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateF
 <tr class="separator:a4f6a4f78b84d2adff16e8fb4bb4aa572 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad19ccf0bead0196a77cf05929e55899 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#aad19ccf0bead0196a77cf05929e55899">updateHost</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag)</td></tr>
 <tr class="separator:aad19ccf0bead0196a77cf05929e55899 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ec66143a499f9c490bf70e532576f17 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a3ec66143a499f9c490bf70e532576f17">updateProcessorHostAndUiFromXml</a> (bool forceRunAfterChange=false, bool forceUpdateUi=false)</td></tr>
-<tr class="separator:a3ec66143a499f9c490bf70e532576f17 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6a39d83f5e9597950616728e43d4ddb inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#ab6a39d83f5e9597950616728e43d4ddb">updateProcessorHostAndUiFromXml</a> (bool forceRunAfterParamChange=false, bool forceUpdateUi=false)</td></tr>
+<tr class="separator:ab6a39d83f5e9597950616728e43d4ddb inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f92de5c76891f1cfba88bf6c281f273 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f92de5c76891f1cfba88bf6c281f273"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Param</b> (<a class="el" href="class_plugin_parameters_1_1_plugin_processor.html">PluginProcessor</a> *pluginProcessor, const String &amp;name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &amp;type)</td></tr>
 <tr class="separator:a5f92de5c76891f1cfba88bf6c281f273 inherit pub_methods_class_plugin_parameters_1_1_param"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -322,7 +322,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHostFromUi</b> 
 
 </div>
 </div>
-<a class="anchor" id="a0535cbabd547c838fa1b0895b0ffb290"></a>
+<a class="anchor" id="a7679a7f9439c1f690f085585e2adcc33"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -330,7 +330,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHostFromUi</b> 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">PluginParameters_HostFloatType loadXml </td>
+          <td class="memname">void loadXml </td>
           <td>(</td>
           <td class="paramtype">XmlElement *&#160;</td>
           <td class="paramname"><em>xml</em></td><td>)</td>
@@ -343,9 +343,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHostFromUi</b> 
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Preloads an XML attribute into undoRedo and returns its normalized parameter value. This value is stored in an auxiliary internal variable but it doesn't change the parameter value. If the parameter value can't be read from the XML it is set to its default value. Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this. </p>
+<p>Preloads an XML attribute into xmlValue and returns its normalized parameter value. This value is stored in an auxiliary internal variable but it doesn't change the parameter value. If the parameter value can't be read from the XML it is set to its default value. Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this. </p>
 
-<p>Implements <a class="el" href="class_plugin_parameters_1_1_param.html#a3586a153110feaea672d807c82d937a7">Param</a>.</p>
+<p>Implements <a class="el" href="class_plugin_parameters_1_1_param.html#a9eda2fdba094c3a62c9b97acc39f9e03">Param</a>.</p>
 
 </div>
 </div>
@@ -476,7 +476,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHostFromUi</b> 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 31 2013 11:25:09 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jun 14 2013 11:57:19 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
