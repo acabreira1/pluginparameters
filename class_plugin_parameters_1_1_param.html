@@ -148,11 +148,10 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 <tr class="separator:afa6f7bb4806972d42ef882c90d6a7483"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac48455c4b5ed02e48af55d4a9c6587ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#ac48455c4b5ed02e48af55d4a9c6587ba">setSaveXml</a> (const bool enable)</td></tr>
 <tr class="separator:ac48455c4b5ed02e48af55d4a9c6587ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84c365d9a4d14b0b53477f11341bac7a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84c365d9a4d14b0b53477f11341bac7a"></a>
-UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateFromFlag</b> ()</td></tr>
+<tr class="memitem:a84c365d9a4d14b0b53477f11341bac7a"><td class="memItemLeft" align="right" valign="top">UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a84c365d9a4d14b0b53477f11341bac7a">getUpdateFromFlag</a> ()</td></tr>
 <tr class="separator:a84c365d9a4d14b0b53477f11341bac7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0725b32c1c48c244e4e32dacee73361"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#aa0725b32c1c48c244e4e32dacee73361">resetUpdateInfoFlags</a> ()</td></tr>
-<tr class="separator:aa0725b32c1c48c244e4e32dacee73361"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2698c4b06111e0d015116f7f72077fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#ad2698c4b06111e0d015116f7f72077fa">resetUpdateFromFlag</a> ()</td></tr>
+<tr class="separator:ad2698c4b06111e0d015116f7f72077fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a268c14fd7962b32d104d682e913b7360"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a268c14fd7962b32d104d682e913b7360">resetToDefaultValue</a> ()=0</td></tr>
 <tr class="separator:a268c14fd7962b32d104d682e913b7360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af149e9cdd1957e3f6f3ba059d65ef1ed"><td class="memItemLeft" align="right" valign="top">virtual const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#af149e9cdd1957e3f6f3ba059d65ef1ed">getMin</a> () const =0</td></tr>
@@ -169,8 +168,6 @@ UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateF
 <tr class="separator:a4f6a4f78b84d2adff16e8fb4bb4aa572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad19ccf0bead0196a77cf05929e55899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#aad19ccf0bead0196a77cf05929e55899">updateHost</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag)</td></tr>
 <tr class="separator:aad19ccf0bead0196a77cf05929e55899"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98ef0ad9913ba421f1a9ca87ff429822"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a98ef0ad9913ba421f1a9ca87ff429822">writeXmlValue</a> ()=0</td></tr>
-<tr class="separator:a98ef0ad9913ba421f1a9ca87ff429822"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6a39d83f5e9597950616728e43d4ddb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#ab6a39d83f5e9597950616728e43d4ddb">updateProcessorHostAndUiFromXml</a> (bool forceRunAfterParamChange=false, bool forceUpdateUi=false)</td></tr>
 <tr class="separator:ab6a39d83f5e9597950616728e43d4ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f92de5c76891f1cfba88bf6c281f273"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f92de5c76891f1cfba88bf6c281f273"></a>
@@ -179,8 +176,9 @@ UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><b>getUpdateF
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a24ba8fb14067bdf76c92977d64ae4ed0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a24ba8fb14067bdf76c92977d64ae4ed0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>updateHostFromUi</b> (PluginParameters_HostFloatType newValue)</td></tr>
+<tr class="memitem:a39bcea881a5f5b82ac9e9b9f62f4670b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a39bcea881a5f5b82ac9e9b9f62f4670b">updateFromLoadedXml</a> ()=0</td></tr>
+<tr class="separator:a39bcea881a5f5b82ac9e9b9f62f4670b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24ba8fb14067bdf76c92977d64ae4ed0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param.html#a24ba8fb14067bdf76c92977d64ae4ed0">updateHostFromUi</a> (PluginParameters_HostFloatType newValue)</td></tr>
 <tr class="separator:a24ba8fb14067bdf76c92977d64ae4ed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af845731d06ec2424c8c666f1cb4522d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af845731d06ec2424c8c666f1cb4522d3"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Param</b> (const <a class="el" href="class_plugin_parameters_1_1_param.html">Param</a> &amp;)</td></tr>
@@ -352,6 +350,30 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 
 </div>
 </div>
+<a class="anchor" id="a84c365d9a4d14b0b53477f11341bac7a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UpdateFromFlags getUpdateFromFlag </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the current updateFrom flag </p>
+
+</div>
+</div>
 <a class="anchor" id="a11cfe5426ee3555215e9e6252161d675"></a>
 <div class="memitem">
 <div class="memproto">
@@ -450,7 +472,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Preloads an XML attribute into xmlValue and returns its normalized parameter value. This value is stored in an auxiliary internal variable but it doesn't change the parameter value. If the parameter value can't be read from the XML it is set to its default value. Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this. </p>
+<p>Preloads an XML attribute into the auxiliary internal variable xmlValue. If nothing can't be read from the XML it is set to the parameter default value. Note that it doesn't change the parameter value. Call updateProcessorHostAndUiFromXml(...) to update it. </p>
 
 <p>Implemented in <a class="el" href="class_plugin_parameters_1_1_bool_param.html#a7679a7f9439c1f690f085585e2adcc33">BoolParam</a>, <a class="el" href="class_plugin_parameters_1_1_int_param.html#a7679a7f9439c1f690f085585e2adcc33">IntParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with_sign_param.html#a7679a7f9439c1f690f085585e2adcc33">LogWithSignParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with0_param.html#a7679a7f9439c1f690f085585e2adcc33">LogWith0Param</a>, <a class="el" href="class_plugin_parameters_1_1_log_param.html#a7679a7f9439c1f690f085585e2adcc33">LogParam</a>, <a class="el" href="class_plugin_parameters_1_1_float_param.html#a7679a7f9439c1f690f085585e2adcc33">FloatParam</a>, and <a class="el" href="class_plugin_parameters_1_1_string_param.html#a7679a7f9439c1f690f085585e2adcc33">StringParam</a>.</p>
 
@@ -476,7 +498,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns true if this parameter will be imported from xml </p>
+<p>Returns true if this parameter will be imported from xml </p>
 
 </div>
 </div>
@@ -506,7 +528,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 
 </div>
 </div>
-<a class="anchor" id="aa0725b32c1c48c244e4e32dacee73361"></a>
+<a class="anchor" id="ad2698c4b06111e0d015116f7f72077fa"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -514,7 +536,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void resetUpdateInfoFlags </td>
+          <td class="memname">void resetUpdateFromFlag </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -577,7 +599,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns true if this parameter will be exported to xml </p>
+<p>Returns true if this parameter will be exported to xml </p>
 
 </div>
 </div>
@@ -656,6 +678,32 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 
 </div>
 </div>
+<a class="anchor" id="a39bcea881a5f5b82ac9e9b9f62f4670b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool updateFromLoadedXml </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update value with the xmlValue read with loadXml and return true if it was different </p>
+
+<p>Implemented in <a class="el" href="class_plugin_parameters_1_1_int_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">IntParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with_sign_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">LogWithSignParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with0_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">LogWith0Param</a>, <a class="el" href="class_plugin_parameters_1_1_log_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">LogParam</a>, <a class="el" href="class_plugin_parameters_1_1_float_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">FloatParam</a>, and <a class="el" href="class_plugin_parameters_1_1_string_param.html#ad2b2f1e6dfbe815c488e376b909b64e4">StringParam</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aad19ccf0bead0196a77cf05929e55899"></a>
 <div class="memitem">
 <div class="memproto">
@@ -710,6 +758,31 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 
 </div>
 </div>
+<a class="anchor" id="a24ba8fb14067bdf76c92977d64ae4ed0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void updateHostFromUi </td>
+          <td>(</td>
+          <td class="paramtype">PluginParameters_HostFloatType&#160;</td>
+          <td class="paramname"><em>newValue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI and skip the UI update </p>
+
+</div>
+</div>
 <a class="anchor" id="ace51ffa4f7639b25da410dc67d387e36"></a>
 <div class="memitem">
 <div class="memproto">
@@ -760,7 +833,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set a parameter to a new value from the loaded values from Xml and notify the host and the UI (when it has changed). </p>
+<p>Update the parameter value from the value loaded from Xml (stored in the variable xmlValue) and notify the host and the UI (if it has changed). </p>
 
 </div>
 </div>
@@ -806,32 +879,6 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 
 </div>
 </div>
-<a class="anchor" id="a98ef0ad9913ba421f1a9ca87ff429822"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual bool writeXmlValue </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Write the xmlValue read with loadXml and return true if it was different </p>
-
-<p>Implemented in <a class="el" href="class_plugin_parameters_1_1_bool_param.html#a791a080e97f46f882bfef890b5d600d4">BoolParam</a>, <a class="el" href="class_plugin_parameters_1_1_int_param.html#a791a080e97f46f882bfef890b5d600d4">IntParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with_sign_param.html#a791a080e97f46f882bfef890b5d600d4">LogWithSignParam</a>, <a class="el" href="class_plugin_parameters_1_1_log_with0_param.html#a791a080e97f46f882bfef890b5d600d4">LogWith0Param</a>, <a class="el" href="class_plugin_parameters_1_1_log_param.html#a791a080e97f46f882bfef890b5d600d4">LogParam</a>, <a class="el" href="class_plugin_parameters_1_1_float_param.html#a791a080e97f46f882bfef890b5d600d4">FloatParam</a>, and <a class="el" href="class_plugin_parameters_1_1_string_param.html#a791a080e97f46f882bfef890b5d600d4">StringParam</a>.</p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>modules/PluginParameters/<a class="el" href="_plugin_parameters_8h_source.html">PluginParameters.h</a></li>
 <li>modules/PluginParameters/PluginParameters.cpp</li>
@@ -839,7 +886,7 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 14 2013 12:12:23 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 3 2013 23:29:15 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
