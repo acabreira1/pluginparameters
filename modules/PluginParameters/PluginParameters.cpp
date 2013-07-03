@@ -13,7 +13,7 @@
 
    PluginParameters is distributed in the hope that it will be useful, but WITHOUT ANY
    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
   ------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
   if (!pluginProcessor) return;  
   updateFromFlag=UPDATE_FROM_UI;
   pluginProcessor->updateHostAndUi(this,newHostValue,true,false); 
-  resetUpdateInfoFlags();
+  resetUpdateFromFlag();
 }
 
 //public
@@ -52,14 +52,14 @@ void Param::updateUi(const bool requestFlag){
 void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool forceUpdateUi){      
   if (!pluginProcessor) return;
   if (loadXmlFlag){
-    if (writeXmlValue()){
+    if (updateFromLoadedXml()){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue);    
-      resetUpdateInfoFlags();
+      resetUpdateFromFlag();
     } else if (forceRunAfterParamChange){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue,true,forceUpdateUi);    
-      resetUpdateInfoFlags();
+      resetUpdateFromFlag();
     } else if (forceUpdateUi){
       updateUi(true);
     }   
@@ -71,7 +71,7 @@ void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue
     if (!pluginProcessor) return;
     updateFromFlag=updateFromFlagArg;     
     pluginProcessor->updateHostAndUi(this,newHostValue);    
-    resetUpdateInfoFlags();  
+    resetUpdateFromFlag();  
   }  
 }
 
@@ -80,7 +80,7 @@ void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFrom
   updateFromFlag=updateFromFlagArg;
 
   pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange);    
-  resetUpdateInfoFlags();
+  resetUpdateFromFlag();
 }
 
 void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
@@ -88,7 +88,7 @@ void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagA
   updateFromFlag=updateFromFlagArg;
 
   pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange,false);    
-  resetUpdateInfoFlags();
+  resetUpdateFromFlag();
 }
 
 void StringParam::updateProcessorAndHostFromUi(const String valueArg) {    
@@ -222,7 +222,7 @@ void ParamGroup::addStringParamMatrix(const int paramIndex, const String &name, 
 
 StringParamArray *ParamGroup::getStringParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="String");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -231,7 +231,7 @@ StringParamArray *ParamGroup::getStringParamArray(const int index) const{
 
 StringParamMatrix *ParamGroup::getStringParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="String");
   /* Double check this ParamGroup. This might not be a ParamMatrix */   
@@ -252,7 +252,7 @@ void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, c
 
 FloatParamArray *ParamGroup::getFloatParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -261,7 +261,7 @@ FloatParamArray *ParamGroup::getFloatParamArray(const int index) const{
 
 FloatParamMatrix *ParamGroup::getFloatParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
   /* Double check this ParamGroup. This might not be a ParamMatrix */
@@ -283,7 +283,7 @@ void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, con
 
 LogParamArray *ParamGroup::getLogParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -292,7 +292,7 @@ LogParamArray *ParamGroup::getLogParamArray(const int index) const{
 
 LogParamMatrix *ParamGroup::getLogParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
   /* Double check this ParamGroup. This might not be a ParamMatrix */
@@ -313,7 +313,7 @@ void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name
 
 LogWith0ParamArray *ParamGroup::getLogWith0ParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -322,7 +322,7 @@ LogWith0ParamArray *ParamGroup::getLogWith0ParamArray(const int index) const{
 
 LogWith0ParamMatrix *ParamGroup::getLogWith0ParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
   /* Double check this ParamGroup. This might not be a ParamMatrix */
@@ -344,7 +344,7 @@ void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &na
 
 LogWithSignParamArray *ParamGroup::getLogWithSignParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -353,7 +353,7 @@ LogWithSignParamArray *ParamGroup::getLogWithSignParamArray(const int index) con
 
 LogWithSignParamMatrix *ParamGroup::getLogWithSignParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
   /* Double check this ParamGroup. This might not be a ParamMatrix */
@@ -374,7 +374,7 @@ void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, cons
 
 IntParamArray *ParamGroup::getIntParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Int");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -383,9 +383,9 @@ IntParamArray *ParamGroup::getIntParamArray(const int index) const{
 
 IntParamMatrix *ParamGroup::getIntParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Int");   
+  jassert(paramGroupList[index]->getParam(0)->getType()=="Int");
   /* Double check this ParamGroup. This might not be a ParamMatrix */
   return dynamic_cast<IntParamMatrix *>(paramGroupList[index]);
 }
@@ -404,7 +404,7 @@ void ParamGroup::addBoolParamMatrix(const int paramIndex,const String &name, con
 
 BoolParamArray *ParamGroup::getBoolParamArray(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch an array with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
   /* Double check this ParamGroup. This might not be a ParamArray */
@@ -413,7 +413,7 @@ BoolParamArray *ParamGroup::getBoolParamArray(const int index) const{
 
 BoolParamMatrix *ParamGroup::getBoolParamMatrix(const int index) const{
   /* wrong index */
-  jassert(index>=0 && index<paramGroupList.size());
+  if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
   /* You are trying to fetch a matrix with elements of another type... */
   jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
   /* Double check this ParamGroup. This might not be a ParamMatrix */

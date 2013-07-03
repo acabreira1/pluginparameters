@@ -13,7 +13,7 @@
 
    PluginParameters is distributed in the hope that it will be useful, but WITHOUT ANY
    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
   ------------------------------------------------------------------------------
 
@@ -51,7 +51,6 @@
 #include <cmath>
 #include "../juce_audio_basics/juce_audio_basics.h"
 #include "../juce_audio_plugin_client/juce_audio_plugin_client.h"
-#include "../juce_audio_plugin_client/juce_audio_plugin_client.h"
 #include "../juce_core/juce_core.h"
 #include "../juce_data_structures/juce_data_structures.h"
 #include "../juce_events/juce_events.h"
@@ -63,8 +62,11 @@ using namespace juce;
 
 class PluginProcessor;
 
-/** * UPDATE_FROM_HOST in only set by default when the host sends automation changes.
-    * UPDATE_FROM_UI is meant to indicate when the value is changed from the User Interface. 
+/** UpdateFromFlags are a set of flags that describe the origin of a value update which can
+    be triggered by the Host, the Processing thread or the User Interface:
+
+    * UPDATE_FROM_HOST in only set by default when the host sends automation changes.
+    * UPDATE_FROM_UI is meant to indicate when the value is changed from the User Interface.
       It is set when the following methods are called: 
       getXXXParam(paramIndex)->updateProcessorAndHostFromUi(...), 
       getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_UI), 
@@ -112,13 +114,18 @@ private:
   
   UpdateFromFlags updateFromFlag;    
   
-protected: 
-  void updateHostFromUi(PluginParameters_HostFloatType newValue);  
-  
+protected:     
   bool loadXmlFlag,saveXmlFlag;
   
-  PluginParameters_HostFloatType xmlHostValue;
-    
+  PluginParameters_HostFloatType xmlHostValue;      
+
+  /** Update value with the xmlValue read with loadXml and return true if it was different */
+  virtual bool updateFromLoadedXml() = 0;
+
+  /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
+      and skip the UI update */
+  void updateHostFromUi(PluginParameters_HostFloatType newValue);  
+
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
   Param (const Param&);
@@ -169,19 +176,16 @@ public:
     return updateUiFlag;
   }
   
-  /**  Returns the parameter value to set the host.
-  */
+  /**  Returns the parameter value to set the host. */
   virtual PluginParameters_HostFloatType hostGet() const = 0;  
 
-  /** Preloads an XML attribute into xmlValue and returns its normalized parameter value.
-      This value is stored in an auxiliary internal variable but it doesn't change the
-      parameter value.
-      If the parameter value can't be read from the XML it is set to its default value.
-      Call updateProcessorHostAndUiFromXml(...) to set the parameter value to this.
-  */
+  /** Preloads an XML attribute into the auxiliary internal variable xmlValue.       
+      If nothing can't be read from the XML it is set to the parameter default value.
+      Note that it doesn't change the parameter value. 
+      Call updateProcessorHostAndUiFromXml(...) to update it. */
   virtual void loadXml(XmlElement *xml) = 0;
 
-  /** returns true if this parameter will be imported from xml */
+  /** Returns true if this parameter will be imported from xml */
   bool loadXmlIsOn() const{
     return loadXmlFlag;
   }
@@ -191,7 +195,7 @@ public:
     loadXmlFlag=enable;
   }
   
-  /** returns true if this parameter will be exported to xml */
+  /** Returns true if this parameter will be exported to xml */
   bool saveXmlIsOn() const{
     return saveXmlFlag;
   }
@@ -201,12 +205,13 @@ public:
     saveXmlFlag=enable;
   }
    
+  /** Returns the current updateFrom flag */
   UpdateFromFlags getUpdateFromFlag(){
     return updateFromFlag;
   }  
   
   /** Reset flags used in runAfterParamChange(...) to determine the origin and reason of the update */    
-  void resetUpdateInfoFlags(){
+  void resetUpdateFromFlag(){
     updateFromFlag=UPDATE_FROM_HOST;    
   }
 
@@ -224,31 +229,25 @@ public:
   
   /**  Sets the parameter from a given value from the host.
        returns true: if it is set to a new value or forceLoad,skipLoad is enabled.
-              false: if it set to the same value.
-  */
+              false: if it set to the same value. */
   virtual bool hostSet(const PluginParameters_HostFloatType hostValue) = 0;  
   
-  /** Set a parameter from the Processor to a new value and notify the host and the UI (when it has changed)
-  */  
+  /** Set a parameter from the Processor to a new value and notify the host and 
+      the UI (when it has changed) */  
   void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag);  
   
   /** Notify the host about the current value of a parameter and update the UI.
       This is useful when you change the value of this parameter (maybe several times) 
-      and you don't want to notify the host and the UI until the end.
-      */  
+      and you don't want to notify the host and the UI until the end. */  
   void updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlag);
     
   /** Notify the host about the current value of a parameter without updating the UI. 
       This is useful when you change the value of this parameter (maybe several times) 
-      and you don't want to notify the host until the end.
-      */  
-  void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag);
+      and you don't want to notify the host until the end. */  
+  void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag);    
   
-  /** Write the xmlValue read with loadXml and return true if it was different */
-  virtual bool writeXmlValue() = 0;
-  
-  /** Set a parameter to a new value from the loaded values from Xml and notify the host and the UI 
-      (when it has changed).*/ 
+  /** Update the parameter value from the value loaded from Xml (stored in the variable
+      xmlValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
   
   Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
@@ -293,15 +292,15 @@ protected:
   const String defaultValue;
   String xmlValue;  
   
-public:
-  bool writeXmlValue(){
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
-  
+
+public:  
   bool hostSet(const PluginParameters_HostFloatType ){       
     return false;
   }
@@ -354,7 +353,6 @@ public:
       xml->setAttribute(Param::getXmlName(),(*value));
   }
 
-
  StringParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, String * const value):
   Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"String"),
   value(value),
@@ -381,9 +379,8 @@ protected:
   PluginParameters_PluginFloatType * const value;
   const PluginParameters_PluginFloatType defaultValue;
   PluginParameters_PluginFloatType xmlValue;  
-  
-public:
-  bool writeXmlValue(){
+
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
@@ -391,6 +388,7 @@ public:
     return false;
   }
   
+public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -517,7 +515,6 @@ public:
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
   }
-
 };
 
 class LogParam : public Param{
@@ -535,9 +532,8 @@ protected:
   PluginParameters_PluginFloatType * const value;
   const PluginParameters_PluginFloatType defaultValue; 
   PluginParameters_PluginFloatType xmlValue;  
-  
-public:
-  bool writeXmlValue(){
+
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
@@ -545,6 +541,7 @@ public:
     return false;
   }
   
+public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -710,15 +707,15 @@ protected:
   const PluginParameters_PluginFloatType defaultValue;  
   PluginParameters_PluginFloatType xmlValue;   
 
-public: 
-  bool writeXmlValue(){
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
-  
+
+public:   
   bool hostSet(const PluginParameters_HostFloatType hostValue){
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -899,15 +896,15 @@ protected:
   const PluginParameters_PluginFloatType defaultValue;  
   PluginParameters_PluginFloatType xmlValue;   
 
-public:
-  bool writeXmlValue(){
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
-  
+
+public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){  
     PluginParameters_PluginFloatType oldValue=*value;    
     if (hostValue>1)
@@ -1162,15 +1159,15 @@ protected:
   const PluginParameters_PluginIntType defaultValue;
   PluginParameters_PluginIntType xmlValue;   
 
-public:
-  bool writeXmlValue(){
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
-  
+
+public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     PluginParameters_PluginIntType oldValue=*value;
     if (hostValue>1)
@@ -1307,15 +1304,15 @@ class BoolParam : public Param{
   BoolParam (const BoolParam&);
   BoolParam& operator=(const BoolParam &other);  
 
-public:
-  bool writeXmlValue(){
+  bool updateFromLoadedXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
-  
+
+public:
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     bool oldValue=*value;
     *value=(hostValue>0.5)?true:false;
@@ -1598,7 +1595,7 @@ public:
   }
     
   Param *getParam(const int index) const{
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     return paramList[index];
   }
 
@@ -1635,7 +1632,7 @@ public:
   
   StringParam *getStringParam(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1663,7 +1660,7 @@ public:
   
   FloatParam *getFloatParam(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1691,7 +1688,7 @@ public:
   
   LogParam *getLogParam(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1719,7 +1716,7 @@ public:
 
   LogWith0Param *getLogWith0Param(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1747,7 +1744,7 @@ public:
 
   LogWithSignParam *getLogWithSignParam(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1775,7 +1772,7 @@ public:
   
   IntParam *getIntParam(const int index) const{
     /* wrong index */ 
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -1803,7 +1800,7 @@ public:
 
   BoolParam *getBoolParam(const int index) const{
     /* wrong index */
-    jassert(index>=0 && index<paramList.size());
+    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -2035,7 +2032,6 @@ private:
   PluginParameters_PluginFloatType maxValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addFloatParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,false);
@@ -2122,7 +2118,6 @@ private:
   const PluginParameters_PluginFloatType factor;
   
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor,false);
@@ -2209,8 +2204,7 @@ private:
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
 
-public: 
-  
+public:   
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,factor,false);
@@ -2299,7 +2293,6 @@ private:
   PluginParameters_PluginFloatType minAbsValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,minAbsValue,factor,false);
@@ -2387,7 +2380,6 @@ private:
   PluginParameters_PluginIntType maxValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addIntParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),minValue,maxValue,false);
@@ -2476,7 +2468,6 @@ private:
   bool* const values;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addBoolParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),false);
@@ -2547,7 +2538,6 @@ private:
   String* const values;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addStringParam(i,(String)(i),ParamArray::automationFlag,ParamArray::loadSaveXmlFlag,&(values[i]),false);
@@ -2702,8 +2692,8 @@ private:
   PluginParameters_PluginFloatType** const values;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
+
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -2807,7 +2797,6 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -2912,7 +2901,6 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -3018,7 +3006,6 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -3121,7 +3108,6 @@ private:
   PluginParameters_PluginIntType maxValue;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -3221,7 +3207,6 @@ private:
   bool** const values;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -3304,7 +3289,6 @@ private:
   String** const values;
 
 public: 
-  
   void initParameters(){
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
@@ -3414,7 +3398,6 @@ private:
   }
   
 public:            
-    
   const String getName() const { return JucePlugin_Name; }
   
   bool acceptsMidi() const{
