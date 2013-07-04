@@ -1406,16 +1406,15 @@ private:
   void setParentParamGroup(ParamGroup *paramGroup){
     parentParamGroup=paramGroup;        
   }
-       
-  /** Offset of the paramList' index in the plugin's global list of 
-      NON automated parameters */
-  
+
   /** Counter of automated and non automated parameters. When a new paramter is added, 
       they are incremented accordingly. This is used to compute the parameter indexes in 
       the global list of automated or non automated parameters. */
   int numAutomatedParams;
   int numNonAutomatedParams;
-  
+         
+  int localIndex;
+
   const String name;      
 
   String xmlName;
@@ -1440,7 +1439,7 @@ private:
       with update */
   PluginProcessor* pluginProcessor;
 
-protected:  
+protected:    
   /** Returns the pointer to the (Extended)AudioProcessor instance */
   PluginProcessor* getProcessor() const{
     return pluginProcessor;
@@ -1454,6 +1453,13 @@ protected:
   /** Sets the number of non automated parameters added so far */
   void setNumNonAutomatedParams(int numNonAutomatedParamsArg){
     numNonAutomatedParams=numNonAutomatedParamsArg;
+  }
+  
+  /** Sets the index with which it is added to its parent ParamGroup 
+      (this information is needed to make runAfterParamGroupChange(...)
+       more efficient by allowing a switch to tell between ParamGroups) */
+  void setLocalIndex(int paramGroupIndex){
+    localIndex=paramGroupIndex;
   }
   
   bool *saveXmlFlagCopy;  
@@ -1477,6 +1483,11 @@ public:
   /** Returns the number of non automated parameters added so far */
   const int getNumNonAutomatedParams() const {
     return numNonAutomatedParams;
+  }
+
+  /** Returns the index with which it was added to its parent ParamGroup */
+  const int getLocalIndex() const {
+    return localIndex;
   }
 
  /** Returns a String label for this ParamGroup */
@@ -1572,7 +1583,8 @@ public:
     paramGroup->setPluginProcessor(getProcessor());
     paramGroup->setParentParamGroup(this);
     paramGroup->setNumAutomatedParams(numAutomatedParams);
-    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);            
+    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);
+    paramGroup->setLocalIndex(paramGroupIndex);            
 
     //produce a unique tag name:
     //if there was already a child with the same xmlName tag
@@ -1918,7 +1930,7 @@ public:
       This method will be called by the host, probably on the audio thread, so
       it's absolutely time-critical. Don't use critical sections or anything
       UI-related, or anything at all that may block in any way! */
-  virtual void runAfterParamGroupChange(ParamGroup * /*paramGroup*/, int /*paramIndex*/, UpdateFromFlags /*updateFromFlag*/) {};
+  virtual void runAfterParamGroupChange(int /*paramGroupIndex*/, int /*paramIndex*/, UpdateFromFlags /*updateFromFlag*/) {};
   
   /** Implements what is executed after a parameter is updated with a different value.
       This method will be called by the host, probably on the audio thread, so
@@ -3448,7 +3460,7 @@ public:
       localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());
       //"runAfterParamGroupChange" defined in its parent ParamGroup
       if (localParamGroup->getParentParamGroup()!=nullptr)
-        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup,paramIndex,param->getUpdateFromFlag());
+        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getLocalIndex(),paramIndex,param->getUpdateFromFlag());
     }
     if (updateUi){
       param->updateUi(true);
