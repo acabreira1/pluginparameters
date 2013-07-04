@@ -1486,7 +1486,7 @@ public:
   }
 
   /** Returns the index with which it was added to its parent ParamGroup */
-  const int getLocalIndex() const {
+  const int getIndex() const {
     return localIndex;
   }
 
@@ -3460,7 +3460,7 @@ public:
       localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());
       //"runAfterParamGroupChange" defined in its parent ParamGroup
       if (localParamGroup->getParentParamGroup()!=nullptr)
-        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getLocalIndex(),paramIndex,param->getUpdateFromFlag());
+        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),paramIndex,param->getUpdateFromFlag());
     }
     if (updateUi){
       param->updateUi(true);
