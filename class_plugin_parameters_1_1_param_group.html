@@ -134,6 +134,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4f29713a8a698db963610a853fd6a3a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf2d85c2492da13936c12d7c22d3dbab"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#aaf2d85c2492da13936c12d7c22d3dbab">getNumNonAutomatedParams</a> () const </td></tr>
 <tr class="separator:aaf2d85c2492da13936c12d7c22d3dbab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64e495003a8f531973ae5ee9b17d5f04"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a64e495003a8f531973ae5ee9b17d5f04">getLocalIndex</a> () const </td></tr>
+<tr class="separator:a64e495003a8f531973ae5ee9b17d5f04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea6808e3bf0be9e574897a21f3e344fb"><td class="memItemLeft" align="right" valign="top">const String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#aea6808e3bf0be9e574897a21f3e344fb">getName</a> () const </td></tr>
 <tr class="separator:aea6808e3bf0be9e574897a21f3e344fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4276718efdb9f676c7bc4d9461a6836"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#af4276718efdb9f676c7bc4d9461a6836">getXmlName</a> () const </td></tr>
@@ -303,8 +305,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="memitem:a2e181001750e1e26bf240634e10b2ed4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e181001750e1e26bf240634e10b2ed4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
 <tr class="separator:a2e181001750e1e26bf240634e10b2ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9b6709dcc8efe7dd3cf9cfb094ed4a4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#af9b6709dcc8efe7dd3cf9cfb094ed4a4">runAfterParamGroupChange</a> (<a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> *, int, UpdateFromFlags)</td></tr>
-<tr class="separator:af9b6709dcc8efe7dd3cf9cfb094ed4a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4500886500040d4311d456335482b791"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a4500886500040d4311d456335482b791">runAfterParamGroupChange</a> (int, int, UpdateFromFlags)</td></tr>
+<tr class="separator:a4500886500040d4311d456335482b791"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7853be7673822ff175ef373a0158fdd6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a> (int, UpdateFromFlags)</td></tr>
 <tr class="separator:a7853be7673822ff175ef373a0158fdd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4b1717b7e31b110ce122672890d35c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#abd4b1717b7e31b110ce122672890d35c">initParameters</a> ()=0</td></tr>
@@ -323,6 +325,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a53fcd9cd257277892daa8447f406857a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec746bf2cd2684872aa779ca4980cde3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#aec746bf2cd2684872aa779ca4980cde3">setNumNonAutomatedParams</a> (int numNonAutomatedParamsArg)</td></tr>
 <tr class="separator:aec746bf2cd2684872aa779ca4980cde3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1229d5c734d6a6af7d09030de941d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a0c1229d5c734d6a6af7d09030de941d5">setLocalIndex</a> (int paramGroupIndex)</td></tr>
+<tr class="separator:a0c1229d5c734d6a6af7d09030de941d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -406,6 +410,30 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </table>
 </div><div class="memdoc">
 <p>Adds a subgroup of parameters to this group. If there is another <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> child with the same tag name (xmlName), a numeric suffix will be added automatically to it to make it unique. </p>
+
+</div>
+</div>
+<a class="anchor" id="a64e495003a8f531973ae5ee9b17d5f04"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int getLocalIndex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the index with which it was added to its parent <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> </p>
 
 </div>
 </div>
@@ -796,7 +824,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="af9b6709dcc8efe7dd3cf9cfb094ed4a4"></a>
+<a class="anchor" id="a4500886500040d4311d456335482b791"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -806,7 +834,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
         <tr>
           <td class="memname">virtual void runAfterParamGroupChange </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> *&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -947,6 +975,31 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </table>
 </div><div class="memdoc">
 <p>Import all its parameters from xml (set to true by default) when the user requests it </p>
+
+</div>
+</div>
+<a class="anchor" id="a0c1229d5c734d6a6af7d09030de941d5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setLocalIndex </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>paramGroupIndex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the index with which it is added to its parent <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> (this information is needed to make runAfterParamGroupChange(...) more efficient by allowing a switch to tell between ParamGroups) </p>
 
 </div>
 </div>
@@ -1162,7 +1215,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jul 3 2013 23:29:15 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 4 2013 13:48:57 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
