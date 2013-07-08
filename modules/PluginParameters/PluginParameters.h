@@ -1004,7 +1004,6 @@ public:
     *value=defaultValue;
   }
   
-  
   PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
@@ -1241,8 +1240,7 @@ public:
   void resetToDefaultValue(){
     *value=defaultValue;
   }
-  
-
+ 
   PluginParameters_PluginIntType getValue() const{
     return *value;
   }
@@ -1342,7 +1340,6 @@ public:
   void resetToDefaultValue(){
     *value=defaultValue;
   }
-  
   
   bool getValue() const{
     return *value;
@@ -1515,8 +1512,10 @@ public:
   }  
 
   /** Reset all parameters in this ParamGroup to their defaultValue.
-      If applyRecursively=true do the same for the child ParamGroups. */
-  void resetToDefaultValue(const bool applyRecursively){
+      If applyRecursively=true do the same for the child ParamGroups. 
+      This method should be overrided when the ParamGroup contains 
+      variables not initialized as parameters.*/
+  virtual void resetToDefaultValue(const bool applyRecursively){
     for (int i=0;i<paramList.size();i++)
       paramList[i]->resetToDefaultValue();
       
@@ -1525,12 +1524,6 @@ public:
         paramGroupList[i]->resetToDefaultValue(true);
     }
   }  
-
-  /** Used to reset all the variables of any class that inherits from ParamGroup.
-      This method is useful when it contains variables not initialized as parameters. */
-  virtual void resetAllVariables(){
-    resetToDefaultValue(true);
-  }
 
   /** Import all its parameters from xml (set to true by default) when the user requests it */
   void setLoadXml(const bool enable, const bool applyRecursively){
@@ -1992,6 +1985,7 @@ protected:
   const bool loadSaveXmlFlag;
   const bool saveOnlySizedArrayFlag;      
   const bool saveOnlyNonDefaultValuesFlag;    
+  const bool resetOnlySizedArrayFlag;
 
 public:      
   virtual void initParameters() = 0;
@@ -2022,14 +2016,31 @@ public:
       return 0;
   }
     
-  ParamArray(const String &name,const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  virtual void resetToDefaultValue(const bool applyRecursively){
+    int resetSize;
+    if (resetOnlySizedArrayFlag)
+      resetSize=*size;
+    else
+      resetSize=maxSize;
+
+    for (int i=0;i<resetSize;i++)
+      getParam(i)->resetToDefaultValue();
+      
+    if (applyRecursively){
+      for (int i=0;i<getNumParamGroups();i++)
+        getParamGroup(i)->resetToDefaultValue(true);
+    }
+  }
+
+  ParamArray(const String &name,const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool resetOnlySizedArrayFlag=true):
   ParamGroup(name),
   size(size),
   maxSize(maxSize),  
   automationFlag(automationFlag), 
   loadSaveXmlFlag(loadSaveXmlFlag), 
   saveOnlySizedArrayFlag(saveOnlySizedArrayFlag),
-  saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag)  
+  saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag),
+  resetOnlySizedArrayFlag(resetOnlySizedArrayFlag)
   {
     saveXmlFlagCopy=new bool[maxSize];
   }    
@@ -2632,6 +2643,7 @@ protected:
   const bool loadSaveXmlFlag;  
   bool saveOnlySizedMatrixFlag;
   bool saveOnlyNonDefaultValuesFlag;
+  bool resetOnlySizedMatrixFlag;
   
 public:    
   virtual void initParameters() = 0;
@@ -2682,8 +2694,28 @@ public:
     for (int row=0;row<getNumRows();row++)
       getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
+
+  virtual void resetToDefaultValue(const bool applyRecursively){
+    int resetRowsSize,resetColsSize;
+    if (resetOnlySizedMatrixFlag){
+      resetRowsSize=*numRows;
+      resetColsSize=*numCols;
+    } else {
+      resetRowsSize=maxRows;
+      resetColsSize=maxCols;
+    }
+
+    for (int i=0;i<resetRowsSize;i++)
+      for (int j=0;j<resetColsSize;j++)
+        getParam(i*maxCols+j)->resetToDefaultValue();
+      
+    if (applyRecursively){
+      for (int i=0;i<getNumParamGroups();i++)
+        getParamGroup(i)->resetToDefaultValue(true);
+    }
+  }
   
-  ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true):
+  ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool resetOnlySizedMatrixFlag=true):
   ParamGroup(name),
   numRows(numRows),
   numCols(numCols),
@@ -2692,7 +2724,8 @@ public:
   automationFlag(automationFlag),
   loadSaveXmlFlag(loadSaveXmlFlag),
   saveOnlySizedMatrixFlag(saveOnlySizedMatrixFlag),
-  saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag)
+  saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag),
+  resetOnlySizedMatrixFlag(resetOnlySizedMatrixFlag)
   {
     saveXmlFlagCopy=new bool[maxCols*maxRows];
   } 
