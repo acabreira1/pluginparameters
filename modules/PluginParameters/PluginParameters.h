@@ -117,10 +117,7 @@ private:
 protected:     
   bool loadXmlFlag,saveXmlFlag;
   
-  PluginParameters_HostFloatType xmlHostValue;      
-
-  /** Update value with the xmlValue read with loadXml and return true if it was different */
-  virtual bool updateFromLoadedXml() = 0;
+  PluginParameters_HostFloatType xmlHostValue;        
 
   /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
       and skip the UI update */
@@ -213,10 +210,7 @@ public:
   /** Reset flags used in runAfterParamChange(...) to determine the origin and reason of the update */    
   void resetUpdateFromFlag(){
     updateFromFlag=UPDATE_FROM_HOST;    
-  }
-
-  /** Reset the value of this Param to its defaultValue */
-  virtual void resetToDefaultValue() = 0;
+  }    
 
   /** Returns the minimum range of this parameter */  
   virtual const double getMin() const = 0;
@@ -246,9 +240,19 @@ public:
       and you don't want to notify the host until the end. */  
   void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag);    
   
+  /** Update value with the xmlValue read with loadXml and return true if it was different */
+  virtual bool updateProcessorFromXml() = 0;
+
   /** Update the parameter value from the value loaded from Xml (stored in the variable
       xmlValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
+
+  /** Update value with the defaultValue and return true if it was different */
+  virtual bool updateProcessorFromDefaultValue() = 0;
+
+  /** Update the parameter value from the default value (stored in the variable
+      defaultValue) and notify the host and the UI (if it has changed). */
+  void updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
   
   Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
   pluginProcessor(pluginProcessor),
@@ -291,16 +295,24 @@ protected:
   String * const value;
   const String defaultValue;
   String xmlValue;  
-  
-  bool updateFromLoadedXml(){
+    
+public:  
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
+  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
 
-public:  
   bool hostSet(const PluginParameters_HostFloatType ){       
     return false;
   }
@@ -322,10 +334,6 @@ public:
     return defaultValue;
   }
 
-  void resetToDefaultValue(){
-    *value=defaultValue;
-  }
-  
   String getValue() const{
     return *value;
   }
@@ -379,8 +387,9 @@ protected:
   PluginParameters_PluginFloatType * const value;
   const PluginParameters_PluginFloatType defaultValue;
   PluginParameters_PluginFloatType xmlValue;  
-
-  bool updateFromLoadedXml(){
+  
+public:  
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
@@ -388,7 +397,14 @@ protected:
     return false;
   }
   
-public:  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
+  
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -457,10 +473,6 @@ public:
     return defaultValue;    
   }
 
-  void resetToDefaultValue(){
-    *value=defaultValue;
-  }
-  
   PluginParameters_PluginFloatType getPreloadvalue() const{
     return xmlValue;
   }
@@ -533,7 +545,8 @@ protected:
   const PluginParameters_PluginFloatType defaultValue; 
   PluginParameters_PluginFloatType xmlValue;  
 
-  bool updateFromLoadedXml(){
+public:  
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
@@ -541,7 +554,14 @@ protected:
     return false;
   }
   
-public:  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
+
   bool hostSet(const PluginParameters_HostFloatType hostValue){
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -617,10 +637,6 @@ public:
   
   const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;
-  }
-  
-  void resetToDefaultValue(){
-    *value=defaultValue;
   }
   
   PluginParameters_PluginFloatType getValue() const{
@@ -707,15 +723,23 @@ protected:
   const PluginParameters_PluginFloatType defaultValue;  
   PluginParameters_PluginFloatType xmlValue;   
 
-  bool updateFromLoadedXml(){
+public:   
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
+  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
 
-public:   
   bool hostSet(const PluginParameters_HostFloatType hostValue){
     PluginParameters_PluginFloatType oldValue=*value;
     if (hostValue>1)
@@ -778,10 +802,6 @@ public:
   
   const PluginParameters_PluginFloatType getDefaultValue() const{
     return defaultValue;
-  }
-  
-  void resetToDefaultValue(){
-    *value=defaultValue;
   }
   
   PluginParameters_PluginFloatType getValue() const{
@@ -896,15 +916,23 @@ protected:
   const PluginParameters_PluginFloatType defaultValue;  
   PluginParameters_PluginFloatType xmlValue;   
 
-  bool updateFromLoadedXml(){
+public:  
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
+  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
 
-public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){  
     PluginParameters_PluginFloatType oldValue=*value;    
     if (hostValue>1)
@@ -1000,10 +1028,6 @@ public:
     return defaultValue;
   }
 
-  void resetToDefaultValue(){
-    *value=defaultValue;
-  }
-  
   PluginParameters_PluginFloatType getValue() const{
     return *value;
   }
@@ -1158,15 +1182,23 @@ protected:
   const PluginParameters_PluginIntType defaultValue;
   PluginParameters_PluginIntType xmlValue;   
 
-  bool updateFromLoadedXml(){
+public:  
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
     }
     return false;
   }
+  
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
 
-public:  
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     PluginParameters_PluginIntType oldValue=*value;
     if (hostValue>1)
@@ -1236,10 +1268,6 @@ public:
   const PluginParameters_PluginIntType getDefaultValue() const{
     return defaultValue;
   }
-
-  void resetToDefaultValue(){
-    *value=defaultValue;
-  }
  
   PluginParameters_PluginIntType getValue() const{
     return *value;
@@ -1300,9 +1328,10 @@ class BoolParam : public Param{
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
   BoolParam (const BoolParam&);
-  BoolParam& operator=(const BoolParam &other);  
+  BoolParam& operator=(const BoolParam &other);    
 
-  bool updateFromLoadedXml(){
+public:
+  bool updateProcessorFromXml(){
     if (*value!=xmlValue){
       *value=xmlValue;
       return true;
@@ -1310,7 +1339,14 @@ class BoolParam : public Param{
     return false;
   }
 
-public:
+  bool updateProcessorFromDefaultValue(){
+    if (*value!=defaultValue){
+      *value=defaultValue;
+      return true;
+    }
+    return false;
+  }
+
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     bool oldValue=*value;
     *value=(hostValue>0.5)?true:false;
@@ -1335,11 +1371,7 @@ public:
 
   const bool getDefaultValue() const{
     return defaultValue;
-  }
-
-  void resetToDefaultValue(){
-    *value=defaultValue;
-  }
+  }  
   
   bool getValue() const{
     return *value;
@@ -1509,20 +1541,6 @@ public:
       (subgroups of subgroups are ignored) */
   const int getNumParamGroups() const { 
     return paramGroupList.size(); 
-  }  
-
-  /** Reset all parameters in this ParamGroup to their defaultValue.
-      If applyRecursively=true do the same for the child ParamGroups. 
-      This method should be overrided when the ParamGroup contains 
-      variables not initialized as parameters.*/
-  virtual void resetToDefaultValue(const bool applyRecursively){
-    for (int i=0;i<paramList.size();i++)
-      paramList[i]->resetToDefaultValue();
-      
-    if (applyRecursively){
-      for (int i=0;i<paramGroupList.size();i++)
-        paramGroupList[i]->resetToDefaultValue(true);
-    }
   }  
 
   /** Import all its parameters from xml (set to true by default) when the user requests it */
@@ -1906,18 +1924,71 @@ public:
   /* Update all parameters from xmlValue after loadXml(...) has been called. 
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
-  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
+  virtual void updateProcessorFromXml(const bool applyRecursively){
+    runBeforeParamBatchChange();
     for (int i=0;i<getNumParams();i++){
-      getParam(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);      
+      getParam(i)->updateProcessorFromXml();
+    }
+    
+    if (applyRecursively){
+      for (int g=0;g<getNumParamGroups();g++){
+        getParamGroup(g)->updateProcessorFromXml(true);
+      }
+    }
+    runAfterParamBatchChange();        
+  }  
+
+  /* Update all parameters from xmlValue after loadXml(...) has been called. 
+     This should be considerably faster than loadXml (which loads everything from
+     disk into memory) so you can risk to put it in the processing thread. 
+     Update for each parameter the Host and the UI accordingly. */
+  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamBatchChange();
+    for (int i=0;i<getNumParams();i++){
+      getParam(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);
     }
     
     if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
         getParamGroup(g)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
       }
-    }        
+    }
+    runAfterParamBatchChange();        
   }  
   
+  /** Reset all parameters in this ParamGroup to their defaultValue.
+      If applyRecursively=true do the same for the child ParamGroups. 
+      This method should be overrided when the ParamGroup contains 
+      variables not initialized as parameters.*/
+  virtual void updateProcessorFromDefaultValue(const bool applyRecursively){
+    runBeforeParamBatchChange();   
+    for (int i=0;i<paramList.size();i++)
+      paramList[i]->updateProcessorFromDefaultValue();
+      
+    if (applyRecursively){
+      for (int i=0;i<paramGroupList.size();i++)
+        paramGroupList[i]->updateProcessorFromDefaultValue(true);
+    }
+    runAfterParamBatchChange();
+  }
+
+  /** Reset all parameters in this ParamGroup to their defaultValue.
+      If applyRecursively=true do the same for the child ParamGroups. 
+      This method should be overrided when the ParamGroup contains 
+      variables not initialized as parameters.
+      Update for each parameter the Host and the UI accordingly. */
+  virtual void updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamBatchChange();   
+    for (int i=0;i<paramList.size();i++)
+      paramList[i]->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi);
+      
+    if (applyRecursively){
+      for (int i=0;i<paramGroupList.size();i++)
+        paramGroupList[i]->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi,true);
+    }
+    runAfterParamBatchChange();
+  }  
+
   /** Implements what is executed after any parameter of this ParamGroup is updated 
       with a different value inside of the children paramGroup.
       This method will be called by the host, probably on the audio thread, so
@@ -1931,6 +2002,16 @@ public:
       UI-related, or anything at all that may block in any way! */
   virtual void runAfterParamChange(int /*paramIndex*/, UpdateFromFlags /*updateFromFlag*/) {};
   
+  /** Implements what should be executed BEFORE a new set of parameters is loaded in this 
+      ParamGroup using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultValue(...)
+      E.g. Place here any initialization of variables that are not defined as Parameters. */
+  virtual void runBeforeParamBatchChange() {};
+
+  /** Implements what should be executed AFTER a new set of parameters is loaded in this 
+      ParamGroup using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultValue(...)
+      E.g. Place here any post-processing of variables that are not defined as Parameters. */
+  virtual void runAfterParamBatchChange() {};
+
   /** All parameters and parameter groups must be added in this method */
   virtual void initParameters() = 0;
   
@@ -1938,9 +2019,14 @@ public:
       useful when you change the parameters of this paramGroup (maybe several times) without
       notifying the Host and the UI (without using update(...)) and at the end of the process 
       you want to update the Host and the UI from all of them at once */
-  void updateHostForAll(bool runAfterParamChange,UpdateFromFlags updateFromFlag){
+  void updateHost(bool runAfterParamChange,UpdateFromFlags updateFromFlag,const bool applyRecursively){
     for (int paramIndex=0;paramIndex<getNumParams();paramIndex++)
       getParam(paramIndex)->updateHost(runAfterParamChange,updateFromFlag);
+
+    if (applyRecursively){
+      for (int i=0;i<getNumParamGroups();i++)
+        getParamGroup(i)->updateHost(runAfterParamChange,updateFromFlag,true);
+    }
   }
   
   ParamGroup(const String &name):
@@ -2016,7 +2102,9 @@ public:
       return 0;
   }
     
-  virtual void resetToDefaultValue(const bool applyRecursively){
+  virtual void updateProcessorFromDefaultValue(const bool applyRecursively){
+    runBeforeParamBatchChange();
+
     int resetSize;
     if (resetOnlySizedArrayFlag)
       resetSize=*size;
@@ -2024,13 +2112,35 @@ public:
       resetSize=maxSize;
 
     for (int i=0;i<resetSize;i++)
-      getParam(i)->resetToDefaultValue();
+      getParam(i)->updateProcessorFromDefaultValue();
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
-        getParamGroup(i)->resetToDefaultValue(true);
+        getParamGroup(i)->updateProcessorFromDefaultValue(true);
     }
-  }
+
+    runAfterParamBatchChange();
+  }  
+
+ 
+  virtual void updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamBatchChange();   
+
+    int resetSize;
+    if (resetOnlySizedArrayFlag)
+      resetSize=*size;
+    else
+      resetSize=maxSize;
+
+    for (int i=0;i<resetSize;i++)
+      getParam(i)->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi);
+      
+    if (applyRecursively){
+      for (int i=0;i<getNumParamGroups();i++)
+        getParamGroup(i)->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi,true);
+    }
+    runAfterParamBatchChange();
+  }  
 
   ParamArray(const String &name,const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool resetOnlySizedArrayFlag=true):
   ParamGroup(name),
@@ -2695,7 +2805,9 @@ public:
       getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
 
-  virtual void resetToDefaultValue(const bool applyRecursively){
+  virtual void updateProcessorFromDefaultValue(const bool applyRecursively){
+    runBeforeParamBatchChange();
+
     int resetRowsSize,resetColsSize;
     if (resetOnlySizedMatrixFlag){
       resetRowsSize=*numRows;
@@ -2707,13 +2819,39 @@ public:
 
     for (int i=0;i<resetRowsSize;i++)
       for (int j=0;j<resetColsSize;j++)
-        getParam(i*maxCols+j)->resetToDefaultValue();
+        getParam(i*maxCols+j)->updateProcessorFromDefaultValue();
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
-        getParamGroup(i)->resetToDefaultValue(true);
+        getParamGroup(i)->updateProcessorFromDefaultValue(true);
     }
+
+    runAfterParamBatchChange();
   }
+
+  virtual void updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamBatchChange();   
+
+    int resetRowsSize,resetColsSize;
+    if (resetOnlySizedMatrixFlag){
+      resetRowsSize=*numRows;
+      resetColsSize=*numCols;
+    } else {
+      resetRowsSize=maxRows;
+      resetColsSize=maxCols;
+    }
+
+    for (int i=0;i<resetRowsSize;i++)
+      for (int j=0;j<resetColsSize;j++)
+        getParam(i*maxCols+j)->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi);
+      
+    if (applyRecursively){
+      for (int i=0;i<getNumParamGroups();i++)
+        getParamGroup(i)->updateProcessorHostAndUiFromDefaultValue(forceRunAfterParamChange,forceUpdateUi,true);
+    }
+
+    runAfterParamBatchChange();
+  }  
   
   ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool resetOnlySizedMatrixFlag=true):
   ParamGroup(name),

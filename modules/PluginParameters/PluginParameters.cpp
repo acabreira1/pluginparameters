@@ -52,7 +52,7 @@ void Param::updateUi(const bool requestFlag){
 void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool forceUpdateUi){      
   if (!pluginProcessor) return;
   if (loadXmlFlag){
-    if (updateFromLoadedXml()){
+    if (updateProcessorFromXml()){
       updateFromFlag=UPDATE_FROM_XML;
       pluginProcessor->updateHostAndUi(this,xmlHostValue);    
       resetUpdateFromFlag();
@@ -64,6 +64,21 @@ void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool f
       updateUi(true);
     }   
 	}
+}
+
+void Param::updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange,bool forceUpdateUi){
+  if (!pluginProcessor) return;
+  if (updateProcessorFromDefaultValue()){
+    updateFromFlag=UPDATE_FROM_XML;
+    pluginProcessor->updateHostAndUi(this,xmlHostValue);    
+    resetUpdateFromFlag();
+  } else if (forceRunAfterParamChange){
+    updateFromFlag=UPDATE_FROM_XML;
+    pluginProcessor->updateHostAndUi(this,xmlHostValue,true,forceUpdateUi);    
+    resetUpdateFromFlag();
+  } else if (forceUpdateUi){
+    updateUi(true);
+  }   
 }
 
 void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    
