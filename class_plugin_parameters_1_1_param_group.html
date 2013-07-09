@@ -146,10 +146,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a18621407a8c411f841920d2a985c3c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27063ec3d82c7602cca12565aac33719"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a27063ec3d82c7602cca12565aac33719">getNumParamGroups</a> () const </td></tr>
 <tr class="separator:a27063ec3d82c7602cca12565aac33719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af86c55246536a5421837b8ab5089c804"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#af86c55246536a5421837b8ab5089c804">resetToDefaultValue</a> (const bool applyRecursively)</td></tr>
-<tr class="separator:af86c55246536a5421837b8ab5089c804"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8db1603d078a2857075c0aa8ae1be80d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a8db1603d078a2857075c0aa8ae1be80d">resetAllVariables</a> ()</td></tr>
-<tr class="separator:a8db1603d078a2857075c0aa8ae1be80d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12759c4770ec76d32c4d8ca6d2fe5302"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a12759c4770ec76d32c4d8ca6d2fe5302">setLoadXml</a> (const bool enable, const bool applyRecursively)</td></tr>
 <tr class="separator:a12759c4770ec76d32c4d8ca6d2fe5302"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94fad5ef78215a35b34a01f4f956c38f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a94fad5ef78215a35b34a01f4f956c38f">setSaveXml</a> (const bool enable, const bool applyRecursively)</td></tr>
@@ -302,17 +298,28 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="separator:af0e9674ee3946df6ba2dbea47db13b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55a84fcbadbaad911197ccd8252bf9f4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a55a84fcbadbaad911197ccd8252bf9f4">loadXmlFile</a> (const File &amp;file)</td></tr>
 <tr class="separator:a55a84fcbadbaad911197ccd8252bf9f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4b4af2834bc805ea83236252adc2b63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b4af2834bc805ea83236252adc2b63"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorFromXml</b> (const bool applyRecursively)</td></tr>
+<tr class="separator:ab4b4af2834bc805ea83236252adc2b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e181001750e1e26bf240634e10b2ed4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e181001750e1e26bf240634e10b2ed4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
 <tr class="separator:a2e181001750e1e26bf240634e10b2ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2836ebdc46cb7552372bacf244aa4c1e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a2836ebdc46cb7552372bacf244aa4c1e">updateProcessorFromDefaultValue</a> (const bool applyRecursively)</td></tr>
+<tr class="separator:a2836ebdc46cb7552372bacf244aa4c1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaefde2edea906daaf695a21c9883cf4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#adaefde2edea906daaf695a21c9883cf4">updateProcessorHostAndUiFromDefaultValue</a> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
+<tr class="separator:adaefde2edea906daaf695a21c9883cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4500886500040d4311d456335482b791"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a4500886500040d4311d456335482b791">runAfterParamGroupChange</a> (int, int, UpdateFromFlags)</td></tr>
 <tr class="separator:a4500886500040d4311d456335482b791"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7853be7673822ff175ef373a0158fdd6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a> (int, UpdateFromFlags)</td></tr>
 <tr class="separator:a7853be7673822ff175ef373a0158fdd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a4d9dd366830725fd20eed84148bf2a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a7a4d9dd366830725fd20eed84148bf2a">runBeforeParamBatchChange</a> ()</td></tr>
+<tr class="separator:a7a4d9dd366830725fd20eed84148bf2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0568d59617f5675a4f66ee9d8c8824cd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#a0568d59617f5675a4f66ee9d8c8824cd">runAfterParamBatchChange</a> ()</td></tr>
+<tr class="separator:a0568d59617f5675a4f66ee9d8c8824cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4b1717b7e31b110ce122672890d35c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#abd4b1717b7e31b110ce122672890d35c">initParameters</a> ()=0</td></tr>
 <tr class="separator:abd4b1717b7e31b110ce122672890d35c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8e92667688662219046112c023b9b29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#ad8e92667688662219046112c023b9b29">updateHostForAll</a> (bool <a class="el" href="class_plugin_parameters_1_1_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a>, UpdateFromFlags updateFromFlag)</td></tr>
-<tr class="separator:ad8e92667688662219046112c023b9b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1ac31529b0b36d5e6539fb14fb05f5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_plugin_parameters_1_1_param_group.html#ae1ac31529b0b36d5e6539fb14fb05f5b">updateHost</a> (bool <a class="el" href="class_plugin_parameters_1_1_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a>, UpdateFromFlags updateFromFlag, const bool applyRecursively)</td></tr>
+<tr class="separator:ae1ac31529b0b36d5e6539fb14fb05f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa09c62650f898321cd030b6da25f25ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa09c62650f898321cd030b6da25f25ff"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b> (const String &amp;name)</td></tr>
 <tr class="separator:aa09c62650f898321cd030b6da25f25ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -740,7 +747,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="a8db1603d078a2857075c0aa8ae1be80d"></a>
+<a class="anchor" id="a0568d59617f5675a4f66ee9d8c8824cd"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -748,7 +755,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void resetAllVariables </td>
+          <td class="memname">virtual void runAfterParamBatchChange </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -760,32 +767,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Used to reset all the variables of any class that inherits from <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a>. This method is useful when it contains variables not initialized as parameters. </p>
-
-</div>
-</div>
-<a class="anchor" id="af86c55246536a5421837b8ab5089c804"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void resetToDefaultValue </td>
-          <td>(</td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>applyRecursively</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Reset all parameters in this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> to their defaultValue. If applyRecursively=true do the same for the child ParamGroups. </p>
+<p>Implements what should be executed AFTER a new set of parameters is loaded in this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultValue(...) E.g. Place here any post-processing of variables that are not defined as Parameters. </p>
 
 </div>
 </div>
@@ -862,6 +844,30 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </table>
 </div><div class="memdoc">
 <p>Implements what is executed after any parameter of this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> is updated with a different value inside of the children paramGroup. This method will be called by the host, probably on the audio thread, so it's absolutely time-critical. Don't use critical sections or anything UI-related, or anything at all that may block in any way! </p>
+
+</div>
+</div>
+<a class="anchor" id="a7a4d9dd366830725fd20eed84148bf2a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void runBeforeParamBatchChange </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implements what should be executed BEFORE a new set of parameters is loaded in this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultValue(...) E.g. Place here any initialization of variables that are not defined as Parameters. </p>
 
 </div>
 </div>
@@ -1138,7 +1144,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="ad8e92667688662219046112c023b9b29"></a>
+<a class="anchor" id="ae1ac31529b0b36d5e6539fb14fb05f5b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1146,7 +1152,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void updateHostForAll </td>
+          <td class="memname">void updateHost </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>runAfterParamChange</em>, </td>
@@ -1155,7 +1161,13 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">UpdateFromFlags&#160;</td>
-          <td class="paramname"><em>updateFromFlag</em>&#160;</td>
+          <td class="paramname"><em>updateFromFlag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>applyRecursively</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1170,6 +1182,76 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </table>
 </div><div class="memdoc">
 <p>Notify the host about all the parameters in this paramGroup and update the UI. This is useful when you change the parameters of this paramGroup (maybe several times) without notifying the Host and the UI (without using update(...)) and at the end of the process you want to update the Host and the UI from all of them at once </p>
+
+</div>
+</div>
+<a class="anchor" id="a2836ebdc46cb7552372bacf244aa4c1e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void updateProcessorFromDefaultValue </td>
+          <td>(</td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>applyRecursively</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reset all parameters in this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> to their defaultValue. If applyRecursively=true do the same for the child ParamGroups. This method should be overrided when the <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> contains variables not initialized as parameters. </p>
+
+<p>Reimplemented in <a class="el" href="class_plugin_parameters_1_1_param_matrix.html#a2836ebdc46cb7552372bacf244aa4c1e">ParamMatrix</a>, and <a class="el" href="class_plugin_parameters_1_1_param_array.html#a2836ebdc46cb7552372bacf244aa4c1e">ParamArray</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adaefde2edea906daaf695a21c9883cf4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void updateProcessorHostAndUiFromDefaultValue </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>forceRunAfterParamChange</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>forceUpdateUi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>applyRecursively</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reset all parameters in this <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> to their defaultValue. If applyRecursively=true do the same for the child ParamGroups. This method should be overrided when the <a class="el" href="class_plugin_parameters_1_1_param_group.html">ParamGroup</a> contains variables not initialized as parameters. Update for each parameter the Host and the UI accordingly. </p>
+
+<p>Reimplemented in <a class="el" href="class_plugin_parameters_1_1_param_matrix.html#adaefde2edea906daaf695a21c9883cf4">ParamMatrix</a>, and <a class="el" href="class_plugin_parameters_1_1_param_array.html#adaefde2edea906daaf695a21c9883cf4">ParamArray</a>.</p>
 
 </div>
 </div>
@@ -1215,7 +1297,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 4 2013 13:53:19 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jul 9 2013 23:35:58 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
