@@ -1,0 +1,201 @@
+/*
+  ==============================================================================
+
+   This file is part of the PluginParameters module
+   Copyright 2012-13 by MarC
+
+  ------------------------------------------------------------------------------
+
+   PluginParameters can be redistributed and/or modified under the terms of the GNU 
+   General Public License (Version 2), as published by the Free Software Foundation.
+   A copy of the license is included in the JUCE distribution, or can be found
+   online at www.gnu.org/licenses.
+
+   PluginParameters is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+   A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  ------------------------------------------------------------------------------
+
+   To release a closed-source product which uses PluginParameters, commercial licenses 
+   are available: visit http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122 
+   for more information.
+
+  ==============================================================================
+*/
+
+#ifndef __PLUGINPARAMETERS_PLUGINPROCESSOR_HEADER__
+#define __PLUGINPARAMETERS_PLUGINPROCESSOR_HEADER__
+
+#include "ParamGroups.h"
+
+/**  methods to redirect all parameters to the global list referred by the host        
+       and handle automatically automated and not automated parameters */
+class PluginProcessor : public AudioProcessor, public ParamGroup{
+private:
+  ParamGroup **groupAutomated;
+  int *indexInGroupAutomated;
+  ParamGroup **groupNonAutomated;
+  int *indexInGroupNonAutomated;  
+   
+  /** computes applyRecursively all the mappings between the global index 
+    of parameters and their ParamGroup and index in the ParamGroup */
+  void mapGlobalIndex(ParamGroup *root, bool countIfAutomate, ParamGroup **map,int *indexMap)  {
+    for (int i=0;i<root->getNumParams();i++){      
+      Param* param=root->getParam(i);
+      if (param->automationIsOn()==countIfAutomate){
+        jassert(param->getGlobalIndex()<((countIfAutomate)?getNumAutomatedParams():getNumNonAutomatedParams()));
+        map[param->getGlobalIndex()]=root;
+        indexMap[param->getGlobalIndex()]=i;
+      }
+    }
+    for (int g=0;g<root->getNumParamGroups();g++)
+      mapGlobalIndex(root->getParamGroup(g),countIfAutomate,map,indexMap);    
+  }
+  
+public:            
+  const String getName() const { return JucePlugin_Name; }
+  
+  bool acceptsMidi() const{
+  #if JucePlugin_WantsMidiInput
+    return true;
+  #else
+    return false;
+  #endif
+  }
+
+  bool producesMidi() const{
+  #if JucePlugin_ProducesMidiOutput
+    return true;
+  #else
+    return false;
+  #endif
+  } 
+
+  bool silenceInProducesSilenceOut() const{
+  #if JucePlugin_SilenceInProducesSilenceOut
+    return true;
+  #else
+    return false;
+  #endif
+  }
+  
+  /** generalization of setParameterNotifyingHost to be able to deal transparently
+      with automated and non automated parameters */ 
+  void updateHostAndUi(Param *const param, float newValue,bool runAfterParamChange=true,bool updateUi=true){             
+    const int globalIndex=param->getGlobalIndex();
+    ParamGroup *localParamGroup;
+    int paramIndex;
+    if (param->automationIsOn()){ //if automated, notify host     
+                                  //and get corresponding localParamGroup and paramIndex 
+      //notify host      
+      sendParamChangeMessageToListeners (globalIndex, newValue);      
+      localParamGroup=groupAutomated[globalIndex];
+      paramIndex=indexInGroupAutomated[globalIndex];
+      
+    } else { //if not automated skip host notification
+             // but get corresponding localParamGroup and paramIndex
+      localParamGroup=groupNonAutomated[globalIndex];
+      paramIndex=indexInGroupNonAutomated[globalIndex];
+    }
+    
+    if (runAfterParamChange){
+      //"runAfterParamChange" defined in its ParamGroup
+      localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());
+      //"runAfterParamGroupChange" defined in its parent ParamGroup
+      if (localParamGroup->getParentParamGroup()!=nullptr)
+        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),paramIndex,param->getUpdateFromFlag());
+    }
+    if (updateUi){
+      param->updateUi(true);
+    }
+    
+  }
+  
+  int getNumParameters(){
+    return getNumAutomatedParams();
+  }
+  
+  const String getParameterName (int index){
+    if (index>=0 && index<getNumAutomatedParams())
+      return groupAutomated[index]->getParam(indexInGroupAutomated[index])->getName(); 
+    else   
+      return String::empty;
+  }  
+
+  float getParameter (int index){
+    if (index>=0 && index<getNumAutomatedParams())  
+      return groupAutomated[index]->getParam(indexInGroupAutomated[index])->hostGet();
+    else
+      return 0.f;
+  }
+
+  void setParameter (int index, float newValue){     
+    if (index>=0 && index<getNumAutomatedParams()){
+      ParamGroup * const paramGroup=groupAutomated[index];
+      const int groupIndex=indexInGroupAutomated[index];
+      Param * const param=paramGroup->getParam(groupIndex);      
+      if (param->hostSet(newValue)){
+        param->updateUi(true);
+        paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+      }      
+    } 
+  }  
+   
+  /** generates the mappings between all parameters in ParamGroups and 
+    the global list of parameters, by looking at paramGroup and
+    all its children */
+  void initAllParameters(){
+    setPluginProcessor(this);
+    initParameters();
+
+    //automated parameters:
+    //groupAutomated > associated ParamGroup
+    //indexInGroupAutomated > associated index inside the ParamGroup
+    groupAutomated=new ParamGroup*[getNumAutomatedParams()];    
+    for (int i=0;i<getNumAutomatedParams();i++) groupAutomated[i]=nullptr;
+    indexInGroupAutomated=new int[getNumAutomatedParams()];
+    mapGlobalIndex(this,true,groupAutomated,indexInGroupAutomated);
+    
+    //non automated parameters:
+    //groupNonAutomated > associated ParamGroup
+    //indexInGroupNonAutomated > associated index inside the ParamGroup    
+    groupNonAutomated=new ParamGroup*[getNumNonAutomatedParams()];
+    for (int i=0;i<getNumNonAutomatedParams();i++) groupNonAutomated[i]=nullptr;
+    indexInGroupNonAutomated=new int[getNumNonAutomatedParams()];
+    mapGlobalIndex(this,false,groupNonAutomated,indexInGroupNonAutomated);  
+  }
+
+  PluginProcessor():
+    ParamGroup(JucePlugin_Name),
+    groupAutomated(nullptr),
+    indexInGroupAutomated(nullptr),
+    groupNonAutomated(nullptr),
+    indexInGroupNonAutomated(nullptr){            
+  }
+  
+  ~PluginProcessor(){
+    if (groupAutomated){
+      delete[] groupAutomated;
+      groupAutomated=nullptr;
+    }
+
+    if (groupNonAutomated){
+      delete[] groupNonAutomated;
+      groupNonAutomated=nullptr;
+    }
+    
+    if (indexInGroupAutomated){
+      delete[] indexInGroupAutomated;
+      indexInGroupAutomated=nullptr;
+    }
+
+    if (indexInGroupNonAutomated){
+      delete[] indexInGroupNonAutomated;
+      indexInGroupNonAutomated=nullptr;
+    }    
+
+  }
+};
+
+#endif
