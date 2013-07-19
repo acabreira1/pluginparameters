@@ -9,7 +9,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 ###What it does
 
 * Automatically handles automated (synchronized with the host) parameters and non-automated (independent) parameters.
-* Maps many common parameter types (boolean, integer, float, logarithmic, logarithmic with sign) to the host float range of [0,1] back and forth. Custom parameter types can also be setup by inheriting from the class Param.
+* Maps many common parameter types (boolean, integer, float, logarithmic, logarithmic with sign) to the host float range of [0,1] back and forth.
 * Allows parameters to be grouped as ParamGroups, which can be nested. This allows to create quite easily independent plugin building blocks.
 * Provides common ParamGroups as Arrays and Matrices for each defined parameter type.
 * Saves/loads selected parameter values to/from XML data. Methods are provided to save/load also entire ParamGroups directly to/from XML data.
@@ -23,7 +23,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 
 This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "plugins" folder: 
 * [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersDemo) 
-* [MidiFX](https://github.com/4drX/pluginparameters/tree/master/plugins/MidiFX)
+* [PluginParametersGroupsDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersGroupsDemo)
 
 ##[Doxygen Documentation](http://4drx.github.io/pluginparameters/annotated.html)
 
