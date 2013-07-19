@@ -80,26 +80,7 @@ public:
     float asymSignedLogVar;
     int intVar;
     bool boolVar;
-    bool boolButtonVar;
-
-    int* intArray;
-    int intArraySize;
-
-    int** intMatrix;
-    int intMatrixRows,intMatrixCols;
-
-    String *stringArray;
-    int stringArraySize;
-    
-    String **stringMatrix;
-    int stringMatrixRows,stringMatrixCols;
-
-    enum ParamGroups{
-      intArrayIndex=0,
-      intMatrixIndex,
-      stringArrayIndex,
-      stringMatrixIndex
-    };
+    bool boolButtonVar;    
       
     enum Params{        
       floatIndex=0,
@@ -119,69 +100,89 @@ public:
       addLogWith0Param(logWith0Index,"logWith0",true,true,&logWith0Var,0.001f,6.f);
       addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,true,&symSignedLogVar,-6.f,6.f,0.001f);
       addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,true,&asymSignedLogVar,-4.f,3.f,0.001f);        
-      addIntParam(intIndex,"int",true,true,&intVar,0,4);
+      addIntParam(intIndex,"int",true,true,&intVar,0,3);
       addBoolParam(boolIndex,"bool",true,true,&boolVar);
-      addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);
-        
-      //Parameter Groups
-      addIntParamArray(intArrayIndex,"intArray",true,true,intArray,&intArraySize,10,0,127);
-      addIntParamMatrix(intMatrixIndex,"intMatrix",true,true,intMatrix,&intMatrixRows,&intMatrixCols,10,10,0,127);
-      addStringParamArray(stringArrayIndex,"stringArray",false,true,stringArray,&stringArraySize,10);
-      addStringParamMatrix(stringMatrixIndex,"stringMatrix",false,true,stringMatrix,&stringMatrixRows,&stringMatrixCols,10,10);
+      addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);        
     }     
     
     void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){
       //Generally you don't want to run any updates when you are loading from XML 
-      //because it is often more efficient to initialize everything all at once when 
-      //all the parameter values have been loaded by overriding 
-      //updateProcessorHostAndUiFromXml(...) (see below).
+      //because it is often more efficient to initialize everything all at once at
+      //runAfterParamChangeBatch() which is called right after updateProcessorHostAndUiFromXml(...)            
       if (updateFromFlag&UPDATE_FROM_XML) return;
         
       switch(paramIndex){    
-        case floatIndex: {
+        case floatIndex: {          
           logVar=floatVar;
-          getParam(logIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-          logWith0Var=floatVar;
-          getParam(logWith0Index)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-          symSignedLogVar=floatVar;
-          getParam(symSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-          asymSignedLogVar=floatVar;
-          getParam(asymSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          runAfterParamChangeBatch();
+          intVar=0; //Custom setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
         }     
         case logIndex: {
           floatVar=logVar;
           getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          intVar=0; //Custom setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
         }
         case logWith0Index: {
           floatVar=logWith0Var;
           getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          intVar=0; //Custom Setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
         }
         case symSignedLogIndex: {
           floatVar=symSignedLogVar;
           getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          intVar=0; //Custom Setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
         }
         case asymSignedLogIndex: {
           floatVar=asymSignedLogVar;
           getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          intVar=0; //Custom Setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
         }
         case boolButtonIndex: {
-          AlertWindow::showMessageBox(AlertWindow::WarningIcon,"Warning!","Aaaaaah!!");
+          //reset
+          floatVar=1.f;
+          getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+          runAfterParamChangeBatch();
+          intVar=2; //Linear 1.0 Setting
+          getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
+        }
+        case intIndex: {
+          //settings
+          if (intVar==1){
+            floatVar=0.0f; //Linear 0.0 (Mute) Setting
+            getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+            runAfterParamChangeBatch();
+          } else if (intVar==2){
+            floatVar=1.f; //Linear 1.0 (Bypass) Setting
+            getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+            runAfterParamChangeBatch();   
+          } else if (intVar==3){
+            floatVar=2.f; //Linear 2.0 Setting
+            getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
+            runAfterParamChangeBatch();
+          }
         }
         default: break;
       }
                 
-    }
-    
-    void updateProcessorHostAndUiFromXml(bool forceValueChanged, bool forceUpdateUi, const bool applyRecursively){
-      ParamGroup::updateProcessorHostAndUiFromXml(forceValueChanged, forceUpdateUi, applyRecursively);
-            
-      //Initialize the plugin from the values read from XML
+    }        
+
+    void runAfterParamChangeBatch(){      
+      //updates all the other parameters with the value of logVar so that they
+      //all represent the same value in different logarithmic ranges.
+
+      //this called after a new set of values is loaded to make sure
+      //that all variables represent the same value (floatVar).
       logVar=floatVar;
       getParam(logIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
       logWith0Var=floatVar;
@@ -190,7 +191,7 @@ public:
       getParam(symSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
       asymSignedLogVar=floatVar;
       getParam(asymSignedLogIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-    }       
+    }
 
 private:
     //==============================================================================

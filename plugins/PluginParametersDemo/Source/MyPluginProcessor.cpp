@@ -29,65 +29,18 @@
 
 //==============================================================================
 MyPluginProcessor::MyPluginProcessor():
-floatVar(0),
+floatVar(1.f),
+boolVar(false),
 logVar(0),
+intVar(2),
 logWith0Var(0),
 symSignedLogVar(0),
-asymSignedLogVar(0),
-intArray(nullptr),
-intMatrix(nullptr),
-stringArray(nullptr),
-stringMatrix(nullptr)
-{
-    intArray=new int[10];
-    for (int i=0;i<10;i++)
-      intArray[i]=i;
-    intArraySize=4;    
-
-    intMatrix=new int*[10];
-    for (int i=0;i<10;i++){
-      intMatrix[i]=new int[10];
-      for (int j=0;j<10;j++)
-        intMatrix[i][j]=i+j;
-    }
-    intMatrixRows=4;
-    intMatrixCols=4;
-
-    stringArray=new String[10];
-    for (int i=0;i<10;i++)
-      stringArray[i]=(String)i;
-    stringArraySize=4;    
-
-    stringMatrix=new String*[10];
-    for (int i=0;i<10;i++){
-      stringMatrix[i]=new String[10];
-      for (int j=0;j<10;j++)
-        stringMatrix[i][j]=(String)(i+j);
-    }
-    stringMatrixRows=4;
-    stringMatrixCols=4;    
-    
+asymSignedLogVar(0)
+{    
     initAllParameters();
 }
 
 MyPluginProcessor::~MyPluginProcessor(){  
-  if (intArray)
-    delete[] intArray;
-
-  if (intMatrix){
-    for (int i=0;i<10;i++)
-      delete[] intMatrix[i];
-    delete[] intMatrix;
-  }
-
-  if (stringArray)
-    delete[] stringArray;
-
-  if (stringMatrix){
-     for (int i=0;i<10;i++)
-      delete[] stringMatrix[i];
-    delete[] stringMatrix;
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +92,8 @@ void MyPluginProcessor::reset(){
 
 void MyPluginProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/){            
     const int numSamples = buffer.getNumSamples();    
-    buffer.applyGain(0,numSamples,floatVar);
+    if (!boolVar) 
+      buffer.applyGain(0,numSamples,floatVar);
 }
 
 //------------------------------------------------------------------------------

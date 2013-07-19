@@ -44,12 +44,6 @@ public:
     sampleRate=sampleRateArg;
   }
 
-  void releaseResources(){
-  }
-
-  void reset(){
-  }
-
   void applyGain(MidiBuffer& midiBuffer, float gain){
     MidiBuffer oldMidiBuffer=midiBuffer;
     midiBuffer.clear();    

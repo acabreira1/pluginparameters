@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  5 Apr 2013 4:25:32pm
+  Creation date:  19 Jul 2013 8:03:11pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -63,27 +63,29 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
       comboBox (0),
       toggleButton (0),
       textButton (0),
-      label (0)
+      label (0),
+      label2 (0),
+      label3 (0)
 {
-    addAndMakeVisible (logSlider = new Slider (L"new slider"));
+    addAndMakeVisible (logSlider = new Slider ("new slider"));
     logSlider->setRange (0, 10, 0);
     logSlider->setSliderStyle (Slider::LinearHorizontal);
     logSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     logSlider->addListener (this);
 
-    addAndMakeVisible (logWith0Slider = new Slider (L"new slider"));
+    addAndMakeVisible (logWith0Slider = new Slider ("new slider"));
     logWith0Slider->setRange (0, 10, 0);
     logWith0Slider->setSliderStyle (Slider::LinearHorizontal);
     logWith0Slider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     logWith0Slider->addListener (this);
 
-    addAndMakeVisible (symSignedLogSlider = new Slider (L"new slider"));
+    addAndMakeVisible (symSignedLogSlider = new Slider ("new slider"));
     symSignedLogSlider->setRange (0, 10, 0);
     symSignedLogSlider->setSliderStyle (Slider::LinearHorizontal);
     symSignedLogSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     symSignedLogSlider->addListener (this);
 
-    addAndMakeVisible (asymSignedLogSlider = new Slider (L"new slider"));
+    addAndMakeVisible (asymSignedLogSlider = new Slider ("new slider"));
     asymSignedLogSlider->setRange (0, 10, 0);
     asymSignedLogSlider->setSliderStyle (Slider::LinearHorizontal);
     asymSignedLogSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
@@ -95,26 +97,27 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
     floatSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     floatSlider->addListener (this);
 
-    addAndMakeVisible (comboBox = new ComboBox (L"new combo box"));
+    addAndMakeVisible (comboBox = new ComboBox ("new combo box"));
     comboBox->setEditableText (false);
     comboBox->setJustificationType (Justification::centredLeft);
     comboBox->setTextWhenNothingSelected (String::empty);
-    comboBox->setTextWhenNoChoicesAvailable (L"(no choices)");
-    comboBox->addItem (L"first choice", 1);
-    comboBox->addItem (L"second choice", 2);
-    comboBox->addItem (L"third choice", 3);
-    comboBox->addItem (L"fourth choice", 4);
-    comboBox->addItem (L"fifth choice", 5);
+    comboBox->setTextWhenNoChoicesAvailable ("(no choices)");
+    comboBox->addItem ("Custom", 1);
+    comboBox->addItem ("Linear 0.0 (mute)", 2);
+    comboBox->addItem ("Linear 1.0 (bypass)", 3);
+    comboBox->addItem ("Linear 2.0", 4);
     comboBox->addListener (this);
 
-    addAndMakeVisible (toggleButton = new ToggleButton (L"new toggle button"));
+    addAndMakeVisible (toggleButton = new ToggleButton ("new toggle button"));
+    toggleButton->setButtonText ("bypass");
     toggleButton->addListener (this);
 
-    addAndMakeVisible (textButton = new TextButton (L"new button"));
+    addAndMakeVisible (textButton = new TextButton ("new button"));
+    textButton->setButtonText ("reset");
     textButton->addListener (this);
 
-    addAndMakeVisible (label = new Label (L"new label",
-                                          L"PluginBasicTemplate"));
+    addAndMakeVisible (label = new Label ("new label",
+                                          "LOG GAIN"));
     label->setFont (Font (15.0000f, Font::plain));
     label->setJustificationType (Justification::centredLeft);
     label->setEditable (false, false, false);
@@ -122,6 +125,24 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
     label->setColour (Label::textColourId, Colours::white);
     label->setColour (TextEditor::textColourId, Colour (0xff266177));
     label->setColour (TextEditor::backgroundColourId, Colour (0x92979e));
+
+    addAndMakeVisible (label2 = new Label ("new label",
+                                           "LINEAR GAIN"));
+    label2->setFont (Font (15.0000f, Font::plain));
+    label2->setJustificationType (Justification::centredRight);
+    label2->setEditable (false, false, false);
+    label2->setColour (Label::backgroundColourId, Colour (0x590a243c));
+    label2->setColour (Label::textColourId, Colours::white);
+    label2->setColour (TextEditor::textColourId, Colour (0xff266177));
+    label2->setColour (TextEditor::backgroundColourId, Colour (0x92979e));
+
+    addAndMakeVisible (label3 = new Label ("new label",
+                                           "Settings"));
+    label3->setFont (Font (15.0000f, Font::plain));
+    label3->setJustificationType (Justification::centredLeft);
+    label3->setEditable (false, false, false);
+    label3->setColour (TextEditor::textColourId, Colours::black);
+    label3->setColour (TextEditor::backgroundColourId, Colour (0x0));
 
 
     //[UserPreSize]
@@ -164,6 +185,8 @@ MainComponent::~MainComponent()
     deleteAndZero (toggleButton);
     deleteAndZero (textButton);
     deleteAndZero (label);
+    deleteAndZero (label2);
+    deleteAndZero (label3);
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -184,15 +207,17 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    logSlider->setBounds (13, 44, 150, 24);
-    logWith0Slider->setBounds (13, 68, 150, 24);
-    symSignedLogSlider->setBounds (13, 92, 150, 24);
-    asymSignedLogSlider->setBounds (13, 116, 150, 24);
-    floatSlider->setBounds (237, 44, 150, 24);
-    comboBox->setBounds (12, 158, 150, 24);
-    toggleButton->setBounds (237, 158, 150, 24);
-    textButton->setBounds (237, 125, 150, 24);
-    label->setBounds (12, 10, 150, 24);
+    logSlider->setBounds (13, 90, 150, 24);
+    logWith0Slider->setBounds (13, 114, 150, 24);
+    symSignedLogSlider->setBounds (13, 138, 150, 24);
+    asymSignedLogSlider->setBounds (13, 162, 150, 24);
+    floatSlider->setBounds (237, 90, 150, 24);
+    comboBox->setBounds (79, 11, 165, 24);
+    toggleButton->setBounds (311, 11, 78, 24);
+    textButton->setBounds (303, 159, 84, 24);
+    label->setBounds (12, 56, 150, 24);
+    label2->setBounds (237, 56, 150, 24);
+    label3->setBounds (9, 11, 75, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -344,42 +369,57 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="400" initialHeight="200">
   <BACKGROUND backgroundColour="ff3c6292"/>
   <SLIDER name="new slider" id="a5d6233074112b4" memberName="logSlider"
-          virtualName="" explicitFocusOrder="0" pos="13 44 150 24" min="0"
+          virtualName="" explicitFocusOrder="0" pos="13 90 150 24" min="0"
           max="10" int="0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="54e3452881627b37" memberName="logWith0Slider"
-          virtualName="" explicitFocusOrder="0" pos="13 68 150 24" min="0"
+          virtualName="" explicitFocusOrder="0" pos="13 114 150 24" min="0"
           max="10" int="0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="66f7bfbc2934e087" memberName="symSignedLogSlider"
-          virtualName="" explicitFocusOrder="0" pos="13 92 150 24" min="0"
+          virtualName="" explicitFocusOrder="0" pos="13 138 150 24" min="0"
           max="10" int="0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="dffe0563584a9c80" memberName="asymSignedLogSlider"
-          virtualName="" explicitFocusOrder="0" pos="13 116 150 24" min="0"
+          virtualName="" explicitFocusOrder="0" pos="13 162 150 24" min="0"
           max="10" int="0" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="" id="740babeabc6ef7d5" memberName="floatSlider" virtualName=""
-          explicitFocusOrder="0" pos="237 44 150 24" min="0" max="10" int="0"
+          explicitFocusOrder="0" pos="237 90 150 24" min="0" max="10" int="0"
           style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <COMBOBOX name="new combo box" id="f289956ff4c19016" memberName="comboBox"
-            virtualName="" explicitFocusOrder="0" pos="12 158 150 24" editable="0"
-            layout="33" items="first choice&#10;second choice&#10;third choice&#10;fourth choice&#10;fifth choice"
+            virtualName="" explicitFocusOrder="0" pos="79 11 165 24" editable="0"
+            layout="33" items="Custom&#10;Linear 0.0 (mute)&#10;Linear 1.0 (bypass)&#10;Linear 2.0"
             textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <TOGGLEBUTTON name="new toggle button" id="66ae8e553c25df8d" memberName="toggleButton"
-                virtualName="" explicitFocusOrder="0" pos="237 158 150 24" buttonText="new toggle button"
+                virtualName="" explicitFocusOrder="0" pos="311 11 78 24" buttonText="bypass"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TEXTBUTTON name="new button" id="93165ce6899027b0" memberName="textButton"
-              virtualName="" explicitFocusOrder="0" pos="237 125 150 24" buttonText="new button"
+              virtualName="" explicitFocusOrder="0" pos="303 159 84 24" buttonText="reset"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="new label" id="cfe5f4afbc32a96" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="12 10 150 24" bkgCol="590a243c" textCol="ffffffff"
-         edTextCol="ff266177" edBkgCol="92979e" labelText="PluginBasicTemplate"
+         explicitFocusOrder="0" pos="12 56 150 24" bkgCol="590a243c" textCol="ffffffff"
+         edTextCol="ff266177" edBkgCol="92979e" labelText="LOG GAIN" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="3ccb78d98753f837" memberName="label2" virtualName=""
+         explicitFocusOrder="0" pos="237 56 150 24" bkgCol="590a243c"
+         textCol="ffffffff" edTextCol="ff266177" edBkgCol="92979e" labelText="LINEAR GAIN"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
+         fontname="Default font" fontsize="15" bold="0" italic="0" justification="34"/>
+  <LABEL name="new label" id="6760eb32c21991bd" memberName="label3" virtualName=""
+         explicitFocusOrder="0" pos="9 11 75 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="Settings" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+
+//[EndFile] You can add extra defines here...
+//[/EndFile]

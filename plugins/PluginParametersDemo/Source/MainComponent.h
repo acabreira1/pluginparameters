@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  5 Apr 2013 4:25:32pm
+  Creation date:  19 Jul 2013 8:03:11pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -19,8 +19,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__
-#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__
+#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_EAD16169__
+#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_EAD16169__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -85,9 +85,6 @@ public:
 
 
 
-    //==============================================================================
-    juce_UseDebuggingNewOperator
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     // handy wrapper method to avoid having to cast the filter to a MyPluginProcessor
@@ -105,13 +102,15 @@ private:
     ToggleButton* toggleButton;
     TextButton* textButton;
     Label* label;
+    Label* label2;
+    Label* label3;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    MainComponent (const MainComponent&);
-    const MainComponent& operator= (const MainComponent&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_AF38EA3D__
+#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_EAD16169__

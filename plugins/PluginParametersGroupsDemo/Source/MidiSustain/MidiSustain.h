@@ -41,12 +41,6 @@ public:
   void prepareToPlay (double /*sampleRateArg*/, int /*estimatedSamplesPerBlockArg*/) {
   }
 
-  void releaseResources(){
-  }
-
-  void reset(){
-  }
-
   void processBlock(AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages){ 
     if (panicFlag){
       midiMessages.addEvent(MidiMessage::allNotesOff(lastChannel),0);

@@ -42,12 +42,6 @@ public:
     sampleRate=sampleRateArg;
   }
 
-  void releaseResources(){
-  }
-
-  void reset(){
-  }
-
   void processBlock(AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages){ 
     if (enable){           
       MidiBuffer oldMidiBuffer=midiMessages;
