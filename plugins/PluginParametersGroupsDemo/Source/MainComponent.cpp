@@ -156,13 +156,13 @@ void MainComponent::buttonClicked (Button* buttonThatWasClicked)
 void MainComponent::timerCallback(){
 	BoolParam * const bypassParam=processor->getBoolParam(MyPluginProcessor::bypassIndex);
   if (bypassToggle && bypassParam->updateUiRequested()){
-    bypassToggle->setToggleState (bypassParam->uiGet(), false);
+    bypassToggle->setToggleState (bypassParam->uiGet(), dontSendNotification);
   }
 
   IntParam * const tabParam=processor->getIntParam(MyPluginProcessor::selectedTabIndex);
   if (tabbedComponent){
     if (tabParam->updateUiRequested())
-      tabbedComponent->setCurrentTabIndex(tabParam->uiGet(),false);
+      tabbedComponent->setCurrentTabIndex(tabParam->uiGet(),dontSendNotification);
 
     Component *component=tabbedComponent->getCurrentContentComponent();
 

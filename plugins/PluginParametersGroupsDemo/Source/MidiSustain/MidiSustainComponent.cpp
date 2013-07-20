@@ -130,7 +130,7 @@ void MidiSustainComponent::timerCallback()
 {
     BoolParam *enableParam=midiSustain->getBoolParam(MidiSustain::enableIndex);
     if (enableToggle && enableParam->updateUiRequested()){
-      enableToggle->setToggleState(enableParam->uiGet(),false);
+      enableToggle->setToggleState(enableParam->uiGet(),dontSendNotification);
     }
 
 }

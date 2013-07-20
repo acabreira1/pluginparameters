@@ -342,12 +342,12 @@ void MainComponent::timerCallback(){
 
     IntParam *intParam=processor->getIntParam(MyPluginProcessor::intIndex);
     if (comboBox && intParam->updateUiRequested()){
-      comboBox->setSelectedId (intParam->uiGet()+1, true);
+      comboBox->setSelectedId (intParam->uiGet()+1, dontSendNotification);
     }
 
     BoolParam * const boolParam=processor->getBoolParam(MyPluginProcessor::boolIndex);
     if (toggleButton && boolParam->updateUiRequested()){
-      toggleButton->setToggleState (boolParam->uiGet(), false);
+      toggleButton->setToggleState (boolParam->uiGet(), dontSendNotification);
     }
 
 }
