@@ -14,10 +14,11 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 * Provides common ParamGroups as Arrays and Matrices for each defined parameter type.
 * Saves/loads selected parameter values to/from XML data. Methods are provided to save/load also entire ParamGroups directly to/from XML data.
 * Should compile correctly in Windows and (if somebody helps me double check) in OSX.
+* (only with a commercial license) It provides a Preset Manager (utilities to load/save all parameters into presets files).
 
 ###What it doesn't do
 
-* Parameters changes are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
+* Parameter changes are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
 
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
@@ -35,4 +36,4 @@ Please submit any comments, bug reports, etc here.
 
 ##License
 
-This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) but if you are interested in purchasing a commercial license to use it in proprietary code, please contact me with a PM at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347). The cost of a commercial license is 150eur.
+This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license which includes additionally a Preset Manager is available for 150eur. Please send me a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) for more information.

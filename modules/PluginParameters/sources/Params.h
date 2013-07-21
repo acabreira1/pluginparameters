@@ -125,8 +125,10 @@ public:
 
   /** Submit a request for an update in the UI. updateUiRequested() must be called then from
       the UI to query its state. */
-  void updateUi(const bool enable);  
-    
+  void updateUi(const bool enable){
+    updateUiFlag=enable;
+  }
+
   /** Called from the UI timer to determine if the widget associated to this parameter must be 
   updated or not. It automatically sets the updateUi flag to "false" after it.*/
   bool updateUiRequested(){
