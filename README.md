@@ -13,7 +13,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 * Allows parameters to be grouped as ParamGroups, which can be nested. This allows to create quite easily independent plugin building blocks.
 * Provides common ParamGroups as Arrays and Matrices for each defined parameter type.
 * Saves/loads selected parameter values to/from XML data. Methods are provided to save/load also entire ParamGroups directly to/from XML data.
-* Should compile correctly in Windows and (if somebody helps me double check) in OSX.
+* Should compile correctly in Visual Studio and Xcode.
 * (only with a commercial license) It provides a Preset Manager (utilities to load/save all parameters into presets files).
 
 ###What it doesn't do
@@ -36,4 +36,4 @@ Please submit any comments, bug reports, etc here.
 
 ##License
 
-This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license which includes additionally a Preset Manager is available for 150eur. Please send me a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) for more information.
+This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please send me a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) if you are interested.
