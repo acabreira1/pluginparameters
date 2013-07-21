@@ -9,7 +9,7 @@ can't be written in the header file are placed here.
 //protected
 
 void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
-  if (pluginProcessor=nullptr) return;  
+  if (pluginProcessor==nullptr) return;  
   updateFromFlag=UPDATE_FROM_UI;
   pluginProcessor->updateHostAndUi(this,newHostValue,true,false); 
   resetUpdateFromFlag();
@@ -18,7 +18,7 @@ void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
 //public
 
 void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool forceUpdateUi){      
-  if (pluginProcessor=nullptr) return;
+  if (pluginProcessor==nullptr) return;
   if (loadXmlFlag){
     if (updateProcessorFromXml()){
       updateFromFlag=UPDATE_FROM_XML;
@@ -35,7 +35,7 @@ void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool f
 }
 
 void Param::updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange,bool forceUpdateUi){
-  if (pluginProcessor=nullptr) return;
+  if (pluginProcessor==nullptr) return;
   if (updateProcessorFromDefaultValue()){
     updateFromFlag=UPDATE_FROM_XML;
     pluginProcessor->updateHostAndUi(this,xmlHostValue);    
@@ -51,7 +51,7 @@ void Param::updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChan
 
 void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    
   if (hostSet(newHostValue)){  
-    if (pluginProcessor=nullptr) return;
+    if (pluginProcessor==nullptr) return;
     updateFromFlag=updateFromFlagArg;     
     pluginProcessor->updateHostAndUi(this,newHostValue);    
     resetUpdateFromFlag();  
@@ -59,7 +59,7 @@ void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue
 }
 
 void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
-  if (pluginProcessor=nullptr) return;
+  if (pluginProcessor==nullptr) return;
   updateFromFlag=updateFromFlagArg;
 
   pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange);    
@@ -67,7 +67,7 @@ void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFrom
 }
 
 void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
-  if (pluginProcessor=nullptr) return;
+  if (pluginProcessor==nullptr) return;
   updateFromFlag=updateFromFlagArg;
 
   pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange,false);    
