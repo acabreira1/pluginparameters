@@ -36,4 +36,4 @@ Please submit any comments, bug reports, etc here.
 
 ##License
 
-This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please send me a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) if you are interested.
+This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please [send me](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) if you are interested.
