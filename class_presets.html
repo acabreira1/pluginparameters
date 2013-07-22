@@ -177,8 +177,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>saveAsNew</b> ()</td>
 <tr class="separator:a9554143ed7b1f8f95c9f67500d65c995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afab9a4784db2d2f1c09518bac0e261a9"><td class="memItemLeft" align="right" valign="top">virtual const String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#afab9a4784db2d2f1c09518bac0e261a9">getDefaultPresetFileName</a> () const </td></tr>
 <tr class="separator:afab9a4784db2d2f1c09518bac0e261a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66fe2066d37ebde18406fc29a31223c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66fe2066d37ebde18406fc29a31223c1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setDefaultPresetFileName</b> (String newDefaultPresetFileName)</td></tr>
+<tr class="memitem:a66fe2066d37ebde18406fc29a31223c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a66fe2066d37ebde18406fc29a31223c1">setDefaultPresetFileName</a> (String newDefaultPresetFileName)</td></tr>
 <tr class="separator:a66fe2066d37ebde18406fc29a31223c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9a6620549a25d6d225fa280067957e2"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#ae9a6620549a25d6d225fa280067957e2">newFileName</a> (String oldFileName)</td></tr>
 <tr class="separator:ae9a6620549a25d6d225fa280067957e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -488,7 +487,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Set the default name of a preset (used when a new preset is created without a name) Override this method to return a name using the variables in the parent <a class="el" href="class_param_group.html">ParamGroup</a> or set it to a new value externally with setDefaultFileName(). </p>
+<p>Get the default name of a preset (used when a new unnamed preset is saved) Override this method to return a name using the variables in the parent <a class="el" href="class_param_group.html">ParamGroup</a> or set it to a new value externally with setDefaultFileName(). </p>
 
 </div>
 </div>
@@ -981,6 +980,31 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
+<a class="anchor" id="a66fe2066d37ebde18406fc29a31223c1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setDefaultPresetFileName </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>newDefaultPresetFileName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set the default name of a preset (used when a new unnamed preset is saved) You can also override the <a class="el" href="class_presets.html#afab9a4784db2d2f1c09518bac0e261a9">getDefaultPresetFileName()</a> method to return a name using the variables in the parent <a class="el" href="class_param_group.html">ParamGroup</a>. </p>
+
+</div>
+</div>
 <a class="anchor" id="a65b8eceef0b29c71f2201b4b304dbab1"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1125,7 +1149,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 22 2013 16:58:35 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jul 22 2013 18:43:48 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

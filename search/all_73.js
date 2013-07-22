@@ -5,6 +5,7 @@ var searchData=
   ['savexmlfile',['saveXmlFile',['../class_param_group.html#a1b5b0961c2cad45496353634dcf80cc1',1,'ParamGroup']]],
   ['savexmlison',['saveXmlIsOn',['../class_param.html#afa6f7bb4806972d42ef882c90d6a7483',1,'Param']]],
   ['select',['select',['../class_presets.html#a85e260ef3d3363f9e63521009223fbbc',1,'Presets']]],
+  ['setdefaultpresetfilename',['setDefaultPresetFileName',['../class_presets.html#a66fe2066d37ebde18406fc29a31223c1',1,'Presets']]],
   ['setdefaultpresetpath',['setDefaultPresetPath',['../class_presets.html#a65b8eceef0b29c71f2201b4b304dbab1',1,'Presets']]],
   ['setloadxml',['setLoadXml',['../class_param_group.html#a12759c4770ec76d32c4d8ca6d2fe5302',1,'ParamGroup::setLoadXml()'],['../class_param.html#af27a6f7091a59ef793df4099bb97dfe1',1,'Param::setLoadXml()']]],
   ['setlocalindex',['setLocalIndex',['../class_param_group.html#a0c1229d5c734d6a6af7d09030de941d5',1,'ParamGroup']]],
