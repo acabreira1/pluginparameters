@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['getdefaultfilename',['getDefaultFileName',['../class_presets.html#ac30fc30ca6ab984bb5a42aec3648dcca',1,'Presets']]],
+  ['getdefaultpresetfilename',['getDefaultPresetFileName',['../class_presets.html#afab9a4784db2d2f1c09518bac0e261a9',1,'Presets']]],
   ['getdefaultpresetpath',['getDefaultPresetPath',['../class_presets.html#a20549d253e823aadd29c9b7cf765583f',1,'Presets']]],
   ['getglobalindex',['getGlobalIndex',['../class_param.html#aae5d8be73081330d3164d4e45d7c41e3',1,'Param']]],
   ['getindex',['getIndex',['../class_param_group.html#ac0b62ccaab7ef3adac972cea0a260ccc',1,'ParamGroup']]],
@@ -11,7 +11,7 @@ var searchData=
   ['getmaxsize',['getMaxSize',['../class_param_array.html#a2decc449eb6f1abdae23e230f155dc77',1,'ParamArray']]],
   ['getmin',['getMin',['../class_param_array.html#ac927406ce577f13ee3f98f8f5649f409',1,'ParamArray::getMin()'],['../class_param_matrix.html#ac927406ce577f13ee3f98f8f5649f409',1,'ParamMatrix::getMin()'],['../class_param.html#af149e9cdd1957e3f6f3ba059d65ef1ed',1,'Param::getMin()'],['../class_string_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'StringParam::getMin()'],['../class_float_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'FloatParam::getMin()'],['../class_log_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'LogParam::getMin()'],['../class_log_with0_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'LogWith0Param::getMin()'],['../class_log_with_sign_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'LogWithSignParam::getMin()'],['../class_int_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'IntParam::getMin()'],['../class_bool_param.html#ac927406ce577f13ee3f98f8f5649f409',1,'BoolParam::getMin()']]],
   ['getname',['getName',['../class_param_group.html#aea6808e3bf0be9e574897a21f3e344fb',1,'ParamGroup::getName()'],['../class_param.html#aea6808e3bf0be9e574897a21f3e344fb',1,'Param::getName()']]],
-  ['getnonsavedchanges',['getNonSavedChanges',['../class_presets.html#abfb1be77bef1984202246e0a6353df60',1,'Presets']]],
+  ['getnonsavedchanges',['getNonSavedChanges',['../class_param_group.html#a0bbba7f4b1bb6c1b6cda89685c25b7a5',1,'ParamGroup::getNonSavedChanges()'],['../class_presets.html#abfb1be77bef1984202246e0a6353df60',1,'Presets::getNonSavedChanges()']]],
   ['getnumautomatedparams',['getNumAutomatedParams',['../class_param_group.html#a4f29713a8a698db963610a853fd6a3a4',1,'ParamGroup']]],
   ['getnumcols',['getNumCols',['../class_param_matrix.html#a998aca3efab0bfe6d05a81d2a7a0ee38',1,'ParamMatrix']]],
   ['getnumnonautomatedparams',['getNumNonAutomatedParams',['../class_param_group.html#aaf2d85c2492da13936c12d7c22d3dbab',1,'ParamGroup']]],
