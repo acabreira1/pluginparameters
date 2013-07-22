@@ -14,7 +14,11 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 * Provides common ParamGroups as Arrays and Matrices for each defined parameter type.
 * Saves/loads selected parameter values to/from XML data. Methods are provided to save/load also entire ParamGroups directly to/from XML data.
 * Should compile correctly in Visual Studio and Xcode.
-* (only with a commercial license) It provides a Preset Manager (utilities to load/save all parameters into presets files).
+* (only with a commercial license) It provides a Preset Manager:
+
+The Presets manager is a class which provides utilities to load, save, rename, delete, reset preset files that store all parameter values of a ParamGroup recursively. It marks files that are loaded as read-only so that they cannot loaded twice or modified outside the plugin, supports preset "folder-files" (where the actual preset file is created inside a folder of the same name) and tracks unsaved changes with an "*" next to the preset file name.
+
+A demo of a possible UI for this class is available in the [PluginParametersGroupsDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersGroupsDemo) example. Additionally, it includes commented lines of the code that would be necessary to setup the Preset Manager.
 
 ###What it doesn't do
 
