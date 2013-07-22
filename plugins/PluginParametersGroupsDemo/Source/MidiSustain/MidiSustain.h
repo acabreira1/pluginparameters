@@ -72,7 +72,7 @@ public:
   void initParameters(){
     //Parameters 
     addBoolParam(enableIndex,"enable",true,true,&enable);     
-  }      
+  }  
 
   void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){
     if (updateFromFlag&UPDATE_FROM_XML)

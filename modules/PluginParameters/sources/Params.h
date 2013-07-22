@@ -219,11 +219,11 @@ public:
   void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
 
   /** Update value with the defaultValue and return true if it was different */
-  virtual bool updateProcessorFromDefaultValue() = 0;
+  virtual bool updateProcessorFromDefaultXml() = 0;
 
   /** Update the parameter value from the default value (stored in the variable
       defaultValue) and notify the host and the UI (if it has changed). */
-  void updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
+  void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
     
   Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
   pluginProcessor(pluginProcessor),
@@ -276,7 +276,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -368,7 +368,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -525,7 +525,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -703,7 +703,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -896,7 +896,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -1162,7 +1162,7 @@ public:
     return false;
   }
     
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;
@@ -1310,7 +1310,7 @@ public:
     return false;
   }
 
-  bool updateProcessorFromDefaultValue(){
+  bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
       return true;

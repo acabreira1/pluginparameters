@@ -1,20 +1,18 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  5 Apr 2013 4:05:34pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
@@ -56,43 +54,38 @@
 
 //==============================================================================
 MidiDelayComponent::MidiDelayComponent (MidiDelay *midiDelay)
-    : midiDelay(midiDelay),
-      label2 (0),
-      delaySlider (0),
-      label3 (0),
-      feedbackSlider (0),
-      enableToggle (0)
+    : midiDelay(midiDelay)
 {
-    addAndMakeVisible (label2 = new Label (L"new label",
-                                           L"Delay"));
-    label2->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label2 = new Label ("new label",
+                                           "Delay"));
+    label2->setFont (Font (15.00f, Font::plain));
     label2->setJustificationType (Justification::centred);
     label2->setEditable (false, false, false);
     label2->setColour (TextEditor::textColourId, Colours::black);
-    label2->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (delaySlider = new Slider (L"new slider"));
+    addAndMakeVisible (delaySlider = new Slider ("new slider"));
     delaySlider->setRange (0.001, 10, 0.001);
     delaySlider->setSliderStyle (Slider::Rotary);
     delaySlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     delaySlider->addListener (this);
 
-    addAndMakeVisible (label3 = new Label (L"new label",
-                                           L"Feedback"));
-    label3->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label3 = new Label ("new label",
+                                           "Feedback"));
+    label3->setFont (Font (15.00f, Font::plain));
     label3->setJustificationType (Justification::centred);
     label3->setEditable (false, false, false);
     label3->setColour (TextEditor::textColourId, Colours::black);
-    label3->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (feedbackSlider = new Slider (L"new slider"));
+    addAndMakeVisible (feedbackSlider = new Slider ("new slider"));
     feedbackSlider->setRange (0, 10, 0.001);
     feedbackSlider->setSliderStyle (Slider::Rotary);
     feedbackSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     feedbackSlider->addListener (this);
 
-    addAndMakeVisible (enableToggle = new ToggleButton (L"new toggle button"));
-    enableToggle->setButtonText (L"on/off");
+    addAndMakeVisible (enableToggle = new ToggleButton ("new toggle button"));
+    enableToggle->setButtonText ("on/off");
     enableToggle->addListener (this);
 
 
@@ -117,11 +110,11 @@ MidiDelayComponent::~MidiDelayComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    deleteAndZero (label2);
-    deleteAndZero (delaySlider);
-    deleteAndZero (label3);
-    deleteAndZero (feedbackSlider);
-    deleteAndZero (enableToggle);
+    label2 = nullptr;
+    delaySlider = nullptr;
+    label3 = nullptr;
+    feedbackSlider = nullptr;
+    enableToggle = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -134,8 +127,6 @@ void MidiDelayComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xffc4c4c4));
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -146,7 +137,7 @@ void MidiDelayComponent::resized()
     delaySlider->setBounds (8, 28, 63, 56);
     label3->setBounds (87, 92, 72, 22);
     feedbackSlider->setBounds (90, 28, 63, 56);
-    enableToggle->setBounds (7, 0, 58, 22);
+    enableToggle->setBounds (7, 3, 58, 22);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -217,9 +208,10 @@ void MidiDelayComponent::timerCallback()
 
 //==============================================================================
 #if 0
-/*  -- Jucer information section --
+/*  -- Introjucer information section --
 
-    This is where the Jucer puts all of its metadata, so don't change anything in here!
+    This is where the Introjucer stores the metadata that describe this GUI layout, so
+    make changes in here at your peril!
 
 BEGIN_JUCER_METADATA
 
@@ -228,7 +220,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="midiDelay(midiDelay)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330000013" fixedSize="1" initialWidth="800"
                  initialHeight="120">
-  <BACKGROUND backgroundColour="ffc4c4c4"/>
+  <BACKGROUND backgroundColour="c4c4c4"/>
   <LABEL name="new label" id="4b0d09074b5a8fae" memberName="label2" virtualName=""
          explicitFocusOrder="0" pos="11 91 56 23" edTextCol="ff000000"
          edBkgCol="0" labelText="Delay" editableSingleClick="0" editableDoubleClick="0"
@@ -248,10 +240,14 @@ BEGIN_JUCER_METADATA
           max="10" int="0.001" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <TOGGLEBUTTON name="new toggle button" id="6cce19736891af98" memberName="enableToggle"
-                virtualName="" explicitFocusOrder="0" pos="7 0 58 22" buttonText="on/off"
+                virtualName="" explicitFocusOrder="0" pos="7 3 58 22" buttonText="on/off"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+//[EndFile] You can add extra defines here...
+//[/EndFile]

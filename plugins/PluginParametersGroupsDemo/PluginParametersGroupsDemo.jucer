@@ -2,15 +2,19 @@
 
 <JUCERPROJECT id="0nRd9LLGO" name="PluginParametersGroupsDemo" projectType="audioplug"
               version="1.0.0" juceLinkage="amalg_multi" buildVST="1" buildRTAS="0"
-              buildAU="1" pluginName="MidiFX" pluginDesc="MidiFX" pluginManufacturer="4drX"
-              pluginManufacturerCode="4drX" pluginCode="PPM4" pluginChannelConfigs="{1, 1}, {2, 2}"
-              pluginIsSynth="1" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
-              pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="1"
-              pluginAUExportPrefix="PluginParamtersGroupsDemoAU" pluginAUViewClass="PluginModularTemplateAU_V1"
-              pluginRTASCategory="" bundleIdentifier="com.4drX.PluginParamtersGroupsDemo"
-              jucerVersion="3.1.0" aaxIdentifier="com.yourcompany.PluginModularTemplate"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics">
+              buildAU="1" pluginName="PluginParametersGroupsDemo" pluginDesc="PluginParametersGroupsDemo"
+              pluginManufacturer="4drX" pluginManufacturerCode="4drX" pluginCode="PPG4"
+              pluginChannelConfigs="{1, 1}, {2, 2}" pluginIsSynth="1" pluginWantsMidiIn="1"
+              pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginTailLength="0"
+              pluginEditorRequiresKeys="1" pluginAUExportPrefix="PluginParamtersGroupsDemoAU"
+              pluginAUViewClass="PluginModularTemplateAU_V1" pluginRTASCategory=""
+              bundleIdentifier="com.4drX.PluginParamtersGroupsDemo" jucerVersion="3.1.0"
+              aaxIdentifier="com.yourcompany.PluginModularTemplate" pluginAAXCategory="AAX_ePlugInCategory_Dynamics">
   <MAINGROUP id="pYcGZu" name="PluginParametersGroupsDemo">
+    <FILE id="Kl74GK" name="PresetsComponent.cpp" compile="1" resource="0"
+          file="Source/PresetsComponent.cpp"/>
+    <FILE id="ijFrk2" name="PresetsComponent.h" compile="0" resource="0"
+          file="Source/PresetsComponent.h"/>
     <FILE id="yClmYF" name="MyPluginProcessor.cpp" compile="1" resource="0"
           file="Source/MyPluginProcessor.cpp"/>
     <FILE id="thDRGu" name="MyPluginProcessor.h" compile="0" resource="0"

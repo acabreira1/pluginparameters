@@ -34,19 +34,21 @@ void Param::updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange,bool f
 	}
 }
 
-void Param::updateProcessorHostAndUiFromDefaultValue(bool forceRunAfterParamChange,bool forceUpdateUi){
+void Param::updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange,bool forceUpdateUi){
   if (pluginProcessor==nullptr) return;
-  if (updateProcessorFromDefaultValue()){
-    updateFromFlag=UPDATE_FROM_XML;
-    pluginProcessor->updateHostAndUi(this,xmlHostValue);    
-    resetUpdateFromFlag();
-  } else if (forceRunAfterParamChange){
-    updateFromFlag=UPDATE_FROM_XML;
-    pluginProcessor->updateHostAndUi(this,xmlHostValue,true,forceUpdateUi);    
-    resetUpdateFromFlag();
-  } else if (forceUpdateUi){
-    updateUi(true);
-  }   
+  if (loadXmlFlag){
+    if (updateProcessorFromDefaultXml()){
+      updateFromFlag=UPDATE_FROM_XML;
+      pluginProcessor->updateHostAndUi(this,xmlHostValue);    
+      resetUpdateFromFlag();
+    } else if (forceRunAfterParamChange){
+      updateFromFlag=UPDATE_FROM_XML;
+      pluginProcessor->updateHostAndUi(this,xmlHostValue,true,forceUpdateUi);    
+      resetUpdateFromFlag();
+    } else if (forceUpdateUi){
+      updateUi(true);
+    }   
+  }
 }
 
 void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    

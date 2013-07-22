@@ -74,15 +74,17 @@ public:
     bool bypass;    
     int selectedTab;
 
+    //Presets presets;
     MidiDelay midiDelay;
     MidiNoteGain midiNoteGain;
-    MidiSustain midiSustain;
+    MidiSustain midiSustain;    
    
     enum ParamGroups{
+      //presetsIndex=0,
       midiDelayIndex=0,
       midiNoteGainIndex,
       midiSustainIndex,
-      numParamGroups
+      lastParamGroupIndex
     };
       
     enum Params{        
@@ -93,13 +95,19 @@ public:
     void initParameters(){        
       //Parameters   
       addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
-      addIntParam(selectedTabIndex,"selectedTab",false,true,&selectedTab,0,numParamGroups-1);
+      //numTabs=lastParamGroupIndex-2
+      addIntParam(selectedTabIndex,"selectedTab",false,false,&selectedTab,0,lastParamGroupIndex-2);
         
       //Parameter Groups
+      //addParamGroup(presetsIndex,&presets);
       addParamGroup(midiDelayIndex,&midiDelay);
       addParamGroup(midiNoteGainIndex,&midiNoteGain);
       addParamGroup(midiSustainIndex,&midiSustain);
-    }                          
+    }
+
+    void runAfterNonSavedChangesChange(){
+      //presets.setNonSavedChanges(true);
+    }
        
 private:
     //==============================================================================

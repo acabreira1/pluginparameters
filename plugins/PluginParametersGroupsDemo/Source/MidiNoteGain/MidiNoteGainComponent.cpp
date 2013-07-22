@@ -1,20 +1,18 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  5 Apr 2013 4:04:56pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
@@ -56,200 +54,175 @@
 
 //==============================================================================
 MidiNoteGainComponent::MidiNoteGainComponent (MidiNoteGain *midiNoteGain)
-    : midiNoteGain(midiNoteGain),
-      label12 (0),
-      label2 (0),
-      slider1 (0),
-      label3 (0),
-      slider2 (0),
-      label4 (0),
-      slider3 (0),
-      label5 (0),
-      slider4 (0),
-      label6 (0),
-      slider5 (0),
-      label7 (0),
-      slider6 (0),
-      label8 (0),
-      slider7 (0),
-      label9 (0),
-      slider8 (0),
-      label10 (0),
-      slider10 (0),
-      label11 (0),
-      slider11 (0),
-      slider12 (0),
-      enableToggle (0),
-      label13 (0),
-      slider9 (0)
+    : midiNoteGain(midiNoteGain)
 {
-    addAndMakeVisible (label12 = new Label (L"new label",
-                                            L"B"));
-    label12->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label12 = new Label ("new label",
+                                            "B"));
+    label12->setFont (Font (15.00f, Font::plain));
     label12->setJustificationType (Justification::centred);
     label12->setEditable (false, false, false);
     label12->setColour (TextEditor::textColourId, Colours::black);
-    label12->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label12->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (label2 = new Label (L"new label",
-                                           L"C"));
-    label2->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label2 = new Label ("new label",
+                                           "C"));
+    label2->setFont (Font (15.00f, Font::plain));
     label2->setJustificationType (Justification::centred);
     label2->setEditable (false, false, false);
     label2->setColour (TextEditor::textColourId, Colours::black);
-    label2->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider1 = new Slider (L"new slider"));
+    addAndMakeVisible (slider1 = new Slider ("new slider"));
     slider1->setRange (0, 10, 1);
     slider1->setSliderStyle (Slider::Rotary);
     slider1->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider1->addListener (this);
 
-    addAndMakeVisible (label3 = new Label (L"new label",
-                                           L"Db"));
-    label3->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label3 = new Label ("new label",
+                                           "Db"));
+    label3->setFont (Font (15.00f, Font::plain));
     label3->setJustificationType (Justification::centred);
     label3->setEditable (false, false, false);
     label3->setColour (TextEditor::textColourId, Colours::black);
-    label3->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider2 = new Slider (L"new slider"));
+    addAndMakeVisible (slider2 = new Slider ("new slider"));
     slider2->setRange (0, 10, 1);
     slider2->setSliderStyle (Slider::Rotary);
     slider2->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider2->addListener (this);
 
-    addAndMakeVisible (label4 = new Label (L"new label",
-                                           L"D"));
-    label4->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label4 = new Label ("new label",
+                                           "D"));
+    label4->setFont (Font (15.00f, Font::plain));
     label4->setJustificationType (Justification::centred);
     label4->setEditable (false, false, false);
     label4->setColour (TextEditor::textColourId, Colours::black);
-    label4->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider3 = new Slider (L"new slider"));
+    addAndMakeVisible (slider3 = new Slider ("new slider"));
     slider3->setRange (0, 10, 1);
     slider3->setSliderStyle (Slider::Rotary);
     slider3->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider3->addListener (this);
 
-    addAndMakeVisible (label5 = new Label (L"new label",
-                                           L"Eb"));
-    label5->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label5 = new Label ("new label",
+                                           "Eb"));
+    label5->setFont (Font (15.00f, Font::plain));
     label5->setJustificationType (Justification::centred);
     label5->setEditable (false, false, false);
     label5->setColour (TextEditor::textColourId, Colours::black);
-    label5->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider4 = new Slider (L"new slider"));
+    addAndMakeVisible (slider4 = new Slider ("new slider"));
     slider4->setRange (0, 10, 1);
     slider4->setSliderStyle (Slider::Rotary);
     slider4->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider4->addListener (this);
 
-    addAndMakeVisible (label6 = new Label (L"new label",
-                                           L"E"));
-    label6->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label6 = new Label ("new label",
+                                           "E"));
+    label6->setFont (Font (15.00f, Font::plain));
     label6->setJustificationType (Justification::centred);
     label6->setEditable (false, false, false);
     label6->setColour (TextEditor::textColourId, Colours::black);
-    label6->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label6->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider5 = new Slider (L"new slider"));
+    addAndMakeVisible (slider5 = new Slider ("new slider"));
     slider5->setRange (0, 10, 1);
     slider5->setSliderStyle (Slider::Rotary);
     slider5->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider5->addListener (this);
 
-    addAndMakeVisible (label7 = new Label (L"new label",
-                                           L"F"));
-    label7->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label7 = new Label ("new label",
+                                           "F"));
+    label7->setFont (Font (15.00f, Font::plain));
     label7->setJustificationType (Justification::centred);
     label7->setEditable (false, false, false);
     label7->setColour (TextEditor::textColourId, Colours::black);
-    label7->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label7->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider6 = new Slider (L"new slider"));
+    addAndMakeVisible (slider6 = new Slider ("new slider"));
     slider6->setRange (0, 10, 1);
     slider6->setSliderStyle (Slider::Rotary);
     slider6->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider6->addListener (this);
 
-    addAndMakeVisible (label8 = new Label (L"new label",
-                                           L"Gb"));
-    label8->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label8 = new Label ("new label",
+                                           "Gb"));
+    label8->setFont (Font (15.00f, Font::plain));
     label8->setJustificationType (Justification::centred);
     label8->setEditable (false, false, false);
     label8->setColour (TextEditor::textColourId, Colours::black);
-    label8->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label8->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider7 = new Slider (L"new slider"));
+    addAndMakeVisible (slider7 = new Slider ("new slider"));
     slider7->setRange (0, 10, 1);
     slider7->setSliderStyle (Slider::Rotary);
     slider7->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider7->addListener (this);
 
-    addAndMakeVisible (label9 = new Label (L"new label",
-                                           L"G"));
-    label9->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label9 = new Label ("new label",
+                                           "G"));
+    label9->setFont (Font (15.00f, Font::plain));
     label9->setJustificationType (Justification::centred);
     label9->setEditable (false, false, false);
     label9->setColour (TextEditor::textColourId, Colours::black);
-    label9->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label9->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider8 = new Slider (L"new slider"));
+    addAndMakeVisible (slider8 = new Slider ("new slider"));
     slider8->setRange (0, 10, 1);
     slider8->setSliderStyle (Slider::Rotary);
     slider8->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider8->addListener (this);
 
-    addAndMakeVisible (label10 = new Label (L"new label",
-                                            L"A"));
-    label10->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label10 = new Label ("new label",
+                                            "A"));
+    label10->setFont (Font (15.00f, Font::plain));
     label10->setJustificationType (Justification::centred);
     label10->setEditable (false, false, false);
     label10->setColour (TextEditor::textColourId, Colours::black);
-    label10->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label10->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider10 = new Slider (L"new slider"));
+    addAndMakeVisible (slider10 = new Slider ("new slider"));
     slider10->setRange (0, 10, 1);
     slider10->setSliderStyle (Slider::Rotary);
     slider10->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider10->addListener (this);
 
-    addAndMakeVisible (label11 = new Label (L"new label",
-                                            L"Bb"));
-    label11->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label11 = new Label ("new label",
+                                            "Bb"));
+    label11->setFont (Font (15.00f, Font::plain));
     label11->setJustificationType (Justification::centred);
     label11->setEditable (false, false, false);
     label11->setColour (TextEditor::textColourId, Colours::black);
-    label11->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label11->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider11 = new Slider (L"new slider"));
+    addAndMakeVisible (slider11 = new Slider ("new slider"));
     slider11->setRange (0, 10, 1);
     slider11->setSliderStyle (Slider::Rotary);
     slider11->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider11->addListener (this);
 
-    addAndMakeVisible (slider12 = new Slider (L"new slider"));
+    addAndMakeVisible (slider12 = new Slider ("new slider"));
     slider12->setRange (0, 10, 1);
     slider12->setSliderStyle (Slider::Rotary);
     slider12->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     slider12->addListener (this);
 
-    addAndMakeVisible (enableToggle = new ToggleButton (L"new toggle button"));
-    enableToggle->setButtonText (L"on/off");
+    addAndMakeVisible (enableToggle = new ToggleButton ("new toggle button"));
+    enableToggle->setButtonText ("on/off");
     enableToggle->addListener (this);
 
-    addAndMakeVisible (label13 = new Label (L"new label",
-                                            L"Ab\n"));
-    label13->setFont (Font (15.0000f, Font::plain));
+    addAndMakeVisible (label13 = new Label ("new label",
+                                            "Ab\n"));
+    label13->setFont (Font (15.00f, Font::plain));
     label13->setJustificationType (Justification::centred);
     label13->setEditable (false, false, false);
     label13->setColour (TextEditor::textColourId, Colours::black);
-    label13->setColour (TextEditor::backgroundColourId, Colour (0x0));
+    label13->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (slider9 = new Slider (L"new slider"));
+    addAndMakeVisible (slider9 = new Slider ("new slider"));
     slider9->setRange (0, 10, 1);
     slider9->setSliderStyle (Slider::Rotary);
     slider9->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
@@ -287,31 +260,31 @@ MidiNoteGainComponent::~MidiNoteGainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    deleteAndZero (label12);
-    deleteAndZero (label2);
-    deleteAndZero (slider1);
-    deleteAndZero (label3);
-    deleteAndZero (slider2);
-    deleteAndZero (label4);
-    deleteAndZero (slider3);
-    deleteAndZero (label5);
-    deleteAndZero (slider4);
-    deleteAndZero (label6);
-    deleteAndZero (slider5);
-    deleteAndZero (label7);
-    deleteAndZero (slider6);
-    deleteAndZero (label8);
-    deleteAndZero (slider7);
-    deleteAndZero (label9);
-    deleteAndZero (slider8);
-    deleteAndZero (label10);
-    deleteAndZero (slider10);
-    deleteAndZero (label11);
-    deleteAndZero (slider11);
-    deleteAndZero (slider12);
-    deleteAndZero (enableToggle);
-    deleteAndZero (label13);
-    deleteAndZero (slider9);
+    label12 = nullptr;
+    label2 = nullptr;
+    slider1 = nullptr;
+    label3 = nullptr;
+    slider2 = nullptr;
+    label4 = nullptr;
+    slider3 = nullptr;
+    label5 = nullptr;
+    slider4 = nullptr;
+    label6 = nullptr;
+    slider5 = nullptr;
+    label7 = nullptr;
+    slider6 = nullptr;
+    label8 = nullptr;
+    slider7 = nullptr;
+    label9 = nullptr;
+    slider8 = nullptr;
+    label10 = nullptr;
+    slider10 = nullptr;
+    label11 = nullptr;
+    slider11 = nullptr;
+    slider12 = nullptr;
+    enableToggle = nullptr;
+    label13 = nullptr;
+    slider9 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -323,8 +296,6 @@ void MidiNoteGainComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0xffc4c4c4));
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -354,7 +325,7 @@ void MidiNoteGainComponent::resized()
     label11->setBounds (664, 92, 72, 23);
     slider11->setBounds (667, 28, 63, 56);
     slider12->setBounds (733, 28, 63, 56);
-    enableToggle->setBounds (7, 0, 58, 22);
+    enableToggle->setBounds (7, 3, 58, 22);
     label13->setBounds (538, 91, 56, 24);
     slider9->setBounds (535, 28, 63, 56);
     //[UserResized] Add your own custom resize handling here..
@@ -539,9 +510,10 @@ void MidiNoteGainComponent::timerCallback()
 
 //==============================================================================
 #if 0
-/*  -- Jucer information section --
+/*  -- Introjucer information section --
 
-    This is where the Jucer puts all of its metadata, so don't change anything in here!
+    This is where the Introjucer stores the metadata that describe this GUI layout, so
+    make changes in here at your peril!
 
 BEGIN_JUCER_METADATA
 
@@ -550,7 +522,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="midiNoteGain(midiNoteGain)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330000013" fixedSize="1"
                  initialWidth="800" initialHeight="120">
-  <BACKGROUND backgroundColour="ffc4c4c4"/>
+  <BACKGROUND backgroundColour="c4c4c4"/>
   <LABEL name="new label" id="2f649db6d367e3da" memberName="label12" virtualName=""
          explicitFocusOrder="0" pos="730 92 72 23" edTextCol="ff000000"
          edBkgCol="0" labelText="B" editableSingleClick="0" editableDoubleClick="0"
@@ -651,7 +623,7 @@ BEGIN_JUCER_METADATA
           max="10" int="1" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1"/>
   <TOGGLEBUTTON name="new toggle button" id="6cce19736891af98" memberName="enableToggle"
-                virtualName="" explicitFocusOrder="0" pos="7 0 58 22" buttonText="on/off"
+                virtualName="" explicitFocusOrder="0" pos="7 3 58 22" buttonText="on/off"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="9769bbff7c3670cb" memberName="label13" virtualName=""
          explicitFocusOrder="0" pos="538 91 56 24" edTextCol="ff000000"
@@ -667,3 +639,7 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+//[EndFile] You can add extra defines here...
+//[/EndFile]

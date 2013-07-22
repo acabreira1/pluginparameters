@@ -1,26 +1,24 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  5 Apr 2013 4:05:34pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__
-#define __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__
+#ifndef __JUCE_HEADER_35B3A8E354824E42__
+#define __JUCE_HEADER_35B3A8E354824E42__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -86,27 +84,24 @@ public:
 
 
 
-    //==============================================================================
-    juce_UseDebuggingNewOperator
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     MidiDelay *midiDelay;
     //[/UserVariables]
 
     //==============================================================================
-    Label* label2;
-    Slider* delaySlider;
-    Label* label3;
-    Slider* feedbackSlider;
-    ToggleButton* enableToggle;
+    ScopedPointer<Label> label2;
+    ScopedPointer<Slider> delaySlider;
+    ScopedPointer<Label> label3;
+    ScopedPointer<Slider> feedbackSlider;
+    ScopedPointer<ToggleButton> enableToggle;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    MidiDelayComponent (const MidiDelayComponent&);
-    const MidiDelayComponent& operator= (const MidiDelayComponent&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiDelayComponent)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_MIDIDELAYCOMPONENT_MIDIDELAYCOMPONENT_3988CE56__
+#endif   // __JUCE_HEADER_35B3A8E354824E42__

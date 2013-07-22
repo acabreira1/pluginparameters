@@ -1,26 +1,24 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  6 Apr 2013 2:03:12pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__
-#define __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__
+#ifndef __JUCE_HEADER_9002020A4DD09B20__
+#define __JUCE_HEADER_9002020A4DD09B20__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -52,6 +50,7 @@
 #include "MyPluginProcessor.h"
 //[/Headers]
 
+#include "PresetsComponent.h"
 
 
 //==============================================================================
@@ -75,6 +74,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void timerCallback();
+    TooltipWindow tooltipWindow;
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -82,9 +82,6 @@ public:
     void buttonClicked (Button* buttonThatWasClicked);
 
 
-
-    //==============================================================================
-    juce_UseDebuggingNewOperator
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -100,16 +97,16 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    TabbedComponent* tabbedComponent;
-    ToggleButton* bypassToggle;
-    Label* label;
+    ScopedPointer<TabbedComponent> tabbedComponent;
+    ScopedPointer<ToggleButton> bypassToggle;
+    ScopedPointer<PresetsComponent> presetsComponent;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    MainComponent (const MainComponent&);
-    const MainComponent& operator= (const MainComponent&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_MAINCOMPONENT_MAINCOMPONENT_3648244B__
+#endif   // __JUCE_HEADER_9002020A4DD09B20__

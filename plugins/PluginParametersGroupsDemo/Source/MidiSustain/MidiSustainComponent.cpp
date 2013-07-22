@@ -1,20 +1,18 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  5 Apr 2013 4:05:15pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
@@ -56,11 +54,10 @@
 
 //==============================================================================
 MidiSustainComponent::MidiSustainComponent (MidiSustain *midiSustain)
-    : midiSustain(midiSustain),
-      enableToggle (0)
+    : midiSustain(midiSustain)
 {
-    addAndMakeVisible (enableToggle = new ToggleButton (L"new toggle button"));
-    enableToggle->setButtonText (L"on/off");
+    addAndMakeVisible (enableToggle = new ToggleButton ("new toggle button"));
+    enableToggle->setButtonText ("on/off");
     enableToggle->addListener (this);
 
 
@@ -80,7 +77,7 @@ MidiSustainComponent::~MidiSustainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    deleteAndZero (enableToggle);
+    enableToggle = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -93,15 +90,13 @@ void MidiSustainComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xffc4c4c4));
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
 void MidiSustainComponent::resized()
 {
-    enableToggle->setBounds (7, 0, 58, 22);
+    enableToggle->setBounds (7, 3, 58, 22);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -141,9 +136,10 @@ void MidiSustainComponent::timerCallback()
 
 //==============================================================================
 #if 0
-/*  -- Jucer information section --
+/*  -- Introjucer information section --
 
-    This is where the Jucer puts all of its metadata, so don't change anything in here!
+    This is where the Introjucer stores the metadata that describe this GUI layout, so
+    make changes in here at your peril!
 
 BEGIN_JUCER_METADATA
 
@@ -152,12 +148,16 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="midiSustain(midiSustain)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330000013" fixedSize="1"
                  initialWidth="800" initialHeight="120">
-  <BACKGROUND backgroundColour="ffc4c4c4"/>
+  <BACKGROUND backgroundColour="c4c4c4"/>
   <TOGGLEBUTTON name="new toggle button" id="6cce19736891af98" memberName="enableToggle"
-                virtualName="" explicitFocusOrder="0" pos="7 0 58 22" buttonText="on/off"
+                virtualName="" explicitFocusOrder="0" pos="7 3 58 22" buttonText="on/off"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+//[EndFile] You can add extra defines here...
+//[/EndFile]

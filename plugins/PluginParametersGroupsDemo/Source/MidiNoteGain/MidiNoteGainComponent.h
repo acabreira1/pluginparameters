@@ -1,26 +1,24 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  5 Apr 2013 4:04:56pm
+  This is an automatically generated GUI class created by the Introjucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright 2004-13 by Raw Material Software Ltd.
 
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__
-#define __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__
+#ifndef __JUCE_HEADER_366350E7F2E5F95A__
+#define __JUCE_HEADER_366350E7F2E5F95A__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -86,47 +84,44 @@ public:
 
 
 
-    //==============================================================================
-    juce_UseDebuggingNewOperator
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     MidiNoteGain *midiNoteGain;
     //[/UserVariables]
 
     //==============================================================================
-    Label* label12;
-    Label* label2;
-    Slider* slider1;
-    Label* label3;
-    Slider* slider2;
-    Label* label4;
-    Slider* slider3;
-    Label* label5;
-    Slider* slider4;
-    Label* label6;
-    Slider* slider5;
-    Label* label7;
-    Slider* slider6;
-    Label* label8;
-    Slider* slider7;
-    Label* label9;
-    Slider* slider8;
-    Label* label10;
-    Slider* slider10;
-    Label* label11;
-    Slider* slider11;
-    Slider* slider12;
-    ToggleButton* enableToggle;
-    Label* label13;
-    Slider* slider9;
+    ScopedPointer<Label> label12;
+    ScopedPointer<Label> label2;
+    ScopedPointer<Slider> slider1;
+    ScopedPointer<Label> label3;
+    ScopedPointer<Slider> slider2;
+    ScopedPointer<Label> label4;
+    ScopedPointer<Slider> slider3;
+    ScopedPointer<Label> label5;
+    ScopedPointer<Slider> slider4;
+    ScopedPointer<Label> label6;
+    ScopedPointer<Slider> slider5;
+    ScopedPointer<Label> label7;
+    ScopedPointer<Slider> slider6;
+    ScopedPointer<Label> label8;
+    ScopedPointer<Slider> slider7;
+    ScopedPointer<Label> label9;
+    ScopedPointer<Slider> slider8;
+    ScopedPointer<Label> label10;
+    ScopedPointer<Slider> slider10;
+    ScopedPointer<Label> label11;
+    ScopedPointer<Slider> slider11;
+    ScopedPointer<Slider> slider12;
+    ScopedPointer<ToggleButton> enableToggle;
+    ScopedPointer<Label> label13;
+    ScopedPointer<Slider> slider9;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    MidiNoteGainComponent (const MidiNoteGainComponent&);
-    const MidiNoteGainComponent& operator= (const MidiNoteGainComponent&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiNoteGainComponent)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_MIDINOTEGAINCOMPONENT_MIDINOTEGAINCOMPONENT_E053D963__
+#endif   // __JUCE_HEADER_366350E7F2E5F95A__

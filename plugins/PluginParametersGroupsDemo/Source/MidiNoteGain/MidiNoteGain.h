@@ -72,7 +72,7 @@ public:
     
     //Parameter Groups
     addIntParamArray(noteVelocitiesIndex,"noteVelocities",true,true,noteVelocities,&numNotes,12,0,127);
-  }  
+  }
 
   MidiNoteGain():
   ParamGroup("MidiNoteGain"),
