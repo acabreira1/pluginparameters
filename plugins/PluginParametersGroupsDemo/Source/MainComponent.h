@@ -39,10 +39,7 @@
    A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses PluginParameters, commercial licenses
-   are available: visit LINK for more information.
-
+  
   ==============================================================================
 */
 

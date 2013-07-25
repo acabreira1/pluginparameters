@@ -1,25 +1,18 @@
 /*
   ==============================================================================
 
-   This file is part of the PluginParameters module
    Copyright 2012-13 by MarC
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the GNU 
+   This file can be redistributed and/or modified under the terms of the GNU 
    General Public License (Version 2), as published by the Free Software Foundation.
    A copy of the license is included in the JUCE distribution, or can be found
    online at www.gnu.org/licenses.
 
-   PluginParameters is distributed in the hope that it will be useful, but WITHOUT ANY
+   This file is distributed in the hope that it will be useful, but WITHOUT ANY
    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
    A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-  ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses PluginParameters, commercial licenses 
-   are available: visit http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122  
-   for more information.
 
   ==============================================================================
 */
@@ -44,12 +37,12 @@ void MyPluginProcessor::getStateInformation (MemoryBlock& destData){
   XmlElement xml(JucePlugin_Name);
   
   //getParamGroup(presetsIndex)->setSaveXml(true,true);
-  //getParam(selectedTabIndex)->setSaveXml(true);
+  getParam(selectedTabIndex)->setSaveXml(true);
 
   saveXml(&xml,false,true);  
 
   //getParamGroup(presetsIndex)->setSaveXml(false,true);
-  //getParam(selectedTabIndex)->setSaveXml(false);
+  getParam(selectedTabIndex)->setSaveXml(false);
 
   //Save it as binary data
   copyXmlToBinary (xml, destData);
@@ -62,7 +55,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
   // Check that it is valid XML and that the tag has name JucePlugin_Name.
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){         
     //getParamGroup(presetsIndex)->setLoadXml(true,true);
-    //getParam(selectedTabIndex)->setLoadXml(true);
+    getParam(selectedTabIndex)->setLoadXml(true);
     
     //Preload XML values into memory
     loadXml(xmlState, true);
@@ -71,7 +64,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
   }
 
   //getParamGroup(presetsIndex)->setLoadXml(false,true);
-  //getParam(selectedTabIndex)->setLoadXml(false);
+  getParam(selectedTabIndex)->setLoadXml(false);
 }
 
 //------------------------------------------------------------------------------
