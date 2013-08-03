@@ -89,6 +89,7 @@ private:
     void 	changeListenerCallback (ChangeBroadcaster *source){
       if (source==&tabbedComponent->getTabbedButtonBar()){
         processor->getIntParam(MyPluginProcessor::selectedTabIndex)->updateProcessorAndHostFromUi(tabbedComponent->getCurrentTabIndex());
+        timerCallback();
       }
     }
     //[/UserVariables]

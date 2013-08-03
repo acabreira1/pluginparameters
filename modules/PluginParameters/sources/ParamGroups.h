@@ -519,12 +519,24 @@ public:
     return xml.writeToFile(file,dtdToUse);
   }
   
-  /** Delete info (its XML file by default) about this paramGroup from disk. */
+  /** Delete an XML file asociated with this paramGroup from disk. 
+      You may want to reimplement it when you are coding
+      'nested' presets. */
   virtual bool removeXmlFile(const File &file){
     if (!file.exists())
       return false;    
                   
     return file.deleteFile();   
+  }
+
+  /** Rename an XML file asociated with this paramGroup from disk. 
+      You may want to reimplement it when you are coding
+      'nested' presets. */
+  virtual bool renameXmlFile(const File &file,const File &newFile){
+    if (!file.exists())
+      return false;
+
+    return file.moveFileTo(newFile);
   }
   
   /** Preload Xml values from all parameters into xmlValue. It is not 
@@ -576,6 +588,10 @@ public:
         getParamGroup(g)->updateProcessorFromXml(true);
       }
     }
+    if (getNonSavedChanges()){
+      setNonSavedChanges(false);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();        
   }  
 
@@ -593,11 +609,7 @@ public:
       for (int g=0;g<getNumParamGroups();g++){
         getParamGroup(g)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
       }
-    }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    }    
     if (getNonSavedChanges()){
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
@@ -618,6 +630,10 @@ public:
       for (int i=0;i<paramGroupList.size();i++)
         paramGroupList[i]->updateProcessorFromDefaultXml(true);
     }
+    if (!getNonSavedChanges()){
+      setNonSavedChanges(true);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();
   }
 
@@ -634,11 +650,7 @@ public:
     if (applyRecursively){
       for (int i=0;i<paramGroupList.size();i++)
         paramGroupList[i]->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi,true);
-    }    
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    }        
     if (!getNonSavedChanges()){
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
@@ -785,7 +797,10 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromDefaultXml(true);
     }
-
+    if (!getNonSavedChanges()){
+      setNonSavedChanges(true);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();
   }
 
@@ -829,7 +844,10 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromXml(true);
     }
-
+    if (getNonSavedChanges()){
+      setNonSavedChanges(false);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();
   }  
 
@@ -1551,7 +1569,10 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromDefaultXml(true);
     }
-
+    if (!getNonSavedChanges()){
+      setNonSavedChanges(true);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();
   }
 
@@ -1602,7 +1623,10 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromXml(true);
     }
-
+    if (getNonSavedChanges()){
+      setNonSavedChanges(false);
+      runAfterNonSavedChangesChange();
+    }
     runAfterParamBatchChange();
   }
 

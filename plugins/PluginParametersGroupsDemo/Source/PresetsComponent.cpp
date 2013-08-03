@@ -231,48 +231,26 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == newPresetButton)
     {
         //[UserButtonCode_newPresetButton] -- add your button handler code here..
-        //presets->reset();
         //[/UserButtonCode_newPresetButton]
     }
     else if (buttonThatWasClicked == renamePresetButton)
     {
-        //[UserButtonCode_renamePresetButton] -- add your button handler code here..
-        /*if (presets->getLastSelectedPreset()!=File::nonexistent){
-          String extensionFilter="*."+presets->getPresetFileExtension();
-          if (presets->presetsAreFolders())
-            extensionFilter="*";
-		      FileChooser myChooser ("Please enter a new name...",
-          File(presets->getDefaultPresetPath()),extensionFilter,true);
-
-          if (myChooser.browseForFileToSave(true)){
-            if (!myChooser.getResult().hasWriteAccess()){
-              AlertWindow::showMessageBox (AlertWindow::WarningIcon,
-                                          "Error reading file" ,
-                                          "Sorry mate, this preset file is already open.");
-            } else
-              presets->rename(myChooser.getResult(),true);
-          }
-        }*/
+        //[UserButtonCode_renamePresetButton] -- add your button handler code here..        
         //[/UserButtonCode_renamePresetButton]
     }
     else if (buttonThatWasClicked == reloadPresetButton)
     {
-        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..
-        /*if (presets->getLastSelectedPreset()!=File::nonexistent){
-          presets->reread();
-        }*/
+        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..        
         //[/UserButtonCode_reloadPresetButton]
     }
     else if (buttonThatWasClicked == savePresetButton)
     {
         //[UserButtonCode_savePresetButton] -- add your button handler code here..
-        //presets->save();
         //[/UserButtonCode_savePresetButton]
     }
     else if (buttonThatWasClicked == saveAsNewPresetButton)
     {
         //[UserButtonCode_saveAsNewPresetButton] -- add your button handler code here..
-        //presets->saveAsNew();
         //[/UserButtonCode_saveAsNewPresetButton]
     }
     else if (buttonThatWasClicked == leftButton)

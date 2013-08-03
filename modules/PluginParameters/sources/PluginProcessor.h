@@ -99,15 +99,15 @@ public:
       paramIndex=indexInGroupNonAutomated[globalIndex];
     }
     
-    //register non saved changes in the ParamGroup
-    if (param->getUpdateFromFlag()!=UPDATE_FROM_XML && param->saveXmlIsOn()){
-      if (!localParamGroup->getNonSavedChanges()){
-        localParamGroup->setNonSavedChanges(true);
-        localParamGroup->runAfterNonSavedChangesChange();
-      }
-    }
-    
     if (runAfterParamChange){
+      //register non saved changes in the ParamGroup
+      if (param->getUpdateFromFlag()!=UPDATE_FROM_XML && param->saveXmlIsOn()){
+        if (!localParamGroup->getNonSavedChanges()){
+          localParamGroup->setNonSavedChanges(true);
+          localParamGroup->runAfterNonSavedChangesChange();
+        }
+      }
+      
       //"runAfterParamChange" defined in its ParamGroup
       localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());
       //"runAfterParamGroupChange" defined in its parent ParamGroup
