@@ -296,6 +296,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="separator:a1b5b0961c2cad45496353634dcf80cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade01223a1debadfd640a6d02abdf839f"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ade01223a1debadfd640a6d02abdf839f">removeXmlFile</a> (const File &amp;file)</td></tr>
 <tr class="separator:ade01223a1debadfd640a6d02abdf839f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7f04a5d47de812cebc22aaf22c48fae"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae7f04a5d47de812cebc22aaf22c48fae">renameXmlFile</a> (const File &amp;file, const File &amp;newFile)</td></tr>
+<tr class="separator:ae7f04a5d47de812cebc22aaf22c48fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0e9674ee3946df6ba2dbea47db13b6c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#af0e9674ee3946df6ba2dbea47db13b6c">loadXml</a> (XmlElement *xml, const bool applyRecursively)</td></tr>
 <tr class="separator:af0e9674ee3946df6ba2dbea47db13b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55a84fcbadbaad911197ccd8252bf9f4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a55a84fcbadbaad911197ccd8252bf9f4">loadXmlFile</a> (const File &amp;file)</td></tr>
@@ -769,7 +771,42 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Delete info (its XML file by default) about this paramGroup from disk. </p>
+<p>Delete an XML file asociated with this paramGroup from disk. You may want to reimplement it when you are coding 'nested' presets. </p>
+
+</div>
+</div>
+<a class="anchor" id="ae7f04a5d47de812cebc22aaf22c48fae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool renameXmlFile </td>
+          <td>(</td>
+          <td class="paramtype">const File &amp;&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const File &amp;&#160;</td>
+          <td class="paramname"><em>newFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Rename an XML file asociated with this paramGroup from disk. You may want to reimplement it when you are coding 'nested' presets. </p>
 
 </div>
 </div>
@@ -1378,7 +1415,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 22 2013 18:43:48 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 3 2013 14:59:52 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

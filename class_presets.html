@@ -142,8 +142,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a20549d253e823aadd29c9b7cf765583f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65b8eceef0b29c71f2201b4b304dbab1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a65b8eceef0b29c71f2201b4b304dbab1">setDefaultPresetPath</a> (const File &amp;defaultPresetPathArg)</td></tr>
 <tr class="separator:a65b8eceef0b29c71f2201b4b304dbab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f9c4a4bd47b7cd9beb431504c5ae46c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a1f9c4a4bd47b7cd9beb431504c5ae46c">remove</a> ()</td></tr>
-<tr class="separator:a1f9c4a4bd47b7cd9beb431504c5ae46c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe30e774dd128dc13f1beef095b15843"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#abe30e774dd128dc13f1beef095b15843">removeLastSelected</a> ()</td></tr>
+<tr class="separator:abe30e774dd128dc13f1beef095b15843"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad72337c5f85bedb18f1c3d0fbc57a112"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#ad72337c5f85bedb18f1c3d0fbc57a112">removeLastLoaded</a> ()</td></tr>
+<tr class="separator:ad72337c5f85bedb18f1c3d0fbc57a112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d2cee1772e62f5259d4a86a9e17b21e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a6d2cee1772e62f5259d4a86a9e17b21e">read</a> (const File &amp;newFile)</td></tr>
 <tr class="separator:a6d2cee1772e62f5259d4a86a9e17b21e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaf148bdf00753cae3d26eeedd53c4bb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#afaf148bdf00753cae3d26eeedd53c4bb">reread</a> ()</td></tr>
@@ -371,6 +373,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="separator:a1b5b0961c2cad45496353634dcf80cc1 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade01223a1debadfd640a6d02abdf839f inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ade01223a1debadfd640a6d02abdf839f">removeXmlFile</a> (const File &amp;file)</td></tr>
 <tr class="separator:ade01223a1debadfd640a6d02abdf839f inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7f04a5d47de812cebc22aaf22c48fae inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae7f04a5d47de812cebc22aaf22c48fae">renameXmlFile</a> (const File &amp;file, const File &amp;newFile)</td></tr>
+<tr class="separator:ae7f04a5d47de812cebc22aaf22c48fae inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0e9674ee3946df6ba2dbea47db13b6c inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#af0e9674ee3946df6ba2dbea47db13b6c">loadXml</a> (XmlElement *xml, const bool applyRecursively)</td></tr>
 <tr class="separator:af0e9674ee3946df6ba2dbea47db13b6c inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55a84fcbadbaad911197ccd8252bf9f4 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a55a84fcbadbaad911197ccd8252bf9f4">loadXmlFile</a> (const File &amp;file)</td></tr>
@@ -760,7 +764,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="a1f9c4a4bd47b7cd9beb431504c5ae46c"></a>
+<a class="anchor" id="ad72337c5f85bedb18f1c3d0fbc57a112"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -768,7 +772,31 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool remove </td>
+          <td class="memname">bool removeLastLoaded </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Remove the last selected preset </p>
+
+</div>
+</div>
+<a class="anchor" id="abe30e774dd128dc13f1beef095b15843"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool removeLastSelected </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -1149,7 +1177,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 22 2013 18:43:48 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 3 2013 14:59:52 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
