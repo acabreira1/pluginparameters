@@ -30,14 +30,16 @@ This page provides detailed instructions to create your plugin from scratch usin
 * [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersDemo) 
 * [PluginParametersGroupsDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersGroupsDemo)
 
+This two plugins are released independently from the PluginParameters module, with a MIT license.
+
 ##[Doxygen Documentation](http://4drx.github.io/pluginparameters/annotated.html)
 
 This will probably help you understand the code quicker.
 
-##[Forum and announcements](http://www.rawmaterialsoftware.com/viewtopic.php?f=6&t=11122&p=63732)
+##[Forum and announcements](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters)
 
 Please submit any comments, bug reports, etc here.
 
 ##License
 
-This library is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please [send me](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) a Personal Message (PM) at the [JUCE forum](http://www.rawmaterialsoftware.com/memberlist.php?mode=viewprofile&u=347) if you are interested.
+The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please Send me a Personal Message or reply to [this thread at the JUCE forum](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters) if you are interested.
