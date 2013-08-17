@@ -80,7 +80,7 @@ MainComponent::MainComponent (MyPluginProcessor* processor)
     bypassToggle->setButtonText ("bypass");
     bypassToggle->addListener (this);
 
-    addAndMakeVisible (presetsComponent = new PresetsComponent());
+    addAndMakeVisible (presetsComponent = new PresetsComponent (&processor->presets));
 
     //[UserPreSize]
     tabbedComponent->getTabbedButtonBar().addChangeListener(this);
@@ -210,7 +210,7 @@ BEGIN_JUCER_METADATA
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <JUCERCOMP name="" id="c4dd67befc4f99e6" memberName="presetsComponent" virtualName=""
              explicitFocusOrder="0" pos="383 5 341 20" sourceFile="PresetsComponent.cpp"
-             constructorParams=""/>
+             constructorParams="&amp;processor-&gt;presets"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

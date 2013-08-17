@@ -39,8 +39,8 @@
 #include "MainComponent.h"
 
 MyPluginProcessor::MyPluginProcessor():
-  bypass(false)
-  //presets(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile(JucePlugin_Name+String(" Presets/")),"xml",true)
+  bypass(false),
+  presets(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile(JucePlugin_Name+String(" Presets/")),"xml",true)
 {
   initAllParameters();
 }
@@ -54,12 +54,12 @@ void MyPluginProcessor::getStateInformation (MemoryBlock& destData){
   //Save all the parameter values into an XML tag with name JucePlugin_Name.
   XmlElement xml(JucePlugin_Name);
   
-  //getParamGroup(presetsIndex)->setSaveXml(true,true);
+  getParamGroup(presetsIndex)->setSaveXml(true,true);
   getParam(selectedTabIndex)->setSaveXml(true);
 
   saveXml(&xml,false,true);  
 
-  //getParamGroup(presetsIndex)->setSaveXml(false,true);
+  getParamGroup(presetsIndex)->setSaveXml(false,true);
   getParam(selectedTabIndex)->setSaveXml(false);
 
   //Save it as binary data
@@ -72,7 +72,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
 
   // Check that it is valid XML and that the tag has name JucePlugin_Name.
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){         
-    //getParamGroup(presetsIndex)->setLoadXml(true,true);
+    getParamGroup(presetsIndex)->setLoadXml(true,true);
     getParam(selectedTabIndex)->setLoadXml(true);
     
     //Preload XML values into memory
@@ -81,7 +81,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
     updateProcessorHostAndUiFromXml(true,true,true);     
   }
 
-  //getParamGroup(presetsIndex)->setLoadXml(false,true);
+  getParamGroup(presetsIndex)->setLoadXml(false,true);
   getParam(selectedTabIndex)->setLoadXml(false);
 }
 

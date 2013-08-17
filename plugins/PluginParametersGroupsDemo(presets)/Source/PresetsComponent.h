@@ -60,9 +60,89 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class PresetsListComponent: public ComboBox{
+class PresetsListComponent: public ComboBox, public ComboBox::Listener, public ChangeBroadcaster {
+  Presets *presets;
+  Array<File> fileList;
 public:
-  PresetsListComponent(String name):ComboBox(name){
+
+  PresetsListComponent(Presets *presets)
+    :ComboBox("presetsListComboBox"),presets(presets){
+    setEditableText (false);
+    setJustificationType (Justification::centredLeft);
+    setTextWhenNothingSelected (String::empty);
+    setTextWhenNoChoicesAvailable ("(no presets selected)");
+    ComboBox::addListener(this);
+    refresh();
+  }
+
+  void comboBoxChanged (ComboBox* /*comboBoxThatHasChanged*/){
+    sendChangeMessage();
+  }
+
+  /** Returns the file that the user has currently selected. */
+  File getSelectedFile () const{
+    if (getSelectedId()<=0)
+      return File::nonexistent;
+
+    return fileList[getSelectedId()-1];
+  }
+
+  /** Select a file */
+  void setSelectedFile (const File& file){
+    for (int i=0;i<fileList.size();i++){
+      if (file==fileList[i])
+        setSelectedId(i+1,dontSendNotification);
+    }
+  }
+
+  /** Show the contents of a folder */
+  void openFolder (const File&){
+    //Disabled. It would be confusing to open folders in a ComboBox.
+    setSelectedId(0,dontSendNotification);
+  }
+
+  /** Search again for preset files in the rootFolder */
+  void refresh(){
+    fileList.clear();
+    File rootFolder(presets->getRootFolder());
+    if (!presets->presetsAreFolders()){
+      rootFolder.findChildFiles(fileList,File::findFiles,false,"*."+presets->getPresetFileExtension());
+    } else {
+      rootFolder.findChildFiles(fileList,File::findDirectories,false,"*");
+      for (int i=0;i<fileList.size();i++){
+        if (!fileList[i].getChildFile(fileList[i].getFileName()+"."+presets->getPresetFileExtension()).existsAsFile()){
+          //This is a folder, not a preset file, so remove it from the list
+          fileList.remove(i--);
+        }
+      }
+    }
+    clear(dontSendNotification);
+    File lastSelectedPreset=presets->getLastSelectedPreset();
+    if (presets->presetsAreFolders())
+      lastSelectedPreset=lastSelectedPreset.getParentDirectory();
+    for (int i=0;i<fileList.size();i++){
+      String selectedPresetAsterisk=(lastSelectedPreset==fileList[i] && presets->getNonSavedChanges())?"*":"";
+      String debug=fileList[i].getFileName();
+      addItem(selectedPresetAsterisk+fileList[i].getFileNameWithoutExtension(),i+1);
+    }
+    repaint();
+  }
+
+  /** Flags the item to be modified or not. Modified items will be followed by an "*" */
+  void setModified(const File &/*file*/, const bool /*isModified*/){
+    int selected=getSelectedId();
+    //You have to regenerate anyway the whole combobox list, so ignore the particular file whose modified flag (*)
+    //has to be updated.
+    clear(dontSendNotification);
+    File lastSelectedPreset=presets->getLastSelectedPreset();
+    if (presets->presetsAreFolders())
+      lastSelectedPreset=lastSelectedPreset.getParentDirectory();
+    for (int i=0;i<fileList.size();i++){
+      String selectedPresetAsterisk=(lastSelectedPreset==fileList[i] && presets->getNonSavedChanges())?"*":"";
+      addItem(selectedPresetAsterisk+fileList[i].getFileNameWithoutExtension(),i+1);
+    }
+    setSelectedId(selected,dontSendNotification);
+    repaint();
   }
 };
 //[/Headers]
@@ -83,7 +163,7 @@ class PresetsComponent  : public Component,
 {
 public:
     //==============================================================================
-    PresetsComponent ();
+    PresetsComponent (Presets *presets);
     ~PresetsComponent();
 
     //==============================================================================
@@ -123,7 +203,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    //Presets* presets;
+    Presets* presets;
     //[/UserVariables]
 
     //==============================================================================

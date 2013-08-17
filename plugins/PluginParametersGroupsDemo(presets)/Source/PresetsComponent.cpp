@@ -21,21 +21,14 @@
 /*
   ==============================================================================
 
-     Copyright 2012-13 by MarC
+  Author: MarC
 
-  ------------------------------------------------------------------------------
+  Creation date:  10 Mar 2012 3:36:55pm
 
-   This file can be redistributed and/or modified under the terms of the GNU 
-   General Public License (Version 2), as published by the Free Software Foundation.
-   A copy of the license is included in the JUCE distribution, or can be found
-   online at www.gnu.org/licenses.
+  Description: Implements the user interface for the preset system.
 
-   This file is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-   
-  ------------------------------------------------------------------------------
-   
+  Copyright 2012 by MarC
+
   ==============================================================================
 */
 //[/Headers]
@@ -84,7 +77,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-PresetsComponent::PresetsComponent ()
+PresetsComponent::PresetsComponent (Presets *presets)
+    : presets(presets)
 {
     addAndMakeVisible (delPresetButton = new ImageButton ("delPresetButton"));
     delPresetButton->setTooltip ("delete preset");
@@ -167,12 +161,12 @@ PresetsComponent::PresetsComponent ()
                             ImageCache::getFromMemory (right_png, right_pngSize), 1.000f, Colour (0x00000000),
                             ImageCache::getFromMemory (right_png, right_pngSize), 0.600f, Colour (0x00000000),
                             ImageCache::getFromMemory (right_png, right_pngSize), 0.400f, Colour (0x00000000));
-    addAndMakeVisible (presetsListComponent = new PresetsListComponent ("presets"));
+    addAndMakeVisible (presetsListComponent = new PresetsListComponent (presets));
     presetsListComponent->setName ("presetsListComponent");
 
 
     //[UserPreSize]
-    //presetsListComponent->addChangeListener(this);
+    presetsListComponent->addChangeListener(this);
     timerCallback();
     //[/UserPreSize]
 
@@ -238,31 +232,56 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == delPresetButton)
     {
         //[UserButtonCode_delPresetButton] -- add your button handler code here..
+        if (presets->getLastSelectedPreset()!=File::nonexistent){
+          presets->removeLastSelected();
+        }
         //[/UserButtonCode_delPresetButton]
     }
     else if (buttonThatWasClicked == newPresetButton)
     {
         //[UserButtonCode_newPresetButton] -- add your button handler code here..
+        presets->reset();
         //[/UserButtonCode_newPresetButton]
     }
     else if (buttonThatWasClicked == renamePresetButton)
     {
-        //[UserButtonCode_renamePresetButton] -- add your button handler code here..        
+        //[UserButtonCode_renamePresetButton] -- add your button handler code here..
+        if (presets->getLastSelectedPreset()!=File::nonexistent){
+          String extensionFilter="*."+presets->getPresetFileExtension();
+          if (presets->presetsAreFolders())
+            extensionFilter="*";
+		      FileChooser myChooser ("Please enter a new name...",
+          File(presets->getDefaultPresetPath()),extensionFilter,true);
+
+          if (myChooser.browseForFileToSave(true)){
+            if (!myChooser.getResult().hasWriteAccess()){
+              AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                          "Error reading file" ,
+                                          "Sorry mate, this preset file is already open.");
+            } else
+              presets->rename(myChooser.getResult(),true);
+          }
+        }
         //[/UserButtonCode_renamePresetButton]
     }
     else if (buttonThatWasClicked == reloadPresetButton)
     {
-        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..        
+        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..
+        if (presets->getLastSelectedPreset()!=File::nonexistent){
+          presets->reread();
+        }
         //[/UserButtonCode_reloadPresetButton]
     }
     else if (buttonThatWasClicked == savePresetButton)
     {
         //[UserButtonCode_savePresetButton] -- add your button handler code here..
+        presets->save();
         //[/UserButtonCode_savePresetButton]
     }
     else if (buttonThatWasClicked == saveAsNewPresetButton)
     {
         //[UserButtonCode_saveAsNewPresetButton] -- add your button handler code here..
+        presets->saveAsNew();
         //[/UserButtonCode_saveAsNewPresetButton]
     }
     else if (buttonThatWasClicked == leftButton)
@@ -292,27 +311,126 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PresetsComponent::changeListenerCallback(ChangeBroadcaster * /*source*/){
+  File newFile(presetsListComponent->getSelectedFile());
 
+  File presetFile=newFile;
+  if (presets->presetsAreFolders())
+    presetFile=newFile.getChildFile(newFile.getFileNameWithoutExtension()+"."+presets->getPresetFileExtension());
+
+  if ((!presets->presetsAreFolders() || !presetFile.existsAsFile()) && newFile.isDirectory() && !presets->getLastSelectedPreset().existsAsFile()){
+    presets->setDefaultPresetPath(newFile);
+  } else if (presetFile.existsAsFile()){
+
+    //do not reread a preset if we click again on it
+    if (presetFile!=presets->getLastSelectedPreset()){
+
+      File previousFile(presets->getLastSelectedPreset());
+
+      if (presets->loading){
+        //prevent multiple presets to mix up
+        presetsListComponent->setModified(previousFile,false);
+      } else {
+        //remove * of non saved changes in the previously selected preset
+        if (previousFile!=File::nonexistent){
+          if (presets->presetsAreFolders())
+          previousFile=previousFile.getParentDirectory();
+        }
+
+        int error=presets->read(presetFile);
+        String presetsName=presets->getParentParamGroup()->getName();
+        switch (error){
+          case Presets::ReadError_None:
+            presetsListComponent->setModified(previousFile,false);
+            break;
+          case Presets::ReadError_FileDoesntExist:
+            AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                      "Error reading "+presetsName+" file",
+                                      presetFile.getFullPathName()+" doesn't seem to exist.");
+            presets->select(previousFile,false,false);
+            selectLastSelectedPreset();
+            break;
+          case Presets::ReadError_FileIsAlreadyOpen:
+            AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                      "Error reading "+presetsName+" file",
+                                      "Sorry mate "+presetFile.getFullPathName()+" is already open.");
+            presets->select(previousFile,false,false);
+            selectLastSelectedPreset();
+            break;
+          case Presets::ReadError_AnotherFileLoading:
+            AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                      "Error reading "+presetsName+" file",
+                                      "Please wait until the previous preset file finishes loading.");
+            presets->select(previousFile,false,false);
+            selectLastSelectedPreset();
+            break;
+          case Presets::ReadError_WrongFormat:
+            AlertWindow::showMessageBox (AlertWindow::WarningIcon,
+                                      "Error reading "+presetsName+" file",
+                                      presetFile.getFullPathName()+" has wrong format (wrong root tag name).");
+            presets->select(previousFile,false,false);
+            selectLastSelectedPreset();
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
 }
 
 void PresetsComponent::previous(){
-
+  int i=presetsListComponent->getSelectedId();
+  if (i<=1)
+    presetsListComponent->setSelectedId(presetsListComponent->getNumItems(),sendNotificationSync);
+  else
+    presetsListComponent->setSelectedId(i-1,sendNotificationSync);
 }
 
 void PresetsComponent::next(){
-
+  int i=presetsListComponent->getSelectedId();
+  if (i==presetsListComponent->getNumItems())
+    presetsListComponent->setSelectedId(1,sendNotificationSync);
+  else
+    presetsListComponent->setSelectedId(i+1,sendNotificationSync);
 }
 
 void PresetsComponent::update(){
-
+  File file(presets->getLastSelectedPreset());
+  if (presets->presetsAreFolders())
+    file=file.getParentDirectory();
+  presetsListComponent->refresh();
+  presetsListComponent->setModified(file,presets->getNonSavedChanges());
+  selectLastSelectedPreset();
 }
 
 void PresetsComponent::selectLastSelectedPreset(){
-
+  if (!presets->getLastSelectedPreset().existsAsFile())
+    presetsListComponent->openFolder(presets->getDefaultPresetPath());
+  else{
+    File file(presets->getLastSelectedPreset());
+    if (presets->presetsAreFolders())
+      file=file.getParentDirectory();
+    presetsListComponent->setSelectedFile(file);
+  }
 }
 
 void PresetsComponent::timerCallback(){
-
+  if (presetsListComponent){
+    if (presets->getParam(Presets::lastSelectedPresetIndex)->updateUiRequested()){      
+      if (presets->updatePresetsListUiRequested()){
+        presetsListComponent->refresh();
+      }
+      selectLastSelectedPreset();
+    }
+    if (presets->getParam(Presets::nonSavedChangesIndex)->updateUiRequested()){
+      if (presets->getLastLoadedPreset().existsAsFile()){
+        File file(presets->getLastLoadedPreset());
+        if (presets->presetsAreFolders())
+          file=file.getParentDirectory();
+        presetsListComponent->setModified(file,presets->getNonSavedChanges());
+      }
+    }
+  }
 }
 
 //[/MiscUserCode]
@@ -328,9 +446,9 @@ void PresetsComponent::timerCallback(){
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PresetsComponent" componentName=""
-                 parentClasses="public Component, public ChangeListener" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
-                 overlayOpacity="0.330000013" fixedSize="1" initialWidth="341"
+                 parentClasses="public Component, public ChangeListener" constructorParams="Presets *presets"
+                 variableInitialisers="presets(presets)" snapPixels="8" snapActive="0"
+                 snapShown="1" overlayOpacity="0.330000013" fixedSize="1" initialWidth="341"
                  initialHeight="20">
   <BACKGROUND backgroundColour="ffffff"/>
   <IMAGEBUTTON name="delPresetButton" id="c99e5b0420e312f1" memberName="delPresetButton"
@@ -398,7 +516,7 @@ BEGIN_JUCER_METADATA
                colourDown="0"/>
   <GENERICCOMPONENT name="presetsListComponent" id="20346992263b5250" memberName="presetsListComponent"
                     virtualName="" explicitFocusOrder="0" pos="138 1 135 18" class="PresetsListComponent"
-                    params="&quot;presets&quot;"/>
+                    params="presets"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
