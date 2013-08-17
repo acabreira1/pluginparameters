@@ -125,9 +125,15 @@ public:
   }
   
   const String getParameterName (int index){
-    if (index>=0 && index<getNumAutomatedParams())
-      return groupAutomated[index]->getParam(indexInGroupAutomated[index])->getName(); 
-    else   
+    if (index>=0 && index<getNumAutomatedParams()){
+      String name=groupAutomated[index]->getParam(indexInGroupAutomated[index])->getXmlName();
+      ParamGroup *paramGroup=groupAutomated[index];
+      while (paramGroup->getParentParamGroup()!=nullptr){
+        name=paramGroup->getXmlName()+"_"+name;
+        paramGroup=paramGroup->getParentParamGroup();
+      }
+      return name; 
+    } else   
       return String::empty;
   }  
 
