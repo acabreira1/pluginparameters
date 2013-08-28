@@ -10,8 +10,8 @@ var searchData=
   ['reset',['reset',['../class_presets.html#ad20897c5c8bd47f5d4005989bead0e55',1,'Presets']]],
   ['resetupdatefromflag',['resetUpdateFromFlag',['../class_param.html#ad2698c4b06111e0d015116f7f72077fa',1,'Param']]],
   ['runafternonsavedchangeschange',['runAfterNonSavedChangesChange',['../class_param_group.html#ae6a107550895aff7669a93c85f049ef2',1,'ParamGroup']]],
-  ['runafterparambatchchange',['runAfterParamBatchChange',['../class_param_group.html#a0568d59617f5675a4f66ee9d8c8824cd',1,'ParamGroup::runAfterParamBatchChange()'],['../class_presets.html#a51b540bb77b3bd390606be46d0f4a899',1,'Presets::runAfterParamBatchChange()']]],
-  ['runafterparamchange',['runAfterParamChange',['../class_param_group.html#a7853be7673822ff175ef373a0158fdd6',1,'ParamGroup::runAfterParamChange()'],['../class_presets.html#af2a447c9b3c24d62703bf7227b4a30cb',1,'Presets::runAfterParamChange()']]],
+  ['runafterparamchange',['runAfterParamChange',['../class_param_group.html#a7853be7673822ff175ef373a0158fdd6',1,'ParamGroup::runAfterParamChange()'],['../class_presets.html#a28a07af3accd7196598eee9c9dff69ac',1,'Presets::runAfterParamChange()']]],
   ['runafterparamgroupchange',['runAfterParamGroupChange',['../class_param_group.html#a4500886500040d4311d456335482b791',1,'ParamGroup']]],
-  ['runbeforeparambatchchange',['runBeforeParamBatchChange',['../class_param_group.html#a7a4d9dd366830725fd20eed84148bf2a',1,'ParamGroup']]]
+  ['runafterparamgroupupdate',['runAfterParamGroupUpdate',['../class_param_group.html#a3528493e32e7e3a69a0b9e2bd0b4b5ed',1,'ParamGroup::runAfterParamGroupUpdate()'],['../class_presets.html#a2a983445664f4666e1963d15fad55d96',1,'Presets::runAfterParamGroupUpdate()']]],
+  ['runbeforeparamgroupupdate',['runBeforeParamGroupUpdate',['../class_param_group.html#a6ec52ba280b75357fec6cc2278dfdf8d',1,'ParamGroup']]]
 ];

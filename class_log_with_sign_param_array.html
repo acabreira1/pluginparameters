@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">PluginParameters
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.1</span>
    </div>
    <div id="projectbrief">JUCE module providing utilities to manage automatically different types of audio plugin parameters</div>
   </td>
@@ -137,9 +137,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4b4af2834bc805ea83236252adc2b63 inherit pub_methods_class_param_array"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b4af2834bc805ea83236252adc2b63"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorFromXml</b> (const bool applyRecursively)</td></tr>
 <tr class="separator:ab4b4af2834bc805ea83236252adc2b63 inherit pub_methods_class_param_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e181001750e1e26bf240634e10b2ed4 inherit pub_methods_class_param_array"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e181001750e1e26bf240634e10b2ed4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
-<tr class="separator:a2e181001750e1e26bf240634e10b2ed4 inherit pub_methods_class_param_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdeff3dbec72d636d73c1ee12aca7e66 inherit pub_methods_class_param_array"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdeff3dbec72d636d73c1ee12aca7e66"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceUpdateHost, bool forceUpdateUi, const bool applyRecursively)</td></tr>
+<tr class="separator:abdeff3dbec72d636d73c1ee12aca7e66 inherit pub_methods_class_param_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a093bdef4dbe52d17cd5c7253d3f6db01 inherit pub_methods_class_param_array"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a093bdef4dbe52d17cd5c7253d3f6db01"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ParamArray</b> (const String &amp;name, const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool updateOnlySizedArrayFlag=true)</td></tr>
 <tr class="separator:a093bdef4dbe52d17cd5c7253d3f6db01 inherit pub_methods_class_param_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -324,10 +324,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="separator:a4500886500040d4311d456335482b791 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7853be7673822ff175ef373a0158fdd6 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a> (int, UpdateFromFlags)</td></tr>
 <tr class="separator:a7853be7673822ff175ef373a0158fdd6 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a4d9dd366830725fd20eed84148bf2a inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a7a4d9dd366830725fd20eed84148bf2a">runBeforeParamBatchChange</a> ()</td></tr>
-<tr class="separator:a7a4d9dd366830725fd20eed84148bf2a inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0568d59617f5675a4f66ee9d8c8824cd inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0568d59617f5675a4f66ee9d8c8824cd">runAfterParamBatchChange</a> ()</td></tr>
-<tr class="separator:a0568d59617f5675a4f66ee9d8c8824cd inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec52ba280b75357fec6cc2278dfdf8d inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a6ec52ba280b75357fec6cc2278dfdf8d">runBeforeParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a6ec52ba280b75357fec6cc2278dfdf8d inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3528493e32e7e3a69a0b9e2bd0b4b5ed inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a3528493e32e7e3a69a0b9e2bd0b4b5ed">runAfterParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a3528493e32e7e3a69a0b9e2bd0b4b5ed inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ac31529b0b36d5e6539fb14fb05f5b inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae1ac31529b0b36d5e6539fb14fb05f5b">updateHost</a> (bool <a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a>, UpdateFromFlags updateFromFlag, const bool applyRecursively)</td></tr>
 <tr class="separator:ae1ac31529b0b36d5e6539fb14fb05f5b inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa09c62650f898321cd030b6da25f25ff inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa09c62650f898321cd030b6da25f25ff"></a>
@@ -557,7 +557,7 @@ const bool&#160;</td><td class="memItemRight" valign="bottom"><b>updateOnlySized
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 29 2013 01:23:24 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 29 2013 01:43:09 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

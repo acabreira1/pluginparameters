@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">PluginParameters
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.1</span>
    </div>
    <div id="projectbrief">JUCE module providing utilities to manage automatically different types of audio plugin parameters</div>
   </td>
@@ -194,10 +194,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>saveAsNew</b> ()</td>
 <tr class="separator:aea886e9862a203f94fcaca12b359d1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac65b454ec1a589e826c9903319f72017"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#ac65b454ec1a589e826c9903319f72017">initParameters</a> ()</td></tr>
 <tr class="separator:ac65b454ec1a589e826c9903319f72017"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2a447c9b3c24d62703bf7227b4a30cb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#af2a447c9b3c24d62703bf7227b4a30cb">runAfterParamChange</a> (int index, UpdateFromFlags updateFromFlag)</td></tr>
-<tr class="separator:af2a447c9b3c24d62703bf7227b4a30cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51b540bb77b3bd390606be46d0f4a899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a51b540bb77b3bd390606be46d0f4a899">runAfterParamBatchChange</a> ()</td></tr>
-<tr class="separator:a51b540bb77b3bd390606be46d0f4a899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28a07af3accd7196598eee9c9dff69ac"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a28a07af3accd7196598eee9c9dff69ac">runAfterParamChange</a> (int index, UpdateFromFlags)</td></tr>
+<tr class="separator:a28a07af3accd7196598eee9c9dff69ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a983445664f4666e1963d15fad55d96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_presets.html#a2a983445664f4666e1963d15fad55d96">runAfterParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a2a983445664f4666e1963d15fad55d96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_param_group"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_param_group')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_param_group.html">ParamGroup</a></td></tr>
 <tr class="memitem:af39d91e95011d9919fab5d0521ed54da inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_param_group.html">ParamGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#af39d91e95011d9919fab5d0521ed54da">getParentParamGroup</a> () const </td></tr>
 <tr class="separator:af39d91e95011d9919fab5d0521ed54da inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -382,17 +382,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="memitem:ab4b4af2834bc805ea83236252adc2b63 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b4af2834bc805ea83236252adc2b63"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorFromXml</b> (const bool applyRecursively)</td></tr>
 <tr class="separator:ab4b4af2834bc805ea83236252adc2b63 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e181001750e1e26bf240634e10b2ed4 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e181001750e1e26bf240634e10b2ed4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
-<tr class="separator:a2e181001750e1e26bf240634e10b2ed4 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdeff3dbec72d636d73c1ee12aca7e66 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdeff3dbec72d636d73c1ee12aca7e66"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceUpdateHost, bool forceUpdateUi, const bool applyRecursively)</td></tr>
+<tr class="separator:abdeff3dbec72d636d73c1ee12aca7e66 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b4b800df666b70e4a50890be1b8a30d inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a4b4b800df666b70e4a50890be1b8a30d">updateProcessorFromDefaultXml</a> (const bool applyRecursively)</td></tr>
 <tr class="separator:a4b4b800df666b70e4a50890be1b8a30d inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accc77f82dc2816faa6617d756c605d6a inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#accc77f82dc2816faa6617d756c605d6a">updateProcessorHostAndUiFromDefaultXml</a> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
 <tr class="separator:accc77f82dc2816faa6617d756c605d6a inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4500886500040d4311d456335482b791 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a4500886500040d4311d456335482b791">runAfterParamGroupChange</a> (int, int, UpdateFromFlags)</td></tr>
 <tr class="separator:a4500886500040d4311d456335482b791 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a4d9dd366830725fd20eed84148bf2a inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a7a4d9dd366830725fd20eed84148bf2a">runBeforeParamBatchChange</a> ()</td></tr>
-<tr class="separator:a7a4d9dd366830725fd20eed84148bf2a inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec52ba280b75357fec6cc2278dfdf8d inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a6ec52ba280b75357fec6cc2278dfdf8d">runBeforeParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a6ec52ba280b75357fec6cc2278dfdf8d inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ac31529b0b36d5e6539fb14fb05f5b inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae1ac31529b0b36d5e6539fb14fb05f5b">updateHost</a> (bool <a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a>, UpdateFromFlags updateFromFlag, const bool applyRecursively)</td></tr>
 <tr class="separator:ae1ac31529b0b36d5e6539fb14fb05f5b inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa09c62650f898321cd030b6da25f25ff inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa09c62650f898321cd030b6da25f25ff"></a>
@@ -888,33 +888,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="a51b540bb77b3bd390606be46d0f4a899"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void runAfterParamBatchChange </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Implements what should be executed AFTER a new set of parameters is loaded in this <a class="el" href="class_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...) E.g. Place here any post-processing of variables that are not defined as Parameters. </p>
-
-<p>Reimplemented from <a class="el" href="class_param_group.html#a0568d59617f5675a4f66ee9d8c8824cd">ParamGroup</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="af2a447c9b3c24d62703bf7227b4a30cb"></a>
+<a class="anchor" id="a28a07af3accd7196598eee9c9dff69ac"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -931,7 +905,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">UpdateFromFlags&#160;</td>
-          <td class="paramname"><em>updateFromFlag</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -948,6 +922,32 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 <p>This method establishes how <a class="el" href="class_presets.html#a78f61ac2dd03bcba8e09ca20cd7d68e3">load()</a> is called after calling <a class="el" href="class_presets.html#a6d2cee1772e62f5259d4a86a9e17b21e">read()</a>. By default it calls it immediately after calling <a class="el" href="class_presets.html#a6d2cee1772e62f5259d4a86a9e17b21e">read()</a>. If you want to synchronize it somehow with the audio processing thread you should probably inherit from the <a class="el" href="class_presets.html">Presets</a> class and add access to a flag in the audio processing thread to call it at the right time or load it immediately if the latter is not playing. </p>
 
 <p>Reimplemented from <a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">ParamGroup</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2a983445664f4666e1963d15fad55d96"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void runAfterParamGroupUpdate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implements what should be executed AFTER a new set of parameters is loaded in this <a class="el" href="class_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...) E.g. Place here any post-processing of variables that are not defined as Parameters. </p>
+
+<p>Reimplemented from <a class="el" href="class_param_group.html#a3528493e32e7e3a69a0b9e2bd0b4b5ed">ParamGroup</a>.</p>
 
 </div>
 </div>
@@ -1177,7 +1177,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 29 2013 01:23:24 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 29 2013 01:43:10 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

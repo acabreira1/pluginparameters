@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">PluginParameters
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.1</span>
    </div>
    <div id="projectbrief">JUCE module providing utilities to manage automatically different types of audio plugin parameters</div>
   </td>
@@ -305,9 +305,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="memitem:ab4b4af2834bc805ea83236252adc2b63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b4af2834bc805ea83236252adc2b63"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorFromXml</b> (const bool applyRecursively)</td></tr>
 <tr class="separator:ab4b4af2834bc805ea83236252adc2b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e181001750e1e26bf240634e10b2ed4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e181001750e1e26bf240634e10b2ed4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
-<tr class="separator:a2e181001750e1e26bf240634e10b2ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdeff3dbec72d636d73c1ee12aca7e66"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdeff3dbec72d636d73c1ee12aca7e66"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcessorHostAndUiFromXml</b> (bool forceUpdateHost, bool forceUpdateUi, const bool applyRecursively)</td></tr>
+<tr class="separator:abdeff3dbec72d636d73c1ee12aca7e66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b4b800df666b70e4a50890be1b8a30d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a4b4b800df666b70e4a50890be1b8a30d">updateProcessorFromDefaultXml</a> (const bool applyRecursively)</td></tr>
 <tr class="separator:a4b4b800df666b70e4a50890be1b8a30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accc77f82dc2816faa6617d756c605d6a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#accc77f82dc2816faa6617d756c605d6a">updateProcessorHostAndUiFromDefaultXml</a> (bool forceRunAfterParamChange, bool forceUpdateUi, const bool applyRecursively)</td></tr>
@@ -316,10 +316,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcess
 <tr class="separator:a4500886500040d4311d456335482b791"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7853be7673822ff175ef373a0158fdd6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a> (int, UpdateFromFlags)</td></tr>
 <tr class="separator:a7853be7673822ff175ef373a0158fdd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a4d9dd366830725fd20eed84148bf2a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a7a4d9dd366830725fd20eed84148bf2a">runBeforeParamBatchChange</a> ()</td></tr>
-<tr class="separator:a7a4d9dd366830725fd20eed84148bf2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0568d59617f5675a4f66ee9d8c8824cd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0568d59617f5675a4f66ee9d8c8824cd">runAfterParamBatchChange</a> ()</td></tr>
-<tr class="separator:a0568d59617f5675a4f66ee9d8c8824cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec52ba280b75357fec6cc2278dfdf8d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a6ec52ba280b75357fec6cc2278dfdf8d">runBeforeParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a6ec52ba280b75357fec6cc2278dfdf8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3528493e32e7e3a69a0b9e2bd0b4b5ed"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a3528493e32e7e3a69a0b9e2bd0b4b5ed">runAfterParamGroupUpdate</a> ()</td></tr>
+<tr class="separator:a3528493e32e7e3a69a0b9e2bd0b4b5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4b1717b7e31b110ce122672890d35c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#abd4b1717b7e31b110ce122672890d35c">initParameters</a> ()=0</td></tr>
 <tr class="separator:abd4b1717b7e31b110ce122672890d35c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ac31529b0b36d5e6539fb14fb05f5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae1ac31529b0b36d5e6539fb14fb05f5b">updateHost</a> (bool <a class="el" href="class_param_group.html#a7853be7673822ff175ef373a0158fdd6">runAfterParamChange</a>, UpdateFromFlags updateFromFlag, const bool applyRecursively)</td></tr>
@@ -834,32 +834,6 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="a0568d59617f5675a4f66ee9d8c8824cd"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void runAfterParamBatchChange </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Implements what should be executed AFTER a new set of parameters is loaded in this <a class="el" href="class_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...) E.g. Place here any post-processing of variables that are not defined as Parameters. </p>
-
-<p>Reimplemented in <a class="el" href="class_presets.html#a51b540bb77b3bd390606be46d0f4a899">Presets</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="a7853be7673822ff175ef373a0158fdd6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -893,7 +867,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><div class="memdoc">
 <p>Implements what is executed after a parameter is updated with a different value. This method will be called by the host, probably on the audio thread, so it's absolutely time-critical. Don't use critical sections or anything UI-related, or anything at all that may block in any way! </p>
 
-<p>Reimplemented in <a class="el" href="class_presets.html#af2a447c9b3c24d62703bf7227b4a30cb">Presets</a>.</p>
+<p>Reimplemented in <a class="el" href="class_presets.html#a28a07af3accd7196598eee9c9dff69ac">Presets</a>.</p>
 
 </div>
 </div>
@@ -938,7 +912,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="a7a4d9dd366830725fd20eed84148bf2a"></a>
+<a class="anchor" id="a3528493e32e7e3a69a0b9e2bd0b4b5ed"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -946,7 +920,33 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void runBeforeParamBatchChange </td>
+          <td class="memname">virtual void runAfterParamGroupUpdate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implements what should be executed AFTER a new set of parameters is loaded in this <a class="el" href="class_param_group.html">ParamGroup</a> using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...) E.g. Place here any post-processing of variables that are not defined as Parameters. </p>
+
+<p>Reimplemented in <a class="el" href="class_presets.html#a2a983445664f4666e1963d15fad55d96">Presets</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ec52ba280b75357fec6cc2278dfdf8d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void runBeforeParamGroupUpdate </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -1415,7 +1415,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 29 2013 01:23:24 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 29 2013 01:43:09 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
