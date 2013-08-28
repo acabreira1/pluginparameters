@@ -484,8 +484,10 @@ public:
   /** Override to update the relevant preset managers about
       saved changes in this ParamGroup */
   virtual void runAfterNonSavedChangesChange(){
-    if (getParentParamGroup()!=nullptr)
+    if (getParentParamGroup()!=nullptr && getNonSavedChanges()){
+      getParentParamGroup()->setNonSavedChanges(true);
       getParentParamGroup()->runAfterNonSavedChangesChange();
+    }
   }
 
   /** Stores the parameter values as an XML attribute.
@@ -580,7 +582,7 @@ public:
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
   virtual void updateProcessorFromXml(const bool applyRecursively){
-    runBeforeParamBatchChange();
+    runBeforeParamGroupUpdate();
     for (int i=0;i<getNumParams();i++){
       getParam(i)->updateProcessorFromXml();
     }
@@ -594,29 +596,29 @@ public:
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();        
+    runAfterParamGroupUpdate();        
   }  
 
   /* Update all parameters from xmlValue after loadXml(...) has been called. 
      This should be considerably faster than loadXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. 
      Update for each parameter the Host and the UI accordingly. */
-  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();
+  virtual void updateProcessorHostAndUiFromXml(bool forceUpdateHost, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamGroupUpdate();
     for (int i=0;i<getNumParams();i++){
-      getParam(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);
+      getParam(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi);
     }
     
     if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
-        getParamGroup(g)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
+        getParamGroup(g)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
       }
     }    
     if (getNonSavedChanges()){
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();        
+    runAfterParamGroupUpdate();        
   }  
   
   /** Reset all parameters in this ParamGroup to their defaultValue.
@@ -624,7 +626,7 @@ public:
       This method should be overrided when the ParamGroup contains 
       variables not initialized as parameters.*/
   virtual void updateProcessorFromDefaultXml(const bool applyRecursively){
-    runBeforeParamBatchChange();   
+    runBeforeParamGroupUpdate();   
     for (int i=0;i<paramList.size();i++)
       paramList[i]->updateProcessorFromDefaultXml();
       
@@ -636,7 +638,7 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
   /** Reset all parameters in this ParamGroup to their defaultValue.
@@ -645,7 +647,7 @@ public:
       variables not initialized as parameters.
       Update for each parameter the Host and the UI accordingly. */
   virtual void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();   
+    runBeforeParamGroupUpdate();   
     for (int i=0;i<paramList.size();i++)
       paramList[i]->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi);
       
@@ -657,7 +659,7 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }  
 
   /** Implements what is executed after any parameter of this ParamGroup is updated 
@@ -676,12 +678,12 @@ public:
   /** Implements what should be executed BEFORE a new set of parameters is loaded in this 
       ParamGroup using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...)
       E.g. Place here any initialization of variables that are not defined as Parameters. */
-  virtual void runBeforeParamBatchChange() {};
+  virtual void runBeforeParamGroupUpdate() {};
 
   /** Implements what should be executed AFTER a new set of parameters is loaded in this 
       ParamGroup using for instance updateProcessorHostAndUiFromXml(...) or updateProcessorFromDefaultXml(...)
       E.g. Place here any post-processing of variables that are not defined as Parameters. */
-  virtual void runAfterParamBatchChange() {};
+  virtual void runAfterParamGroupUpdate() {};
 
   /** All parameters and parameter groups must be added in this method */
   virtual void initParameters() = 0;
@@ -784,7 +786,7 @@ public:
   }
     
   virtual void updateProcessorFromDefaultXml(const bool applyRecursively){
-    runBeforeParamBatchChange();
+    runBeforeParamGroupUpdate();
 
     int updateSize;
     if (updateOnlySizedArrayFlag)
@@ -803,12 +805,12 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
  
   virtual void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();   
+    runBeforeParamGroupUpdate();   
 
     int updateSize;
     if (updateOnlySizedArrayFlag)
@@ -827,11 +829,11 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }  
 
   virtual void updateProcessorFromXml(const bool applyRecursively){
-    runBeforeParamBatchChange();
+    runBeforeParamGroupUpdate();
 
     int updateSize;
     if (updateOnlySizedArrayFlag)
@@ -850,12 +852,12 @@ public:
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }  
 
  
-  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();   
+  virtual void updateProcessorHostAndUiFromXml(bool forceUpdateHost, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamGroupUpdate();   
 
     int updateSize;
     if (updateOnlySizedArrayFlag)
@@ -864,17 +866,17 @@ public:
       updateSize=maxSize;
 
     for (int i=0;i<updateSize;i++)
-      getParam(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);
+      getParam(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi);
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
-        getParamGroup(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
+        getParamGroup(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
     }
     if (getNonSavedChanges()){
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
   ParamArray(const String &name,const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool updateOnlySizedArrayFlag=true):
@@ -1552,7 +1554,7 @@ public:
   }
 
   virtual void updateProcessorFromDefaultXml(const bool applyRecursively){
-    runBeforeParamBatchChange();
+    runBeforeParamGroupUpdate();
 
     int updateRowsSize,updateColsSize;
     if (updateOnlySizedMatrixFlag){
@@ -1575,11 +1577,11 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
   virtual void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();   
+    runBeforeParamGroupUpdate();   
 
     int updateRowsSize,updateColsSize;
     if (updateOnlySizedMatrixFlag){
@@ -1602,11 +1604,11 @@ public:
       setNonSavedChanges(true);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
   virtual void updateProcessorFromXml(const bool applyRecursively){
-    runBeforeParamBatchChange();
+    runBeforeParamGroupUpdate();
 
     int updateRowsSize,updateColsSize;
     if (updateOnlySizedMatrixFlag){
@@ -1629,11 +1631,11 @@ public:
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
 
-  virtual void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
-    runBeforeParamBatchChange();   
+  virtual void updateProcessorHostAndUiFromXml(bool forceUpdateHost, bool forceUpdateUi,const bool applyRecursively){
+    runBeforeParamGroupUpdate();   
 
     int updateRowsSize,updateColsSize;
     if (updateOnlySizedMatrixFlag){
@@ -1646,17 +1648,17 @@ public:
 
     for (int i=0;i<updateRowsSize;i++)
       for (int j=0;j<updateColsSize;j++)
-        getParam(i*maxCols+j)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi);
+        getParam(i*maxCols+j)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi);
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
-        getParamGroup(i)->updateProcessorHostAndUiFromXml(forceRunAfterParamChange,forceUpdateUi,true);
+        getParamGroup(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
     }
     if (getNonSavedChanges()){
       setNonSavedChanges(false);
       runAfterNonSavedChangesChange();
     }
-    runAfterParamBatchChange();
+    runAfterParamGroupUpdate();
   }
   
   ParamMatrix(const String &name, const bool automationFlag, const bool loadSaveXmlFlag, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool updateOnlySizedMatrixFlag=true):

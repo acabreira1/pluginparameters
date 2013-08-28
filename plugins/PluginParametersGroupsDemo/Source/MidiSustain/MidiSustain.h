@@ -86,10 +86,7 @@ public:
     addBoolParam(enableIndex,"enable",true,true,&enable);     
   }  
 
-  void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){
-    if (updateFromFlag&UPDATE_FROM_XML)
-      return;
-    
+  void runAfterParamChange(int index,UpdateFromFlags updateFromFlag){    
     if (index==enableIndex && enable==false)
       panic();
   }

@@ -47,20 +47,12 @@ class PluginProcessor;
       It is set when the following methods are called: 
       getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_PROCESSOR), 
       getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_PROCESSOR) 
-      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_PROCESSOR).
-    * UPDATE_FROM_XML is meant to indicate that the value was read from XML at the beginning of a session 
-      or when reading from a file) after executing loadXml(...) or loadXmlFile(...). 
-      It is set when the following methods are called: 
-      getParam(paramIndex)->updateProcessorHostAndUiFromXml(...), 
-      getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_XML), 
-      getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_XML) 
-      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_XML).
+      or getParam(paramIndex)-> updateHost(...,UPDATE_FROM_PROCESSOR).    
 */
 enum UpdateFromFlags{
   UPDATE_FROM_HOST=0x01,
   UPDATE_FROM_UI=0x02,
-  UPDATE_FROM_PROCESSOR=0x04,
-  UPDATE_FROM_XML=0x08
+  UPDATE_FROM_PROCESSOR=0x04
 }; 
 
 /** Base class for all parameters. Distinctions by type are made below. */
@@ -218,7 +210,7 @@ public:
 
   /** Update the parameter value from the value loaded from Xml (stored in the variable
       xmlValue) and notify the host and the UI (if it has changed). */
-  void updateProcessorHostAndUiFromXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
+  void updateProcessorHostAndUiFromXml(bool forceUpdateHost=false,bool forceUpdateUi=false);
 
   /** Update value with the defaultValue and return true if it was different */
   virtual bool updateProcessorFromDefaultXml() = 0;

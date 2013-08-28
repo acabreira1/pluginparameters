@@ -38,8 +38,8 @@ private:
   ParamGroup **groupAutomated;
   int *indexInGroupAutomated;
   ParamGroup **groupNonAutomated;
-  int *indexInGroupNonAutomated;  
-   
+  int *indexInGroupNonAutomated;
+
   /** computes applyRecursively all the mappings between the global index 
     of parameters and their ParamGroup and index in the ParamGroup */
   void mapGlobalIndex(ParamGroup *root, bool countIfAutomate, ParamGroup **map,int *indexMap)  {
@@ -103,7 +103,7 @@ public:
     
     if (runAfterParamChange){
       //register non saved changes in the ParamGroup
-      if (param->getUpdateFromFlag()!=UPDATE_FROM_XML && param->saveXmlIsOn()){
+      if (param->saveXmlIsOn()){
         if (!localParamGroup->getNonSavedChanges()){
           localParamGroup->setNonSavedChanges(true);
           localParamGroup->runAfterNonSavedChangesChange();

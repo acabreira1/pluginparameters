@@ -111,16 +111,11 @@ public:
       addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);        
     }     
     
-    void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){
-      //Generally you don't want to run any updates when you are loading from XML 
-      //because it is often more efficient to initialize everything all at once at
-      //runAfterParamChangeBatch() which is called right after updateProcessorHostAndUiFromXml(...)            
-      if (updateFromFlag&UPDATE_FROM_XML) return;
-        
+    void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){        
       switch(paramIndex){    
         case floatIndex: {          
           logVar=floatVar;
-          runAfterParamChangeBatch();
+          runAfterParamGroupUpdate();
           intVar=0; //Custom setting
           getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
@@ -157,7 +152,7 @@ public:
           //reset
           floatVar=1.f;
           getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-          runAfterParamChangeBatch();
+          runAfterParamGroupUpdate();
           intVar=2; //Linear 1.0 Setting
           getParam(intIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
           break;
@@ -167,15 +162,15 @@ public:
           if (intVar==1){
             floatVar=0.0f; //Linear 0.0 (Mute) Setting
             getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-            runAfterParamChangeBatch();
+            runAfterParamGroupUpdate();
           } else if (intVar==2){
             floatVar=1.f; //Linear 1.0 (Bypass) Setting
             getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-            runAfterParamChangeBatch();   
+            runAfterParamGroupUpdate();   
           } else if (intVar==3){
             floatVar=2.f; //Linear 2.0 Setting
             getParam(floatIndex)->updateHostAndUi(false,UPDATE_FROM_PROCESSOR);
-            runAfterParamChangeBatch();
+            runAfterParamGroupUpdate();
           }
         }
         default: break;
@@ -183,7 +178,7 @@ public:
                 
     }        
 
-    void runAfterParamChangeBatch(){      
+    void runAfterParamGroupUpdate(){
       //updates all the other parameters with the value of logVar so that they
       //all represent the same value in different logarithmic ranges.
 
