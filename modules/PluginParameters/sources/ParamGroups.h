@@ -50,21 +50,21 @@ class BoolParamMatrix;
 /** Base class for all groups of parameters. Distinctions by type are made below. */
 class ParamGroup{  
 private:       
+  bool nonSavedChanges;
+
   ParamGroup* parentParamGroup;
   
   void setParentParamGroup(ParamGroup *paramGroup){
     parentParamGroup=paramGroup;        
   }
 
-  /** Counter of automated and non automated parameters. When a new paramter is added, 
+  /** Counter of automated and non automated parameters. When a new parameter is added, 
       they are incremented accordingly. This is used to compute the parameter indexes in 
       the global list of automated or non automated parameters. */
   int numAutomatedParams;
   int numNonAutomatedParams;
   
-  int localIndex;
-
-  bool nonSavedChanges;
+  int localIndex;  
 
   const String name;      
 
@@ -88,7 +88,7 @@ private:
       with update */
   PluginProcessor* pluginProcessor;
 
-protected:    
+protected:
   /** Returns the pointer to the (Extended)AudioProcessor instance */
   PluginProcessor* getProcessor() const{
     return pluginProcessor;
@@ -114,6 +114,29 @@ protected:
   bool *saveXmlFlagCopy;  
   
 public:  
+  /** Set if there are changes in the parameters that have not been saved in Xml */
+  void setNonSavedChanges(bool nonSavedChangesArg){
+    bool oldNonSavedChanges=nonSavedChanges;
+    nonSavedChanges=nonSavedChangesArg;
+    if (oldNonSavedChanges!=nonSavedChangesArg){
+      runAfterNonSavedChangesChange();
+      //propagate nonSavedChanges to parent ParamGroups
+      if (nonSavedChangesArg){
+        if (getParentParamGroup()!=nullptr)
+          getParentParamGroup()->setNonSavedChanges(true);
+      } else { //if !nonSavedChangesArg
+        // set nonSavedChanges in its children ParamGroups too
+        for (int g=0;g<getNumParamGroups();g++)
+          getParamGroup(g)->setNonSavedChanges(false);
+      }
+    }
+  }
+
+  /** Returns true if there are changes in the parameters that have not been saved in Xml */
+  const bool getNonSavedChanges() const{
+    return nonSavedChanges;
+  }
+
   /** Gets the ParamGroup to which this ParamGroup was added */
   ParamGroup* getParentParamGroup() const{
     return parentParamGroup;
@@ -469,26 +492,9 @@ public:
     }
   }
 
-  /** Set if there are or not changes in the Param values
-      that have not been saved in a Xml file. */
-  void setNonSavedChanges(bool state){
-    nonSavedChanges=state;
-  }
-
-  /** Get if there are or not changes in the Param values
-      that have not been saved in a Xml file. */
-  const bool getNonSavedChanges() const{
-    return nonSavedChanges;
-  }
-
   /** Override to update the relevant preset managers about
       saved changes in this ParamGroup */
-  virtual void runAfterNonSavedChangesChange(){
-    if (getParentParamGroup()!=nullptr && getNonSavedChanges()){
-      getParentParamGroup()->setNonSavedChanges(true);
-      getParentParamGroup()->runAfterNonSavedChangesChange();
-    }
-  }
+  virtual void runAfterNonSavedChangesChange(){}
 
   /** Stores the parameter values as an XML attribute.
       If createChild is set to true it will create a child XML node 
@@ -508,11 +514,7 @@ public:
     if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++)
         paramGroupList[g]->saveXml(xml,true,true);
-    }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    }    
   } 
   
   /** Save this ParamGroup to disk as XML. It creates a 
@@ -520,7 +522,13 @@ public:
   virtual bool saveXmlFile(const File &file,const String &dtdToUse=""){
     XmlElement xml(getName());
     saveXml(&xml,false,true);
-    return xml.writeToFile(file,dtdToUse);
+
+    if (xml.writeToFile(file,dtdToUse)){
+      setNonSavedChanges(false);
+      return true;
+    }
+
+    return false;
   }
   
   /** Delete an XML file asociated with this paramGroup from disk. 
@@ -592,10 +600,7 @@ public:
         getParamGroup(g)->updateProcessorFromXml(true);
       }
     }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();        
   }  
 
@@ -613,11 +618,8 @@ public:
       for (int g=0;g<getNumParamGroups();g++){
         getParamGroup(g)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
       }
-    }    
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    } 
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();        
   }  
   
@@ -634,10 +636,7 @@ public:
       for (int i=0;i<paramGroupList.size();i++)
         paramGroupList[i]->updateProcessorFromDefaultXml(true);
     }
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }
 
@@ -654,11 +653,8 @@ public:
     if (applyRecursively){
       for (int i=0;i<paramGroupList.size();i++)
         paramGroupList[i]->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi,true);
-    }        
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    } 
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }  
 
@@ -706,7 +702,7 @@ public:
     parentParamGroup(nullptr),
     numAutomatedParams(0),
     numNonAutomatedParams(0),
-    nonSavedChanges(false),
+    nonSavedChanges(true),
     name(name),
     xmlName(name),
     pluginProcessor(nullptr),
@@ -801,10 +797,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromDefaultXml(true);
     }
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }
 
@@ -825,10 +818,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi,true);
     }
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }  
 
@@ -848,10 +838,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromXml(true);
     }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();
   }  
 
@@ -872,10 +859,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
     }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();
   }
 
@@ -1573,10 +1557,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromDefaultXml(true);
     }
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }
 
@@ -1600,10 +1581,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi,true);
     }
-    if (!getNonSavedChanges()){
-      setNonSavedChanges(true);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(true);
     runAfterParamGroupUpdate();
   }
 
@@ -1627,10 +1605,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorFromXml(true);
     }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();
   }
 
@@ -1654,10 +1629,7 @@ public:
       for (int i=0;i<getNumParamGroups();i++)
         getParamGroup(i)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi,true);
     }
-    if (getNonSavedChanges()){
-      setNonSavedChanges(false);
-      runAfterNonSavedChangesChange();
-    }
+    setNonSavedChanges(false);
     runAfterParamGroupUpdate();
   }
   

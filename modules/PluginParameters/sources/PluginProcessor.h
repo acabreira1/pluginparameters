@@ -103,12 +103,8 @@ public:
     
     if (runAfterParamChange){
       //register non saved changes in the ParamGroup
-      if (param->saveXmlIsOn()){
-        if (!localParamGroup->getNonSavedChanges()){
-          localParamGroup->setNonSavedChanges(true);
-          localParamGroup->runAfterNonSavedChangesChange();
-        }
-      }
+      if (param->saveXmlIsOn())
+        localParamGroup->setNonSavedChanges(true);
       
       //"runAfterParamChange" defined in its ParamGroup
       localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());

@@ -111,7 +111,7 @@ public:
       addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);        
     }     
     
-    void runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){        
+    void runAfterParamChange(int paramIndex,UpdateFromFlags /*updateFromFlag*/){
       switch(paramIndex){    
         case floatIndex: {          
           logVar=floatVar;
