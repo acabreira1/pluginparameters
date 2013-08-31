@@ -140,6 +140,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcess
 &#160;</td><td class="memItemRight" valign="bottom"><b>ParamArray</b> (const String &amp;name, const bool automationFlag, const bool loadSaveXmlFlag, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool saveOnlyNonDefaultValuesFlag=true, bool updateOnlySizedArrayFlag=true)</td></tr>
 <tr class="separator:a093bdef4dbe52d17cd5c7253d3f6db01 inherit pub_methods_class_param_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_param_group"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_param_group')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_param_group.html">ParamGroup</a></td></tr>
+<tr class="memitem:a8c63e359d6ab9bbc082897f09aa2bf89 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a8c63e359d6ab9bbc082897f09aa2bf89">setNonSavedChanges</a> (bool nonSavedChangesArg)</td></tr>
+<tr class="separator:a8c63e359d6ab9bbc082897f09aa2bf89 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bbba7f4b1bb6c1b6cda89685c25b7a5 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0bbba7f4b1bb6c1b6cda89685c25b7a5">getNonSavedChanges</a> () const </td></tr>
+<tr class="separator:a0bbba7f4b1bb6c1b6cda89685c25b7a5 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af39d91e95011d9919fab5d0521ed54da inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_param_group.html">ParamGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#af39d91e95011d9919fab5d0521ed54da">getParentParamGroup</a> () const </td></tr>
 <tr class="separator:af39d91e95011d9919fab5d0521ed54da inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd1fd3dc1d1a03af454cef9d06cf294a inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#acd1fd3dc1d1a03af454cef9d06cf294a">setPluginProcessor</a> (<a class="el" href="class_plugin_processor.html">PluginProcessor</a> *pluginProcessorArg)</td></tr>
@@ -300,10 +304,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="memitem:a10248a4df1c0efcb6ff4b2e8e6f84f7a inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10248a4df1c0efcb6ff4b2e8e6f84f7a"></a>
 <a class="el" href="class_bool_param_matrix.html">BoolParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getBoolParamMatrix</b> (const int index) const </td></tr>
 <tr class="separator:a10248a4df1c0efcb6ff4b2e8e6f84f7a inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad048c84b7e74285506be72156d3f901b inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ad048c84b7e74285506be72156d3f901b">setNonSavedChanges</a> (bool state)</td></tr>
-<tr class="separator:ad048c84b7e74285506be72156d3f901b inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bbba7f4b1bb6c1b6cda89685c25b7a5 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0bbba7f4b1bb6c1b6cda89685c25b7a5">getNonSavedChanges</a> () const </td></tr>
-<tr class="separator:a0bbba7f4b1bb6c1b6cda89685c25b7a5 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6a107550895aff7669a93c85f049ef2 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae6a107550895aff7669a93c85f049ef2">runAfterNonSavedChangesChange</a> ()</td></tr>
 <tr class="separator:ae6a107550895aff7669a93c85f049ef2 inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b5b0961c2cad45496353634dcf80cc1 inherit pub_methods_class_param_group"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a1b5b0961c2cad45496353634dcf80cc1">saveXmlFile</a> (const File &amp;file, const String &amp;dtdToUse=&quot;&quot;)</td></tr>
@@ -503,7 +503,7 @@ const bool&#160;</td><td class="memItemRight" valign="bottom"><b>updateOnlySized
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 29 2013 01:43:10 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 31 2013 10:36:34 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

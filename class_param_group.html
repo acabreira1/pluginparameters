@@ -122,6 +122,10 @@ Inheritance diagram for ParamGroup:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a8c63e359d6ab9bbc082897f09aa2bf89"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a8c63e359d6ab9bbc082897f09aa2bf89">setNonSavedChanges</a> (bool nonSavedChangesArg)</td></tr>
+<tr class="separator:a8c63e359d6ab9bbc082897f09aa2bf89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bbba7f4b1bb6c1b6cda89685c25b7a5"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0bbba7f4b1bb6c1b6cda89685c25b7a5">getNonSavedChanges</a> () const </td></tr>
+<tr class="separator:a0bbba7f4b1bb6c1b6cda89685c25b7a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af39d91e95011d9919fab5d0521ed54da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_param_group.html">ParamGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#af39d91e95011d9919fab5d0521ed54da">getParentParamGroup</a> () const </td></tr>
 <tr class="separator:af39d91e95011d9919fab5d0521ed54da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd1fd3dc1d1a03af454cef9d06cf294a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#acd1fd3dc1d1a03af454cef9d06cf294a">setPluginProcessor</a> (<a class="el" href="class_plugin_processor.html">PluginProcessor</a> *pluginProcessorArg)</td></tr>
@@ -284,10 +288,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addBoolParamMatrix</b
 <tr class="separator:a10248a4df1c0efcb6ff4b2e8e6f84f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a358ca2f43680fbe2cede5e1c3faf42e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a358ca2f43680fbe2cede5e1c3faf42e1">updateUi</a> (const bool enable, const bool applyRecursively)</td></tr>
 <tr class="separator:a358ca2f43680fbe2cede5e1c3faf42e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad048c84b7e74285506be72156d3f901b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ad048c84b7e74285506be72156d3f901b">setNonSavedChanges</a> (bool state)</td></tr>
-<tr class="separator:ad048c84b7e74285506be72156d3f901b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bbba7f4b1bb6c1b6cda89685c25b7a5"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a0bbba7f4b1bb6c1b6cda89685c25b7a5">getNonSavedChanges</a> () const </td></tr>
-<tr class="separator:a0bbba7f4b1bb6c1b6cda89685c25b7a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6a107550895aff7669a93c85f049ef2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#ae6a107550895aff7669a93c85f049ef2">runAfterNonSavedChangesChange</a> ()</td></tr>
 <tr class="separator:ae6a107550895aff7669a93c85f049ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a558fe5568ee3ad7832dc7732f6b75c60"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param_group.html#a558fe5568ee3ad7832dc7732f6b75c60">saveXml</a> (XmlElement *xml, const bool createChild, const bool applyRecursively)</td></tr>
@@ -492,7 +492,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Get if there are or not changes in the <a class="el" href="class_param.html">Param</a> values that have not been saved in a Xml file. </p>
+<p>Returns true if there are changes in the parameters that have not been saved in Xml </p>
 
 </div>
 </div>
@@ -1100,7 +1100,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 
 </div>
 </div>
-<a class="anchor" id="ad048c84b7e74285506be72156d3f901b"></a>
+<a class="anchor" id="a8c63e359d6ab9bbc082897f09aa2bf89"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1111,7 +1111,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
           <td class="memname">void setNonSavedChanges </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
+          <td class="paramname"><em>nonSavedChangesArg</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1121,7 +1121,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Set if there are or not changes in the <a class="el" href="class_param.html">Param</a> values that have not been saved in a Xml file. </p>
+<p>Set if there are changes in the parameters that have not been saved in Xml </p>
 
 </div>
 </div>
@@ -1415,7 +1415,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlagCopy</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 29 2013 01:43:09 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 31 2013 10:36:34 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
