@@ -1,6 +1,6 @@
 ##Description
 
-PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-module-format) which manages automatically different types of plugin parameters. It intends to help automating things in the development of closs-platform plugins taking it from where JUCE leaves you in the wild. 
+PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-module-format) which manages automatically different types of plugin parameters. It intends to help automating things in the development of cross-platform plugins taking it from where JUCE leaves you in the wild. 
 
 ## Installation
 
