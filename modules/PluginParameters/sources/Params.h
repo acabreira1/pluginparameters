@@ -61,7 +61,7 @@ private:
   const int globalIndex;
     
   /** This flag determines if a parameter will be automated in the host.  */  
-  const bool automationFlag;
+  const bool registerAtHostFlag;
 
   const String name;
 
@@ -93,10 +93,10 @@ protected:
 
 public:      
   /** returns true if this parameter is automated or not */
-  bool automationIsOn() const { return automationFlag; }
+  bool automationIsOn() const { return registerAtHostFlag; }
 
   /** Index in the global list of automated parameters or the list of non automated parameters
-      (if automationFlag==true or automationFlag==false respectively) */
+      (if registerAtHostFlag==true or registerAtHostFlag==false respectively) */
   int getGlobalIndex() const { return globalIndex; } 
         
   /** Returns a string label for this parameter */
@@ -219,13 +219,13 @@ public:
       defaultValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
     
-  Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, const String &type):
+  Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, const String &type):
   pluginProcessor(pluginProcessor),
   globalIndex(globalIndex),
   name(name),
   xmlName(name),
   type(type),  
-  automationFlag(automationFlag),
+  registerAtHostFlag(registerAtHostFlag),
   updateUiFlag(false),  
   loadXmlFlag(loadSaveXmlFlag),
   saveXmlFlag(loadSaveXmlFlag),
@@ -326,15 +326,15 @@ public:
       xml->setAttribute(Param::getXmlName(),(*value));
   }
 
-  StringParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, String * const value):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"String"),
+  StringParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, String * const value):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"String"),
   value(value),
   defaultValue(*value),
   xmlValue(*value){
     // Strings cannot be automated! 
     // (They aren't supported at least in VST)
-    // Try again setting argument automationFlag=false
-    jassert(automationFlag==false);
+    // Try again setting argument registerAtHostFlag=false
+    jassert(registerAtHostFlag==false);
   }
 };
 
@@ -483,8 +483,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
     
-  FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Float"),
+  FloatParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"Float"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
@@ -654,8 +654,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
     
-  LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Log"),
+  LogParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"Log"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -847,8 +847,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
-  LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWith0"),
+  LogWith0Param(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"LogWith0"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -1111,8 +1111,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
   }
 
-  LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"LogWithSign"),
+  LogWithSignParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"LogWithSign"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue))),
   maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
   maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
@@ -1274,8 +1274,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(int)(*value));
   }
     
-  IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Int"),
+  IntParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"Int"),
   value(value),
   defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue))),
   minValue(minValue),
@@ -1365,8 +1365,8 @@ public:
       xml->setAttribute(Param::getXmlName(),(*value)?String("true"):String("false"));
   }
     
-  BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool automationFlag, const bool loadSaveXmlFlag, bool * const value):
-  Param(pluginProcessor,name,globalIndex,automationFlag,loadSaveXmlFlag,"Bool"),
+  BoolParam(PluginProcessor *pluginProcessor, const String &name, const int globalIndex, const bool registerAtHostFlag, const bool loadSaveXmlFlag, bool * const value):
+  Param(pluginProcessor,name,globalIndex,registerAtHostFlag,loadSaveXmlFlag,"Bool"),
   defaultValue(*value),
   xmlValue(*value),
   value(value){
