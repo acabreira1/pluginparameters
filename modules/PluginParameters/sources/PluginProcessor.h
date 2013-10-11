@@ -45,7 +45,7 @@ private:
   void mapGlobalIndex(ParamGroup *root, bool countIfAutomate, ParamGroup **map,int *indexMap)  {
     for (int i=0;i<root->getNumParams();i++){      
       Param* param=root->getParam(i);
-      if (param->automationIsOn()==countIfAutomate){
+      if (param->registeredAtHost()==countIfAutomate){
         jassert(param->getGlobalIndex()<((countIfAutomate)?getNumAutomatedParams():getNumNonAutomatedParams()));
         map[param->getGlobalIndex()]=root;
         indexMap[param->getGlobalIndex()]=i;
@@ -88,7 +88,7 @@ public:
     const int globalIndex=param->getGlobalIndex();
     ParamGroup *localParamGroup;
     int paramIndex;
-    if (param->automationIsOn()){ //if automated, notify host     
+    if (param->registeredAtHost()){ //if automated, notify host     
                                   //and get corresponding localParamGroup and paramIndex 
       //notify host      
       sendParamChangeMessageToListeners (globalIndex, newValue);      

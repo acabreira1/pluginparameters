@@ -97,7 +97,7 @@ public:
       intIndex,
       boolIndex,
       boolButtonIndex   
-    };            
+    };
       
     void initParameters(){        
       //Parameters   
@@ -110,6 +110,23 @@ public:
       addBoolParam(boolIndex,"bool",true,true,&boolVar);
       addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);        
     }     
+
+    /** Should return true if this parameter is a "meta" parameter.
+
+        A meta-parameter is a parameter that changes other params. It is used
+        by some hosts (e.g. AudioUnit hosts).
+
+        By default this returns false.
+    */
+    bool isMetaParameter (int parameterIndex) const{
+      //in this plugin all parameters except boolIndex change other parameters (floatVar or logVar)
+      //parameterIndex refers to the global Parameter index, not to the parameter index in the ParamGroup
+      //so it should be retrieved with the getGlobalIndex() method
+      if (parameterIndex==getParam(boolIndex)->getGlobalIndex())
+        return false;
+      else
+        return true;
+    }
     
     void runAfterParamChange(int paramIndex,UpdateFromFlags /*updateFromFlag*/){
       switch(paramIndex){    

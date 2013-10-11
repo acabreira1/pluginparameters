@@ -64,6 +64,9 @@ private:
   int numAutomatedParams;
   int numNonAutomatedParams;
   
+  /* index with which it is added to its parent ParamGroup 
+     (this information is needed to make runAfterParamGroupChange(...)
+      more efficient by allowing a switch to tell between ParamGroups) */
   int localIndex;  
 
   const String name;      
@@ -85,30 +88,17 @@ private:
   OwnedArray<ParamGroup > paramGroupsToUnallocateAtDestructor;    
 
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the host 
-      with update */
+      with PluginProcessor::updateHostAndUi(...) */
   PluginProcessor* pluginProcessor;
 
 protected:
   /** Returns the pointer to the (Extended)AudioProcessor instance */
   PluginProcessor* getProcessor() const{
     return pluginProcessor;
-  }    
-  
-  /** Sets the number of automated parameters added so far */
-  void setNumAutomatedParams(int numAutomatedParamsArg){
-    numAutomatedParams=numAutomatedParamsArg;
   }  
-  
-  /** Sets the number of non automated parameters added so far */
-  void setNumNonAutomatedParams(int numNonAutomatedParamsArg){
-    numNonAutomatedParams=numNonAutomatedParamsArg;
-  }
-  
-  /** Sets the index with which it is added to its parent ParamGroup 
-      (this information is needed to make runAfterParamGroupChange(...)
-       more efficient by allowing a switch to tell between ParamGroups) */
-  void setLocalIndex(int paramGroupIndex){
-    localIndex=paramGroupIndex;
+
+  void setPluginProcessor(PluginProcessor* pluginProcessorArg){
+    pluginProcessor=pluginProcessorArg;    
   }
   
   bool *saveXmlFlagCopy;  
@@ -141,11 +131,6 @@ public:
   ParamGroup* getParentParamGroup() const{
     return parentParamGroup;
   }    
-
-  /** Sets the pointer to the PluginProcessor instance */
-  void setPluginProcessor(PluginProcessor *pluginProcessorArg){
-    pluginProcessor=pluginProcessorArg;
-  }  
 
   /** Returns the number of automated parameters added so far */
   const int getNumAutomatedParams() const {
@@ -222,11 +207,11 @@ public:
     //their indexes. Please go and fix it.
     if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; return;}
     
-    paramGroup->setPluginProcessor(getProcessor());
-    paramGroup->setParentParamGroup(this);
-    paramGroup->setNumAutomatedParams(numAutomatedParams);
-    paramGroup->setNumNonAutomatedParams(numNonAutomatedParams);
-    paramGroup->setLocalIndex(paramGroupIndex);            
+    paramGroup->pluginProcessor=getProcessor();
+    paramGroup->parentParamGroup=this;
+    paramGroup->numAutomatedParams=numAutomatedParams;
+    paramGroup->numNonAutomatedParams=numNonAutomatedParams;
+    paramGroup->localIndex=paramGroupIndex;
 
     //produce a unique tag name:
     //if there was already a child with the same xmlName tag
@@ -266,6 +251,13 @@ public:
     //their indexes. Please go and fix it.   
     if (paramIndex!=paramList.size()) {jassertfalse; return;}    
 
+    param->pluginProcessor=getProcessor();
+
+    if (param->registeredAtHost())
+      param->globalIndex=numAutomatedParams++;
+    else
+      param->globalIndex=numNonAutomatedParams++;
+
     if (forceUniqueXmlName){
       //produce a unique attribute name:
       //if there was already a Param with the same xmlName attribute
@@ -298,10 +290,7 @@ public:
   
   void addStringParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, String *const value,bool forceUniqueXmlName=true){      
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new StringParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
+    addParam(paramIndex,param=new StringParam(name,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }    
 
@@ -326,10 +315,7 @@ public:
   
   void addFloatParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),bool forceUniqueXmlName=true){
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new FloatParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);        
+    addParam(paramIndex,param=new FloatParam(name,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }   
 
@@ -354,10 +340,7 @@ public:
    
    void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new LogParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);        
+    addParam(paramIndex,param=new LogParam(name,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }   
 
@@ -382,10 +365,7 @@ public:
    
    void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new LogWith0Param(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);        
+    addParam(paramIndex,param=new LogWith0Param(name,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue,factor),forceUniqueXmlName);    
     paramsToUnallocateAtDestructor.add(param);
   }
 
@@ -410,10 +390,7 @@ public:
    
    void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
    Param *param;
-   if (registerAtHostFlag)
-    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
-  else
-    addParam(paramIndex,param=new LogWithSignParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
+   addParam(paramIndex,param=new LogWithSignParam(name,registerAtHostFlag,loadSaveXmlFlag,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
   paramsToUnallocateAtDestructor.add(param);
 }  
 
@@ -438,10 +415,7 @@ public:
   
   void addIntParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const bool loadSaveXmlFlag,PluginParameters_PluginIntType *const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1,bool forceUniqueXmlName=true){
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new IntParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
+    addParam(paramIndex,param=new IntParam(name,registerAtHostFlag,loadSaveXmlFlag,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }    
 
@@ -466,10 +440,7 @@ public:
   
   void addBoolParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const bool loadSaveXmlFlag, bool *const value,bool forceUniqueXmlName=true){
     Param *param;
-    if (registerAtHostFlag)
-      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
-    else
-      addParam(paramIndex,param=new BoolParam(pluginProcessor,name,numNonAutomatedParams++,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
+    addParam(paramIndex,param=new BoolParam(name,registerAtHostFlag,loadSaveXmlFlag,value),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }
   
@@ -733,8 +704,9 @@ public:
 
 /** ParamGroup base class for array of Params. */
 class ParamArray : public ParamGroup{       
-protected:
-  PluginParameters_PluginIntType *const size;    
+  PluginParameters_PluginIntType *const size;
+
+protected:      
   const int maxSize;
   const bool registerAtHostFlag;
   const bool loadSaveXmlFlag;
@@ -747,7 +719,10 @@ public:
   
   /** Returns the size of the "visible" array */
   PluginParameters_PluginIntType getSize() const{
-    return *size;
+    if (size==nullptr)
+      return maxSize;
+    else
+      return *size;
   }
   
   /** Returns the maximum (allocated) size of the array */
@@ -757,7 +732,7 @@ public:
   
   /** Returns the minimum range of each parameter in the array */
   const double getMin() const{
-    if (*size>0) 
+    if ((size!=nullptr && *size>0) || (maxSize>0))
       return getParam(0)->getMin();
     else
       return 0;
@@ -765,14 +740,16 @@ public:
   
   /** Returns the maximum range of each parameter in the array */
   const double getMax() const{
-    if (*size>0) 
+    if ((size!=nullptr && *size>0) || (maxSize>0))
       return getParam(0)->getMax();
     else
       return 0;
   }
  
   virtual void updateUi(const bool enable,const bool applyRecursively){
-    for (int i=0;i<*size;i++)
+    const int arrayLength=(size!=nullptr)?*size:maxSize;
+
+    for (int i=0;i<arrayLength;i++)
       getParam(i)->updateUi(enable); 
     
     if (applyRecursively){     
@@ -785,7 +762,7 @@ public:
     runBeforeParamGroupUpdate();
 
     int updateSize;
-    if (updateOnlySizedArrayFlag)
+    if (size!=nullptr && updateOnlySizedArrayFlag)
       updateSize=*size;
     else
       updateSize=maxSize;
@@ -806,7 +783,7 @@ public:
     runBeforeParamGroupUpdate();   
 
     int updateSize;
-    if (updateOnlySizedArrayFlag)
+    if (size!=nullptr && updateOnlySizedArrayFlag)
       updateSize=*size;
     else
       updateSize=maxSize;
@@ -826,7 +803,7 @@ public:
     runBeforeParamGroupUpdate();
 
     int updateSize;
-    if (updateOnlySizedArrayFlag)
+    if (size!=nullptr && updateOnlySizedArrayFlag)
       updateSize=*size;
     else
       updateSize=maxSize;
@@ -847,7 +824,7 @@ public:
     runBeforeParamGroupUpdate();   
 
     int updateSize;
-    if (updateOnlySizedArrayFlag)
+    if (size!=nullptr && updateOnlySizedArrayFlag)
       updateSize=*size;
     else
       updateSize=maxSize;
@@ -894,7 +871,7 @@ public:
 
   /** Returns the value of position i in the array */
   PluginParameters_PluginFloatType getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
@@ -933,7 +910,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -980,7 +957,7 @@ public:
 
   /** Returns the value of position i in the array */
   PluginParameters_PluginFloatType getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
@@ -1019,7 +996,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1067,7 +1044,7 @@ public:
 
   /** Returns the value of position i in the array */
   PluginParameters_PluginFloatType getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }    
@@ -1106,7 +1083,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1155,7 +1132,7 @@ public:
 
   /** Returns the value of position i in the array */
   PluginParameters_PluginFloatType getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }
@@ -1194,7 +1171,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1242,7 +1219,7 @@ public:
 
   /** Returns the value of position i in the array */
   PluginParameters_PluginIntType getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
@@ -1286,7 +1263,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1330,7 +1307,7 @@ public:
 
   /** Returns the value of position i in the array */
   bool getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }    
@@ -1357,7 +1334,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1400,7 +1377,7 @@ public:
 
   /** Returns the value of position i in the array */
   String getValue(int i) const{
-    if (i>=0 && i<*ParamArray::size && i<ParamArray::getMaxSize())
+    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return String::empty;
   }    
@@ -1427,7 +1404,7 @@ public:
     }
     
     if (ParamArray::saveOnlySizedArrayFlag){
-      for (int i=*ParamArray::size;i<ParamArray::maxSize;i++){        
+      for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++){        
         getParam(i)->setSaveXml(false);
       }
     }
@@ -1481,12 +1458,18 @@ public:
   
   /** Returns the number of rows of the "visible" array */
   PluginParameters_PluginIntType getNumRows() const{
-    return *numRows;
+    if (numRows!=nullptr)
+      return *numRows;
+    else
+      return maxRows;    
   }
   
   /** Returns the number of columns of the "visible" array */
   PluginParameters_PluginIntType getNumCols() const{
-    return *numCols;
+    if (numCols!=nullptr)
+      return *numCols;
+    else 
+      return maxCols;
   }
   
   /** Returns the maximum (allocated) size of the array */
@@ -1500,7 +1483,7 @@ public:
   
   /** Returns the minimum range of each parameter in the matrix */
   const double getMin() const{
-    if (*numCols>0 && *numRows>0)
+    if (((numCols!=nullptr && *numCols>0)||maxCols>0) && ((numRows!=nullptr && *numRows>0)||maxRows>0))
       return getParam(0)->getMin();
     else
       return 0;
@@ -1508,7 +1491,7 @@ public:
   
   /** Returns the maximum range of each parameter in the matrix */
   const double getMax() const{
-    if (*numCols>0 && *numRows>0)
+    if (((numCols!=nullptr && *numCols>0)||maxCols>0) && ((numRows!=nullptr && *numRows>0)||maxRows>0))
       return getParam(0)->getMax();
     else
       return 0;
@@ -1527,8 +1510,11 @@ public:
   }
 
   virtual void updateUi(const bool enable,const bool applyRecursively){
-    for (int i=0;i<*numRows;i++)
-      for (int j=0;j<*numCols;j++)
+    const int rows=(numRows!=nullptr)?*numRows:maxRows;
+    const int cols=(numCols!=nullptr)?*numCols:maxCols;
+
+    for (int i=0;i<rows;i++)
+      for (int j=0;j<cols;j++)
         getParam(i*maxCols+j)->updateUi(enable);
     
     if (applyRecursively){     
@@ -1541,7 +1527,7 @@ public:
     runBeforeParamGroupUpdate();
 
     int updateRowsSize,updateColsSize;
-    if (updateOnlySizedMatrixFlag){
+    if (numRows!=nullptr && numCols!=nullptr && updateOnlySizedMatrixFlag){
       updateRowsSize=*numRows;
       updateColsSize=*numCols;
     } else {
@@ -1565,7 +1551,7 @@ public:
     runBeforeParamGroupUpdate();   
 
     int updateRowsSize,updateColsSize;
-    if (updateOnlySizedMatrixFlag){
+    if (numRows!=nullptr && numCols!=nullptr && updateOnlySizedMatrixFlag){
       updateRowsSize=*numRows;
       updateColsSize=*numCols;
     } else {
@@ -1589,7 +1575,7 @@ public:
     runBeforeParamGroupUpdate();
 
     int updateRowsSize,updateColsSize;
-    if (updateOnlySizedMatrixFlag){
+    if (numRows!=nullptr && numCols!=nullptr && updateOnlySizedMatrixFlag){
       updateRowsSize=*numRows;
       updateColsSize=*numCols;
     } else {
@@ -1613,7 +1599,7 @@ public:
     runBeforeParamGroupUpdate();   
 
     int updateRowsSize,updateColsSize;
-    if (updateOnlySizedMatrixFlag){
+    if (numRows!=nullptr && numCols!=nullptr && updateOnlySizedMatrixFlag){
       updateRowsSize=*numRows;
       updateColsSize=*numCols;
     } else {
