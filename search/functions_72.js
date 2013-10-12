@@ -1,6 +1,7 @@
 var searchData=
 [
   ['read',['read',['../class_presets.html#a6d2cee1772e62f5259d4a86a9e17b21e',1,'Presets']]],
+  ['registeredathost',['registeredAtHost',['../class_param.html#a62290b6b7f2cb8f687bf2e623249df86',1,'Param']]],
   ['remove',['remove',['../class_presets.html#ae2f2ef899208bf59cf2bd585281cbf44',1,'Presets']]],
   ['removelastloaded',['removeLastLoaded',['../class_presets.html#ad72337c5f85bedb18f1c3d0fbc57a112',1,'Presets']]],
   ['removexmlfile',['removeXmlFile',['../class_param_group.html#ade01223a1debadfd640a6d02abdf839f',1,'ParamGroup']]],
