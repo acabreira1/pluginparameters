@@ -197,17 +197,17 @@ public:
     
   /** Set a parameter from the Processor to a new value and notify the host and 
       the UI (when it has changed) */  
-  void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag);  
+  void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);  
     
   /** Notify the host about the current value of a parameter and update the UI.
       This is useful when you change the value of this parameter (maybe several times) 
       and you don't want to notify the host and the UI until the end. */  
-  void updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlag);
+  void updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);
       
   /** Notify the host about the current value of a parameter without updating the UI. 
       This is useful when you change the value of this parameter (maybe several times) 
       and you don't want to notify the host until the end. */  
-  void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag);    
+  void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);
     
   /** Update value with the xmlValue read with loadXml and return true if it was different */
   virtual bool updateProcessorFromXml() = 0;

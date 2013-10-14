@@ -659,13 +659,13 @@ public:
       useful when you change the parameters of this paramGroup (maybe several times) without
       notifying the Host and the UI (without using update(...)) and at the end of the process 
       you want to update the Host and the UI from all of them at once */
-  void updateHost(bool runAfterParamChange,UpdateFromFlags updateFromFlag,const bool applyRecursively){
+  void updateHost(bool runAfterParamChange,const bool applyRecursively,UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR){
     for (int paramIndex=0;paramIndex<getNumParams();paramIndex++)
       getParam(paramIndex)->updateHost(runAfterParamChange,updateFromFlag);
 
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
-        getParamGroup(i)->updateHost(runAfterParamChange,updateFromFlag,true);
+        getParamGroup(i)->updateHost(runAfterParamChange,true,updateFromFlag);
     }
   }
   
@@ -1498,13 +1498,13 @@ public:
   }	
   
   /** Update the host and the UI about all parameters in this row */
-  void updateHostAndUiRow(int row,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag){
+  void updateHostAndUiRow(int row,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR){
     for (int col=0;col<getNumCols();col++)
       getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
   
   /** Update the host and the UI about all parameters in this column */
-  void updateHostAndUiCol(int col,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag){
+  void updateHostAndUiCol(int col,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR){
     for (int row=0;row<getNumRows();row++)
       getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
@@ -1695,13 +1695,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -1798,13 +1798,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -1902,13 +1902,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -2007,13 +2007,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -2109,13 +2109,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -2194,13 +2194,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
@@ -2276,13 +2276,13 @@ public:
     }
     
     if (saveOnlySizedMatrixFlag){
-      for (int i=0;i<*ParamMatrix::numRows;i++){        
-        for (int j=*ParamMatrix::numCols;j<ParamMatrix::maxCols;j++){
+      for (int i=0;i<ParamMatrix::getNumRows();i++){        
+        for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }        
       }
       
-      for (int i=*ParamMatrix::numRows;i<ParamMatrix::maxRows;i++){
+      for (int i=ParamMatrix::getNumRows();i<ParamMatrix::maxRows;i++){
         for (int j=0;j<maxCols;j++){
           getParam(ParamMatrix::maxCols*i+j)->setSaveXml(false);
         }
