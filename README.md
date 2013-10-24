@@ -4,7 +4,7 @@ PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-modul
 
 ##License
 
-The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A Commercial License (available for 150eur) provides you additionally a Preset Manager and the possibility to use it in any kind of close-sourced or commercial projects.
+The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A Commercial License (available for 150eur) provides you additionally a Preset Manager and allows you to use it in a close-sourced or commercial project.
 
 If this project has saved hours of your precious time, please consider either buying a Commercial License, making a donation (donations can count towards buying a Commercial License, if you wish so) or simply contributing time and code back. This work has been exclusively supported with private earnings, time and energy and it doesn't include any advertising or any hidden source of income whatsoever; so it relies on your contributions.
 
@@ -38,7 +38,7 @@ This page provides detailed instructions to create your plugin from scratch usin
 * [PluginParametersDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersDemo) 
 * [PluginParametersGroupsDemo](https://github.com/4drX/pluginparameters/tree/master/plugins/PluginParametersGroupsDemo)
 
-This two plugins are released independently from the PluginParameters module, with a MIT license.
+These two plugins are released independently from the PluginParameters module, with a MIT license.
 
 ##[Doxygen Documentation](http://4drx.github.io/pluginparameters/annotated.html)
 
@@ -46,4 +46,4 @@ This will probably help you understand the code quicker.
 
 ##[Forum and announcements](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters)
 
-Please submit any comments, bug reports, etc here.
+Tune-in to the JUCE forum to submit comments, bug reports, etc.
