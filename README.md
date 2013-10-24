@@ -2,6 +2,14 @@
 
 PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-module-format) which manages automatically different types of plugin parameters. It intends to help automating things in the development of cross-platform plugins taking it from where JUCE leaves you in the wild. 
 
+##License
+
+The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A Commercial License (available for 150eur) provides you additionally a Preset Manager and the possibility to use it in any kind of close-sourced or/and commercial projects.
+
+If this project has saved hours of your precious time, please consider either buying a Commercial License, making a donation (donations can count towards buying a Commercial License, if you wish so) or simply contributing time and code back. This work has been exclusively supported with private earnings, time and energy and it doesn't include any advertising or any hidden source of income whatsoever; so it relies on your contributions.
+
+For more details, send me a Personal Message at [this thread at the JUCE forum](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters) (MarC).
+
 ## Installation
 
 If you are new to [JUCE](http://www.juce.com), first [download it](http://www.juce.com/downloads) into a local folder. Next drag-and-drop the "modules" folder to your local JUCE folder. When you create a new project in JUCE, the [Introjucer](http://www.juce.com/documentation/introjucer) will detect automatically the PluginParameters module. Switch it on and you are ready to go!
@@ -39,7 +47,3 @@ This will probably help you understand the code quicker.
 ##[Forum and announcements](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters)
 
 Please submit any comments, bug reports, etc here.
-
-##License
-
-The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A commercial license provides you additionally a Preset Manager and is available for 150eur. Please Send me a Personal Message or reply to [this thread at the JUCE forum](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters) if you are interested.
