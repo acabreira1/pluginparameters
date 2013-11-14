@@ -416,7 +416,7 @@ public:
       return newHostValue;
   }  
 
-  void setMin(PluginParameters_PluginFloatType minValueArg){        
+  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){        
     if (defaultValue>=minValueArg){
       minValue=minValueArg;
       if (*value<minValueArg)
@@ -425,9 +425,13 @@ public:
         xmlValue=minValueArg;
     } else //minValue can't be greater than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
-  void setMax(PluginParameters_PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
     if (defaultValue<=maxValueArg){
       maxValue=maxValueArg;
       if (*value>maxValueArg)
@@ -436,6 +440,10 @@ public:
         xmlValue=maxValueArg;
     } else //maxValue can't be less than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
   const PluginParameters_PluginFloatType getDefaultValue() const{
@@ -582,7 +590,7 @@ public:
       return newHostValue;
   }  
 
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){
     if (defaultValue>=minValueArg && minValueArg>0){
       minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
       if (*value<minValueArg)
@@ -591,9 +599,13 @@ public:
         xmlValue=minValueArg;
     } else //minValue can't be <=0 or greater than the (constant) default value
       jassertfalse;
+    
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
-  void setMax(PluginParameters_PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
       maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
@@ -602,6 +614,10 @@ public:
         xmlValue=maxValueArg;
     } else //maxValue can't be <=0 or less than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
     
   const PluginParameters_PluginFloatType getDefaultValue() const{
@@ -781,7 +797,7 @@ public:
     return factor;
   }
       
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){
     if (defaultValue>=minValueArg && minValueArg>0){
       minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
       if (*value<minValueArg)
@@ -790,9 +806,13 @@ public:
         xmlValue=0;
     } else //minValue can't be <=0 or greater than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
-  void setMax(PluginParameters_PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
       maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
@@ -801,6 +821,10 @@ public:
         xmlValue=maxValueArg;
     } else //maxValue can't be <=0 or less than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }  
     
   const double getMin() const{
@@ -1016,7 +1040,7 @@ public:
       jassertfalse;
   }
     
-  void setMinAbs(PluginParameters_PluginFloatType minAbsValueArg){    
+  void setMinAbs(PluginParameters_PluginFloatType minAbsValueArg,bool updateHostFlag=true){    
     if (fabs(defaultValue)<=minAbsValueArg && minAbsValueArg>0){
       minAbsLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minAbsValueArg)));
       if (fabs(*value)>minAbsValueArg){
@@ -1033,9 +1057,13 @@ public:
       }
     } else //minAbsValue can't be <=0 or greater in abs value than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }  
 
-  void setMax(PluginParameters_PluginFloatType maxValueArg){    
+  void setMax(PluginParameters_PluginFloatType maxValueArg, bool updateHostFlag=true){    
     if (defaultValue<=maxValueArg && maxValueArg>0){
       maxPosLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
       if (*value>maxValueArg)
@@ -1044,6 +1072,10 @@ public:
         xmlValue=maxValueArg;
     } else //maxValue can't be <=0 or less than the (constant) default value
       jassertfalse;
+    
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }  
     
   const double getMinAbs() const{
@@ -1212,7 +1244,7 @@ public:
     }
   }
     
-  void setMin(PluginParameters_PluginIntType minValueArg){        
+  void setMin(PluginParameters_PluginIntType minValueArg,bool updateHostFlag=true){        
     if (defaultValue>=minValueArg){
       minValue=minValueArg;
       if (*value<minValueArg)
@@ -1221,9 +1253,13 @@ public:
         xmlValue=minValueArg;
     } else //minValue can't be greater than the (constant) default value
       jassertfalse;
+
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
-  void setMax(PluginParameters_PluginIntType maxValueArg){    
+  void setMax(PluginParameters_PluginIntType maxValueArg,bool updateHostFlag=true){    
     if (defaultValue<=maxValueArg){
       maxValue=maxValueArg;
       if (*value>maxValueArg)
@@ -1232,6 +1268,10 @@ public:
         xmlValue=maxValueArg;
     } else //maxValue can't be less than the (constant) default value
       jassertfalse;
+    
+    if (updateHostFlag){
+      updateHost(false);
+    }
   }
 
   const PluginParameters_PluginIntType getDefaultValue() const{
