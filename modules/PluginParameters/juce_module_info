@@ -19,5 +19,5 @@
   "compile":        [ { "file": "PluginParameters.cpp", "target": "! xcode" },
                       { "file": "PluginParameters.mm",  "target": "xcode" } ],
 
-  "browse":         []
+  "browse":         ["sources/*"]
 }

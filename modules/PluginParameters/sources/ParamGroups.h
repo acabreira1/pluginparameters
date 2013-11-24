@@ -1446,9 +1446,9 @@ protected:
   PluginParameters_PluginIntType *const numRows;
   PluginParameters_PluginIntType *const numCols;
   const int maxRows;
-  const int maxCols;      
-  const bool registerAtHostFlag;  
-  const bool loadSaveXmlFlag;  
+  const int maxCols;
+  const bool registerAtHostFlag;
+  const bool loadSaveXmlFlag;
   bool saveOnlySizedMatrixFlag;
   bool saveOnlyNonDefaultValuesFlag;
   bool updateOnlySizedMatrixFlag;
@@ -1651,6 +1651,10 @@ public:
     }
   }
 
+  FloatParam* getFloatParam(int i,int j) const{
+    return ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j);
+  }
+
   /** Returns the value of position i,j in the array */
   PluginParameters_PluginFloatType getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
@@ -1711,7 +1715,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getFloatParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getFloatParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -1752,6 +1756,10 @@ public:
         ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor,false);        
       }
     }
+  }
+
+  LogParam* getLogParam(int i,int j) const{
+    return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j);
   }
 
   /** Returns the value of position i,j in the array */
@@ -1814,7 +1822,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getLogParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getLogParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -1856,6 +1864,10 @@ public:
         ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,factor,false);        
       }
     }
+  }
+
+  LogWith0Param* getLogWith0Param(int i,int j) const{
+    return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j);
   }
 
   /** Returns the value of position i,j in the array */
@@ -1918,7 +1930,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getLogWith0Param(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getLogWith0Param(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -1961,6 +1973,10 @@ public:
         ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,minAbsValue,factor,false);        
       }
     }
+  }
+
+  LogWithSignParam* getLogWithSignParam(int i,int j) const{
+    return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j);
   }
 
   /** Returns the value of position i,j in the array */
@@ -2023,7 +2039,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getLogWithSignParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getLogWithSignParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -2063,6 +2079,10 @@ public:
         ParamGroup::addIntParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveXmlFlag,&(values[i][j]),minValue,maxValue,false);        
       }
     }
+  }
+
+  IntParam* getIntParam(int i,int j) const{
+    return ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j);
   }
 
   /** Returns the value of position i,j in the array */
@@ -2125,7 +2145,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getIntParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getIntParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -2163,6 +2183,10 @@ public:
       }
     }
   } 
+
+  BoolParam* getBoolParam(int i,int j) const{
+    return ParamGroup::getBoolParam(i*ParamMatrix::getMaxCols()+j);
+  }
 
   /** Returns the value of position i,j in the array */
   bool getValue(int i,int j) const{
@@ -2210,7 +2234,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getBoolParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getBoolParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
@@ -2245,6 +2269,10 @@ public:
       }
     }
   } 
+
+  StringParam* getStringParam(int i,int j) const{
+    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j);
+  }
 
   /** Returns the value of position i,j in the array */
   String getValue(int i,int j) const{
@@ -2292,7 +2320,7 @@ public:
     if (ParamMatrix::saveOnlyNonDefaultValuesFlag){
       for (int i=0;i<ParamMatrix::maxRows;i++){
         for (int j=0;j<ParamMatrix::maxCols;j++){    
-          param=getStringParam(ParamMatrix::maxCols*i+j);
+          param=ParamGroup::getStringParam(ParamMatrix::maxCols*i+j);
           if (param->getValue()==param->getDefaultValue())
             param->setSaveXml(false);
         }
