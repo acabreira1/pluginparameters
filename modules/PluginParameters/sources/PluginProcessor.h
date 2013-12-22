@@ -87,18 +87,18 @@ public:
   void updateHostAndUi(Param *const param, float newValue,bool runAfterParamChange=true,bool updateUi=true){             
     const int globalIndex=param->getGlobalIndex();
     ParamGroup *localParamGroup;
-    int paramIndex;
+    int groupIndex;
     if (param->registeredAtHost()){ //if automated, notify host     
-                                  //and get corresponding localParamGroup and paramIndex 
+                                  //and get corresponding localParamGroup and groupIndex 
       //notify host      
       sendParamChangeMessageToListeners (globalIndex, newValue);      
       localParamGroup=groupAutomated[globalIndex];
-      paramIndex=indexInGroupAutomated[globalIndex];
+      groupIndex=indexInGroupAutomated[globalIndex];
       
     } else { //if not automated skip host notification
-             // but get corresponding localParamGroup and paramIndex
+             // but get corresponding localParamGroup and groupIndex
       localParamGroup=groupNonAutomated[globalIndex];
-      paramIndex=indexInGroupNonAutomated[globalIndex];
+      groupIndex=indexInGroupNonAutomated[globalIndex];
     }
     
     if (runAfterParamChange){
@@ -107,10 +107,10 @@ public:
         localParamGroup->setNonSavedChanges(true);
       
       //"runAfterParamChange" defined in its ParamGroup
-      localParamGroup->runAfterParamChange(paramIndex,param->getUpdateFromFlag());
+      localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
       //"runAfterParamGroupChange" defined in its parent ParamGroup
       if (localParamGroup->getParentParamGroup()!=nullptr)
-        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),paramIndex,param->getUpdateFromFlag());
+        localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
     }
     if (updateUi){
       param->updateUi(true);
@@ -144,12 +144,14 @@ public:
 
   void setParameter (int index, float newValue){     
     if (index>=0 && index<getNumAutomatedParams()){
-      ParamGroup * const paramGroup=groupAutomated[index];
+      ParamGroup * const localParamGroup=groupAutomated[index];
       const int groupIndex=indexInGroupAutomated[index];
-      Param * const param=paramGroup->getParam(groupIndex);      
+      Param * const param=localParamGroup->getParam(groupIndex);
       if (param->hostSet(newValue)){
         param->updateUi(true);
-        paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+        localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+        if (localParamGroup->getParentParamGroup()!=nullptr)
+          localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
       }      
     } 
   }  

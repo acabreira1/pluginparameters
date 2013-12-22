@@ -509,7 +509,7 @@ public:
     if (!file.exists())
       return false;    
                   
-    return file.deleteFile();   
+    return file.moveToTrash();   
   }
 
   /** Rename an XML file asociated with this paramGroup from disk. 
