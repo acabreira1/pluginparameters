@@ -4,9 +4,7 @@ PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-modul
 
 ##License
 
-The PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html) *without the Preset Manager*. A Commercial License (available for 150eur) provides you additionally a Preset Manager and allows you to use it in a close-sourced or commercial project.
-
-If this project has saved hours of your precious time, please consider either buying a Commercial License, making a donation (donations can count towards buying a Commercial License, if you wish so) or simply contributing time and code back. This work has been exclusively supported with private earnings, time and energy and it doesn't include any advertising or any hidden source of income whatsoever; so it relies on your contributions.
+This version of the PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html). Please consider donating a small sum if you wish to see it updated. A Commercial License is available for 250eur, allows you to use this module in closed-source projects and provides you full compatibility with the latest release of JUCE, support for XCode and Visual Studio and extra features like a Preset Manager.
 
 For more details, send me a Personal Message at [the JUCE forum](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters) (MarC).
 
