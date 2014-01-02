@@ -70,6 +70,8 @@ private:
   const String type;      
     
   bool updateUiFlag;
+
+  bool forceRunAfterParamChangeInHostFlag;
     
   UpdateFromFlags updateFromFlag;    
 
@@ -140,7 +142,7 @@ public:
   /* Returns whether there is a pending request or not to update the UI without changing it */
   bool updateUiIsOn() const{
     return updateUiFlag;
-  }
+  }  
     
   /**  Returns the parameter value to set the host. */
   virtual PluginParameters_HostFloatType hostGet() const = 0;  
@@ -171,6 +173,16 @@ public:
     saveXmlFlag=enable;
   }
      
+  /** Returns true is runAfterParamChange will be forced after an update from the Host */
+  bool forceRunAfterParamChangeInHostIsOn(){
+    return forceRunAfterParamChangeInHostFlag;
+  }
+
+  /** Set whether runAfterParamChange will be forced or not after an update from the Host */
+  void setForceRunAfterParamChangeInHost(const bool enable){
+    forceRunAfterParamChangeInHostFlag=enable;
+  }
+
   /** Returns the current updateFrom flag */
   UpdateFromFlags getUpdateFromFlag(){
     return updateFromFlag;
@@ -231,6 +243,7 @@ public:
   type(type),  
   registerAtHostFlag(registerAtHostFlag),
   updateUiFlag(false),  
+  forceRunAfterParamChangeInHostFlag(false),
   loadXmlFlag(loadSaveXmlFlag),
   saveXmlFlag(loadSaveXmlFlag),
   updateFromFlag(UPDATE_FROM_HOST)

@@ -197,6 +197,17 @@ public:
     jassert(groupIndex>=0 && groupIndex<paramGroupList.size());
     return paramGroupList[groupIndex];
   }
+
+  /** Force runAfterParamChange for all its parameters when the Host updates them */
+  void setForceRunAfterParamChangeInHost(const bool enable, const bool applyRecursively){
+    for (int i=0;i<paramList.size();i++)
+      paramList[i]->setForceRunAfterParamChangeInHost(enable);
+    
+    if (applyRecursively){  
+      for (int i=0;i<paramGroupList.size();i++)
+        paramGroupList[i]->setForceRunAfterParamChangeInHost(enable,true);
+    }
+  }
   
   /** Adds a subgroup of parameters to this group. If there is another
       ParamGroup child with the same tag name (xmlName), a numeric suffix 
@@ -595,9 +606,8 @@ public:
   }  
   
   /** Reset all parameters in this ParamGroup to their defaultValue.
-      If applyRecursively=true do the same for the child ParamGroups. 
-      This method should be overrided when the ParamGroup contains 
-      variables not initialized as parameters.*/
+      If applyRecursively=true do the same for the child ParamGroups.
+      */
   virtual void updateProcessorFromDefaultXml(const bool applyRecursively){
     runBeforeParamGroupUpdate();   
     for (int i=0;i<paramList.size();i++)
@@ -612,9 +622,7 @@ public:
   }
 
   /** Reset all parameters in this ParamGroup to their defaultValue.
-      If applyRecursively=true do the same for the child ParamGroups. 
-      This method should be overrided when the ParamGroup contains 
-      variables not initialized as parameters.
+      If applyRecursively=true do the same for the child ParamGroups.
       Update for each parameter the Host and the UI accordingly. */
   virtual void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange, bool forceUpdateUi,const bool applyRecursively){
     runBeforeParamGroupUpdate();   

@@ -152,7 +152,11 @@ public:
         localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
         if (localParamGroup->getParentParamGroup()!=nullptr)
           localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
-      }      
+      } else if (param->forceRunAfterParamChangeInHostIsOn()){
+        localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+        if (localParamGroup->getParentParamGroup()!=nullptr)
+          localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+      }
     } 
   }  
    
