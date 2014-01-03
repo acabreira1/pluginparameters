@@ -27,3 +27,10 @@
 */
 
 #include "PluginProcessor.h"
+
+ThreadPoolJob::JobStatus runAfterParamChangeThread::runJob(){
+  paramGroup->runAfterParamChange(groupIndex,updateFromFlag);
+  if (paramGroup->getParentParamGroup()!=nullptr)
+    paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,updateFromFlag);
+  return ThreadPoolJob::jobHasFinished;
+}

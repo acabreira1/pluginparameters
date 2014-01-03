@@ -31,10 +31,30 @@
 
 #include "ParamGroups.h"
 
+class runAfterParamChangeThread : public ThreadPoolJob {
+  ParamGroup *paramGroup;
+  int groupIndex;
+  PluginParameters::UpdateFromFlags updateFromFlag;
+
+  JobStatus runJob() override;
+
+public:
+  runAfterParamChangeThread(ParamGroup *paramGroup,int groupIndex, PluginParameters::UpdateFromFlags updateFromFlag)
+    :ThreadPoolJob(String(paramGroup->getName())+" "+String(groupIndex)),
+    paramGroup(paramGroup),
+    groupIndex(groupIndex),
+    updateFromFlag(updateFromFlag)
+  {
+  }
+};
+
 /**  methods to redirect all parameters to the global list referred by the host        
        and handle automatically automated and not automated parameters */
 class PluginProcessor : public AudioProcessor, public ParamGroup{
 private:
+
+  ThreadPool runAfterParamChangeThreads;
+
   ParamGroup **groupAutomated;
   int *indexInGroupAutomated;
   ParamGroup **groupNonAutomated;
@@ -149,13 +169,13 @@ public:
       Param * const param=localParamGroup->getParam(groupIndex);
       if (param->hostSet(newValue)){
         param->updateUi(true);
-        localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
-        if (localParamGroup->getParentParamGroup()!=nullptr)
-          localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+        //setParameter is called from the Host to the send new values of automated parameters 
+        //and will be usually be running on the processing thread so we need to create a different 
+        //thread that doesn't block processing
+        runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(localParamGroup,groupIndex,param->getUpdateFromFlag()),true);
       } else if (param->forceRunAfterParamChangeInHostIsOn()){
-        localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
-        if (localParamGroup->getParentParamGroup()!=nullptr)
-          localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+        //same applies here
+        runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(localParamGroup,groupIndex,param->getUpdateFromFlag()),true);
       }
     } 
   }  
