@@ -1,7 +1,7 @@
 {
   "id":             "PluginParameters",
   "name":           "PluginParameters",
-  "version":        "2.1.2",
+  "version":        "1.1.2",
   "description":    "Utilities to manage automatically different types of audio plugin parameters",
   "website":        "http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters",
   "license":        "GPL/Commercial",
