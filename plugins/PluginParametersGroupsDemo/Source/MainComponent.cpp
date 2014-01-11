@@ -127,7 +127,7 @@ void MainComponent::resized()
 {
     tabbedComponent->setBounds (0, 0, 800, 150);
     bypassToggle->setBounds (735, 5, 62, 18);
-    presetsComponent->setBounds (383, 5, 341, 20);
+    presetsComponent->setBounds (360, 5, 364, 20);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -192,7 +192,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
                  parentClasses="public AudioProcessorEditor, public Timer, public ChangeListener"
                  constructorParams="MyPluginProcessor* processor" variableInitialisers="AudioProcessorEditor(processor), processor(processor)"
-                 snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330000013"
+                 snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="800" initialHeight="150">
   <BACKGROUND backgroundColour="ffffffff"/>
   <TABBEDCOMPONENT name="" id="852330df3c5444e9" memberName="tabbedComponent" virtualName=""
@@ -209,7 +209,7 @@ BEGIN_JUCER_METADATA
                 explicitFocusOrder="0" pos="735 5 62 18" buttonText="bypass"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <JUCERCOMP name="" id="c4dd67befc4f99e6" memberName="presetsComponent" virtualName=""
-             explicitFocusOrder="0" pos="383 5 341 20" sourceFile="PresetsComponent.cpp"
+             explicitFocusOrder="0" pos="360 5 364 20" sourceFile="PresetsComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

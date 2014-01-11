@@ -60,9 +60,53 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class PresetsListComponent: public ComboBox{
+class PresetsListComponent: public ComboBox, public ComboBox::Listener, public ChangeBroadcaster {
+  /*Presets *presets*/;
+  Array<File> fileList;
 public:
-  PresetsListComponent(String name):ComboBox(name){
+
+  PresetsListComponent(/*Presets *presets*/)
+    :ComboBox("presetsListComboBox")/*,presets(presets)*/{
+    setEditableText (false);
+    setJustificationType (Justification::centredLeft);
+    setTextWhenNothingSelected (String::empty);
+    setTextWhenNoChoicesAvailable ("(no presets selected)");
+    ComboBox::addListener(this);
+    refresh();
+  }
+
+  void comboBoxChanged (ComboBox* /*comboBoxThatHasChanged*/){
+    sendChangeMessage();
+  }
+
+  /** Returns the file that the user has currently selected. */
+  File getSelectedFile () const{
+    if (getSelectedId()<=0)
+      return File::nonexistent;
+
+    return fileList[getSelectedId()-1];
+  }
+
+  /** Select a file */
+  void setSelectedFile (const File& file){
+    for (int i=0;i<fileList.size();i++){
+      if (file==fileList[i])
+        setSelectedId(i+1,dontSendNotification);
+    }
+  }
+
+  /** Show the contents of a folder */
+  void openFolder (const File&){
+    //Disabled. It would be confusing to open folders in a ComboBox.
+    setSelectedId(0,dontSendNotification);
+  }
+
+  /** Search again for preset files in the rootFolder */
+  void refresh(){
+  }
+
+  /** Flags the item to be modified or not. Modified items will be followed by an "*" */
+  void setModified(const File &/*file*/, const bool /*isModified*/){
   }
 };
 //[/Headers]
@@ -83,13 +127,13 @@ class PresetsComponent  : public Component,
 {
 public:
     //==============================================================================
-    PresetsComponent ();
+    PresetsComponent (/*Presets *presets*/);
     ~PresetsComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void timerCallback();
-    void selectLastSelectedPreset();
+    void selectLastLoadRequested();
     void changeListenerCallback(ChangeBroadcaster *source);
     void update();
     void next();
@@ -119,11 +163,13 @@ public:
     static const int rescan_pngSize;
     static const char* right_png;
     static const int right_pngSize;
+    static const char* openinexplorer_png;
+    static const int openinexplorer_pngSize;
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    //Presets* presets;
+    /*Presets *presets*/
     //[/UserVariables]
 
     //==============================================================================
@@ -137,6 +183,7 @@ private:
     ScopedPointer<ImageButton> rescanPresetsButton;
     ScopedPointer<ImageButton> rightButton;
     ScopedPointer<PresetsListComponent> presetsListComponent;
+    ScopedPointer<ImageButton> openFolderButton;
 
 
     //==============================================================================

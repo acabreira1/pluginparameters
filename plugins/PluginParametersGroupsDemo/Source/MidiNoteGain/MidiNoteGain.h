@@ -80,10 +80,10 @@ public:
 
   void initParameters(){
     //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&enable); 
+    addBoolParam(enableIndex,"enable",true,SAVE,&enable); 
     
     //Parameter Groups
-    addIntParamArray(noteVelocitiesIndex,"noteVelocities",true,true,noteVelocities,&numNotes,12,0,127);
+    addIntParamArray(noteVelocitiesIndex,"noteVelocities",true,SAVE,noteVelocities,&numNotes,12,0,127);
   }
 
   MidiNoteGain():

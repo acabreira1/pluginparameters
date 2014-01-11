@@ -101,14 +101,14 @@ public:
       
     void initParameters(){        
       //Parameters   
-      addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
-      addLogParam(logIndex,"log",true,true,&logVar,0.001f,6.f);
-      addLogWith0Param(logWith0Index,"logWith0",true,true,&logWith0Var,0.001f,6.f);
-      addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,true,&symSignedLogVar,-6.f,6.f,0.001f);
-      addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,true,&asymSignedLogVar,-4.f,3.f,0.001f);        
-      addIntParam(intIndex,"int",true,true,&intVar,0,3);
-      addBoolParam(boolIndex,"bool",true,true,&boolVar);
-      addBoolParam(boolButtonIndex,"boolButton",true,false,&boolButtonVar);        
+      addFloatParam(floatIndex,"float",true,SAVE,&floatVar,-6.f,6.f);
+      addLogParam(logIndex,"log",true,SAVE,&logVar,0.001f,6.f);
+      addLogWith0Param(logWith0Index,"logWith0",true,SAVE,&logWith0Var,0.001f,6.f);
+      addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,SAVE,&symSignedLogVar,-6.f,6.f,0.001f);
+      addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,SAVE,&asymSignedLogVar,-4.f,3.f,0.001f);        
+      addIntParam(intIndex,"int",true,SAVE,&intVar,0,3);
+      addBoolParam(boolIndex,"bool",true,SAVE,&boolVar);
+      addBoolParam(boolButtonIndex,"boolButton",true,SAVE,&boolButtonVar);        
     }     
 
     /** Should return true if this parameter is a "meta" parameter.

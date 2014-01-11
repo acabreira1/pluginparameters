@@ -83,7 +83,7 @@ public:
   
   void initParameters(){
     //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&enable);     
+    addBoolParam(enableIndex,"enable",true,SAVE,&enable);     
   }  
 
   void runAfterParamChange(int index,UpdateFromFlags /*updateFromFlag*/){

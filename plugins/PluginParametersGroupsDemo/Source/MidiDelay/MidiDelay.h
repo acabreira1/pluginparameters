@@ -132,9 +132,9 @@ public:
 
   void initParameters(){
     //Parameters 
-    addBoolParam(enableIndex,"enable",true,true,&enable);
-    addFloatParam(delayIndex,"delay",true,true,&delay,0.001f,1.000f);
-    addFloatParam(feedbackIndex,"feedback",true,true,&feedback,0.f,1.f);
+    addBoolParam(enableIndex,"enable",true,SAVE,&enable);
+    addFloatParam(delayIndex,"delay",true,SAVE,&delay,0.001f,1.000f);
+    addFloatParam(feedbackIndex,"feedback",true,SAVE,&feedback,0.f,1.f);
   }
 
   MidiDelay():

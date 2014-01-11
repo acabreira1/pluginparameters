@@ -47,7 +47,7 @@ void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
 
 void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdateUi){      
   if (pluginProcessor==nullptr) return;
-  if (loadXmlFlag){
+  if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromXml()){
       pluginProcessor->updateHostAndUi(this,xmlHostValue,false);    
       resetUpdateFromFlag();
@@ -62,7 +62,7 @@ void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdat
 
 void Param::updateProcessorHostAndUiFromDefaultXml(bool forceUpdateHost,bool forceUpdateUi){
   if (pluginProcessor==nullptr) return;
-  if (loadXmlFlag){
+  if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromDefaultXml()){
       pluginProcessor->updateHostAndUi(this,xmlHostValue,false);
       resetUpdateFromFlag();

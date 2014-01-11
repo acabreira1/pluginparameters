@@ -105,9 +105,9 @@ public:
            
     void initParameters(){        
       //Parameters   
-      addBoolParam(bypassIndex,"bypass",true,true,&bypass);     
-      //numTabs=lastParamGroupIndex-2
-      addIntParam(selectedTabIndex,"selectedTab",false,false,&selectedTab,0,lastParamGroupIndex-2);
+      addBoolParam(bypassIndex,"bypass",true,SAVE,&bypass);     
+      //numTabs=lastParamGroupIndex-1
+      addIntParam(selectedTabIndex,"selectedTab",false,SAVE_ONLY_IN_SESSION,&selectedTab,0,lastParamGroupIndex-1);
         
       //Parameter Groups
       //addParamGroup(presetsIndex,&presets);

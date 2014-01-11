@@ -57,6 +57,18 @@ enum UpdateFromFlags{
   UPDATE_FROM_PROCESSOR=0x04
 }; 
 
+enum LoadSaveOptions{
+  DONT_SAVE=0,
+  SAVE, 
+  SAVE_ONLY_IN_SESSION,
+  SAVE_ONLY_IN_PRESETS
+};
+
+enum XmlType{
+  SESSION=0,
+  PRESET
+};
+
 /** Base class for all parameters. Distinctions by type are made below. */
 class Param{
 private:            
@@ -67,12 +79,12 @@ private:
 
   String xmlName;
     
-  const String type;      
-    
-  bool updateUiFlag;
+  const String type;
 
-  bool forceRunAfterParamChangeInHostFlag;
+  bool updateUiFlag;
     
+  bool forceRunAfterParamChangeInHostFlag;
+
   UpdateFromFlags updateFromFlag;    
 
   friend class ParamGroup;
@@ -83,9 +95,52 @@ private:
 
   int globalIndex;
     
-protected:     
-  bool loadXmlFlag,saveXmlFlag;
+public:     
+  /**Advanced settings:
+
+    loadFromSession:                    Try to load this parameter value from the plugin 
+                                        session saved in the host.
+
+    saveToSession:                      Save this parameter value to the plugin session 
+                                        saved in the host.
+
+    loadFromPresets:                    Try to load this parameter value from the plugin 
+                                        presets (managed using the PluginParameters module).
+
+    saveToPresets:                      Save this parameter value to the plugin presets 
+                                        (managed using the PluginParameters module).
     
+    forceRunAfterParamChangeInHost:     if enabled runAfterParamChange(...) will *always* 
+                                        be called when an (automated) parameter is updated 
+                                        from the host. Otherwise it will be called only
+                                        if the parameter value changes.
+    
+    createThreadForRunAfterParamChange: runAfterParamChange(...) is usually run in the UI 
+                                        thread if updateProcessorAndHostFromUi(...) is called
+                                        or in the processing thread (uh uh!) if the host sends a new
+                                        value for it. Specially in the latter case, it is important
+                                        to make sure that we are not doing anything to block it. 
+                                        If that were the case (e.g. reading a new preset from
+                                        from disk), please enable this option to create a new thread.
+  */
+  enum Options{
+    loadFromSession=0,
+    saveToSession,
+    loadFromPresets,
+    saveToPresets,
+    saveOnlyNonDefaultValues,
+    forceRunAfterParamChangeInHost,
+    createThreadForRunAfterParamChange,
+    numOptions
+  };
+
+protected:
+  /** Stores all settings for this parameter */
+  bool settings[numOptions];
+
+  /** if true loadXml(...) tells updateProcessorFromXml(...) to update *value according to xmlValue */
+  bool updateXml;
+
   PluginParameters_HostFloatType xmlHostValue;        
 
   /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
@@ -97,7 +152,17 @@ protected:
   Param (const Param&);
   Param& operator=(const Param &other);
 
-public:      
+public:
+  /** Check if a specific setting is set. Refer to Param::Options to see what options are available. */
+  void setOption(const Options settingId,const bool newValue){
+    settings[settingId]=newValue;
+  }
+
+  /* Set a new setting. Refer to Param::Options to see what options are available. */
+  bool getOption(const Options settingId) const{
+    return settings[settingId];
+  }
+ 
   /** returns true if this parameter is registered at the host */
   bool registeredAtHost() const { return registerAtHostFlag; }
 
@@ -125,8 +190,8 @@ public:
 
   /** Submit a request for an update in the UI. updateUiRequested() must be called then from
       the UI to query its state. */
-  void updateUi(const bool enable){
-    updateUiFlag=enable;
+  void updateUi(const bool request=true){
+    updateUiFlag=request;
   }
 
   /** Called from the UI timer to determine if the widget associated to this parameter must be 
@@ -151,37 +216,7 @@ public:
       If nothing can't be read from the XML it is set to the parameter default value.
       Note that it doesn't change the parameter value. 
       Call updateProcessorHostAndUiFromXml(...) to update it. */
-  virtual void loadXml(XmlElement *xml) = 0;
-
-  /** Returns true if this parameter will be imported from xml */
-  bool loadXmlIsOn() const{
-    return loadXmlFlag;
-  }
-
-  /** Import this parameter from xml (set to true by default) when the user requests it */
-  void setLoadXml(const bool enable){
-    loadXmlFlag=enable;
-  }
-    
-  /** Returns true if this parameter will be exported to xml */
-  bool saveXmlIsOn() const{
-    return saveXmlFlag;
-  }
-    
-  /** Export this parameter to xml (set to true by default) when the user requests it */
-  void setSaveXml(const bool enable){
-    saveXmlFlag=enable;
-  }
-     
-  /** Returns true is runAfterParamChange will be forced after an update from the Host */
-  bool forceRunAfterParamChangeInHostIsOn(){
-    return forceRunAfterParamChangeInHostFlag;
-  }
-
-  /** Set whether runAfterParamChange will be forced or not after an update from the Host */
-  void setForceRunAfterParamChangeInHost(const bool enable){
-    forceRunAfterParamChangeInHostFlag=enable;
-  }
+  virtual void loadXml(XmlElement *xml, XmlType xmlType) = 0;
 
   /** Returns the current updateFrom flag */
   UpdateFromFlags getUpdateFromFlag(){
@@ -200,7 +235,7 @@ public:
   virtual const double getMax() const = 0;
 
   /** Stores the parameter value as an XML attribute */
-  virtual void saveXml(XmlElement *xml) const = 0;      
+  virtual void saveXml(XmlElement *xml, XmlType xmlType) const = 0;      
     
   /**  Sets the parameter from a given value from the host.
         returns true: if it is set to a new value or forceLoad,skipLoad is enabled.
@@ -235,19 +270,59 @@ public:
       defaultValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
     
-  Param(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, const String &type):
+  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, const String &type):
   pluginProcessor(nullptr),
   globalIndex(0),
   name(name),
   xmlName(name),
   type(type),  
   registerAtHostFlag(registerAtHostFlag),
-  updateUiFlag(false),  
-  forceRunAfterParamChangeInHostFlag(false),
-  loadXmlFlag(loadSaveXmlFlag),
-  saveXmlFlag(loadSaveXmlFlag),
-  updateFromFlag(UPDATE_FROM_HOST)
+  updateUiFlag(false),
+  updateFromFlag(UPDATE_FROM_HOST),
+  updateXml(false)
   {
+    switch (loadSaveOptions){
+      case SAVE:{
+        settings[loadFromSession]=true;
+        settings[saveToSession]=true;
+        settings[loadFromPresets]=true;
+        settings[saveToPresets]=true;
+        break;
+      }
+      case SAVE_ONLY_IN_SESSION:{
+        settings[loadFromSession]=true;
+        settings[saveToSession]=true;
+        settings[loadFromPresets]=false;
+        settings[saveToPresets]=false;
+        break;
+      }
+      case SAVE_ONLY_IN_PRESETS:{
+        settings[loadFromSession]=false;
+        settings[saveToSession]=false;
+        settings[loadFromPresets]=true;
+        settings[saveToPresets]=true;
+        break;
+      }
+      case DONT_SAVE:{
+        settings[loadFromSession]=false;
+        settings[saveToSession]=false;
+        settings[loadFromPresets]=false;
+        settings[saveToPresets]=false;
+        break;
+      }
+      default:{
+        settings[loadFromSession]=true;
+        settings[saveToSession]=true;
+        settings[loadFromPresets]=true;
+        settings[saveToPresets]=true;
+        break;
+      }
+    }
+    
+    settings[saveOnlyNonDefaultValues]=true;
+    settings[forceRunAfterParamChangeInHost]=false;
+    settings[createThreadForRunAfterParamChange]=false;
+
     #if JUCE_DEBUG
     // we should be able to use this name as an XML attribute name
     // this checks whether the attribute name string contains any illegal characters...
@@ -280,10 +355,12 @@ protected:
       
 public:  
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -328,8 +405,13 @@ public:
     return 1;
   }
     
-  void loadXml(XmlElement *xml) {
-    if (loadXmlFlag){
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION) {
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){      
+      
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -338,13 +420,16 @@ public:
     xmlHostValue=(PluginParameters_HostFloatType)(0.f);
   }  
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(*value));
+    }
   }
 
-  StringParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, String * const value):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"String"),
+  StringParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String * const value):
+  Param(name,registerAtHostFlag,loadSaveOptions,"String"),
   value(value),
   defaultValue(*value),
   xmlValue(*value){
@@ -372,10 +457,12 @@ protected:
     
 public:  
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -479,8 +566,13 @@ public:
     return maxValue;
   }
 
-  void loadXml(XmlElement *xml){    
-    if (loadXmlFlag){
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+      
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+      
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -503,13 +595,16 @@ public:
     }
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(double)(*value));
+    }
   }
     
-  FloatParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"Float"),
+  FloatParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
+  Param(name,registerAtHostFlag,loadSaveOptions,"Float"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
@@ -537,10 +632,12 @@ protected:
 
 public:  
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -653,8 +750,13 @@ public:
     return maxLogValue;
   }
 
-  void loadXml(XmlElement *xml){
-    if (loadXmlFlag){                  
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+      
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -682,13 +784,16 @@ public:
     }
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(double)(*value));
+    }
   }
     
-  LogParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"Log"),
+  LogParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(name,registerAtHostFlag,loadSaveOptions,"Log"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -723,10 +828,12 @@ protected:
 
 public:   
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -848,8 +955,13 @@ public:
     return maxLogValue;
   }
 
-  void loadXml(XmlElement *xml){   
-    if (loadXmlFlag){
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){   
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -883,13 +995,16 @@ public:
     }       
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(double)(*value));
+    }
   }
 
-  LogWith0Param(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"LogWith0"),
+  LogWith0Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(name,registerAtHostFlag,loadSaveOptions,"LogWith0"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -924,10 +1039,12 @@ protected:
 
 public:  
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -1103,8 +1220,13 @@ public:
     return maxPosLogValue-minAbsLogValue+0.05;
   }
 
-  void loadXml(XmlElement *xml){  
-    if (loadXmlFlag){      
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){  
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+      
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -1155,13 +1277,16 @@ public:
     }    
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(double)(*value));
+    }
   }
 
-  LogWithSignParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"LogWithSign"),
+  LogWithSignParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
+  Param(name,registerAtHostFlag,loadSaveOptions,"LogWithSign"),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue))),
   maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
   maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
@@ -1198,10 +1323,12 @@ protected:
 
 public:  
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
     
@@ -1303,8 +1430,13 @@ public:
     return maxValue;
   }
 
-  void loadXml(XmlElement *xml){    
-    if (loadXmlFlag){
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -1326,13 +1458,16 @@ public:
     }
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(int)(*value));
+    }
   }
     
-  IntParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"Int"),
+  IntParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
+  Param(name,registerAtHostFlag,loadSaveOptions,"Int"),
   value(value),
   defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue))),
   minValue(minValue),
@@ -1354,10 +1489,12 @@ class BoolParam : public Param{
 
 public:
   bool updateProcessorFromXml(){
-    if (*value!=xmlValue){
+    if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
+      updateXml=false;
       return true;
     }
+    updateXml=false;
     return false;
   }
 
@@ -1407,8 +1544,13 @@ public:
     return 1;
   }
 
-  void loadXml(XmlElement *xml){    
-    if (loadXmlFlag){
+  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+    if ((xmlType==SESSION && settings[loadFromSession]) 
+        || (xmlType==PRESET && settings[loadFromPresets])){
+
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      updateXml=true;
+
       if (xml==nullptr)
         xmlValue=defaultValue;
       else
@@ -1417,13 +1559,16 @@ public:
     }    
   }
 
-  void saveXml(XmlElement *xml) const{
-    if (Param::saveXmlFlag)
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
+        && ( (xmlType==SESSION && settings[saveToSession]) 
+           || (xmlType==PRESET && settings[saveToPresets])) ){
       xml->setAttribute(Param::getXmlName(),(*value)?String("true"):String("false"));
+    }
   }
     
-  BoolParam(const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, bool * const value):
-  Param(name,registerAtHostFlag,loadSaveXmlFlag,"Bool"),
+  BoolParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool * const value):
+  Param(name,registerAtHostFlag,loadSaveOptions,"Bool"),
   defaultValue(*value),
   xmlValue(*value),
   value(value){

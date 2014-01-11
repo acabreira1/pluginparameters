@@ -33,15 +33,15 @@ Only methods who implicate a circular reference and therefore
 can't be written in the header file are placed here.
 */
 
-void ParamGroup::addStringParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag,bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addStringParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new StringParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new StringParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addStringParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addStringParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new StringParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new StringParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -63,15 +63,15 @@ StringParamMatrix *ParamGroup::getStringParamMatrix(const int index) const{
   return dynamic_cast<StringParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new FloatParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new FloatParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new FloatParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new FloatParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -94,15 +94,15 @@ FloatParamMatrix *ParamGroup::getFloatParamMatrix(const int index) const{
 }
 
 
-void ParamGroup::addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -124,15 +124,15 @@ LogParamMatrix *ParamGroup::getLogParamMatrix(const int index) const{
   return dynamic_cast<LogParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogWith0ParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogWith0ParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,minValue,maxValue,factor,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogWith0ParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogWith0ParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,factor,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -155,15 +155,15 @@ LogWith0ParamMatrix *ParamGroup::getLogWith0ParamMatrix(const int index) const{
 }
 
 
-void ParamGroup::addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogWithSignParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,minAbsValue,factor,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogWithSignParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,minValue,maxValue,minAbsValue,factor,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType minAbsValue, const PluginParameters_PluginFloatType factor, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new LogWithSignParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,minAbsValue,factor,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new LogWithSignParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,minAbsValue,factor,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -185,15 +185,15 @@ LogWithSignParamMatrix *ParamGroup::getLogWithSignParamMatrix(const int index) c
   return dynamic_cast<LogWithSignParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, bool saveOnlySizedArrayFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new IntParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new IntParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,minValue,maxValue,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new IntParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new IntParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,minValue,maxValue,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
@@ -215,15 +215,15 @@ IntParamMatrix *ParamGroup::getIntParamMatrix(const int index) const{
   return dynamic_cast<IntParamMatrix *>(paramGroupList[index]);
 }
 
-void ParamGroup::addBoolParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag,bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addBoolParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new BoolParamArray(name,registerAtHostFlag,loadSaveXmlFlag,values,size,maxSize,saveOnlySizedArrayFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new BoolParamArray(name,registerAtHostFlag,loadSaveOptions,values,size,maxSize,saveOnlySizedArrayFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 
-void ParamGroup::addBoolParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag, bool saveOnlyNonDefaultValuesFlag){
+void ParamGroup::addBoolParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag){
   ParamGroup *paramGroup;
-  addParamGroup(paramIndex,paramGroup=new BoolParamMatrix(name,registerAtHostFlag,loadSaveXmlFlag,values,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag,saveOnlyNonDefaultValuesFlag));
+  addParamGroup(paramIndex,paramGroup=new BoolParamMatrix(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag));
   paramGroupsToUnallocateAtDestructor.add(paramGroup);
 }
 

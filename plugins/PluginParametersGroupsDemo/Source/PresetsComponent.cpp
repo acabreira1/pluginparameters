@@ -21,21 +21,14 @@
 /*
   ==============================================================================
 
-     Copyright 2012-13 by MarC
+  Author: MarC
 
-  ------------------------------------------------------------------------------
+  Creation date:  10 Mar 2012 3:36:55pm
 
-   This file can be redistributed and/or modified under the terms of the GNU 
-   General Public License (Version 2), as published by the Free Software Foundation.
-   A copy of the license is included in the JUCE distribution, or can be found
-   online at www.gnu.org/licenses.
+  Description: Implements the user interface for the preset system.
 
-   This file is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-   
-  ------------------------------------------------------------------------------
-   
+  Copyright 2012 by MarC
+
   ==============================================================================
 */
 //[/Headers]
@@ -84,7 +77,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-PresetsComponent::PresetsComponent ()
+PresetsComponent::PresetsComponent (/*Presets *presets*/)
+    /*: presets(presets)*/
 {
     addAndMakeVisible (delPresetButton = new ImageButton ("delPresetButton"));
     delPresetButton->setTooltip ("delete preset");
@@ -167,16 +161,25 @@ PresetsComponent::PresetsComponent ()
                             ImageCache::getFromMemory (right_png, right_pngSize), 1.000f, Colour (0x00000000),
                             ImageCache::getFromMemory (right_png, right_pngSize), 0.600f, Colour (0x00000000),
                             ImageCache::getFromMemory (right_png, right_pngSize), 0.400f, Colour (0x00000000));
-    addAndMakeVisible (presetsListComponent = new PresetsListComponent ("presets"));
+    addAndMakeVisible (presetsListComponent = new PresetsListComponent (/*presets*/));
     presetsListComponent->setName ("presetsListComponent");
 
+    addAndMakeVisible (openFolderButton = new ImageButton ("openFolderButton"));
+    openFolderButton->setTooltip ("refresh preset list");
+    openFolderButton->setButtonText ("refresh preset list");
+    openFolderButton->addListener (this);
+
+    openFolderButton->setImages (false, true, true,
+                                 ImageCache::getFromMemory (openinexplorer_png, openinexplorer_pngSize), 1.000f, Colour (0x00000000),
+                                 ImageCache::getFromMemory (openinexplorer_png, openinexplorer_pngSize), 0.600f, Colour (0x00000000),
+                                 ImageCache::getFromMemory (openinexplorer_png, openinexplorer_pngSize), 0.400f, Colour (0x00000000));
 
     //[UserPreSize]
-    //presetsListComponent->addChangeListener(this);
+    presetsListComponent->addChangeListener(this);
     timerCallback();
     //[/UserPreSize]
 
-    setSize (341, 20);
+    setSize (364, 20);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -198,6 +201,7 @@ PresetsComponent::~PresetsComponent()
     rescanPresetsButton = nullptr;
     rightButton = nullptr;
     presetsListComponent = nullptr;
+    openFolderButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -226,6 +230,7 @@ void PresetsComponent::resized()
     rescanPresetsButton->setBounds (323, 2, 16, 16);
     rightButton->setBounds (300, 2, 16, 16);
     presetsListComponent->setBounds (138, 1, 135, 18);
+    openFolderButton->setBounds (346, 2, 16, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -238,6 +243,7 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == delPresetButton)
     {
         //[UserButtonCode_delPresetButton] -- add your button handler code here..
+        
         //[/UserButtonCode_delPresetButton]
     }
     else if (buttonThatWasClicked == newPresetButton)
@@ -247,12 +253,12 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == renamePresetButton)
     {
-        //[UserButtonCode_renamePresetButton] -- add your button handler code here..        
+        //[UserButtonCode_renamePresetButton] -- add your button handler code here..
         //[/UserButtonCode_renamePresetButton]
     }
     else if (buttonThatWasClicked == reloadPresetButton)
     {
-        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..        
+        //[UserButtonCode_reloadPresetButton] -- add your button handler code here..
         //[/UserButtonCode_reloadPresetButton]
     }
     else if (buttonThatWasClicked == savePresetButton)
@@ -283,6 +289,11 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
         next();
         //[/UserButtonCode_rightButton]
     }
+    else if (buttonThatWasClicked == openFolderButton)
+    {
+        //[UserButtonCode_openFolderButton] -- add your button handler code here..
+        //[/UserButtonCode_openFolderButton]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -292,23 +303,23 @@ void PresetsComponent::buttonClicked (Button* buttonThatWasClicked)
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void PresetsComponent::changeListenerCallback(ChangeBroadcaster * /*source*/){
-
+ 
 }
 
 void PresetsComponent::previous(){
-
+ 
 }
 
 void PresetsComponent::next(){
-
+ 
 }
 
 void PresetsComponent::update(){
-
+  
 }
 
-void PresetsComponent::selectLastSelectedPreset(){
-
+void PresetsComponent::selectLastLoadRequested(){
+  
 }
 
 void PresetsComponent::timerCallback(){
@@ -329,8 +340,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PresetsComponent" componentName=""
                  parentClasses="public Component, public ChangeListener" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
-                 overlayOpacity="0.330000013" fixedSize="1" initialWidth="341"
+                 variableInitialisers="" snapPixels="8" snapActive="0"
+                 snapShown="1" overlayOpacity="0.330000013" fixedSize="1" initialWidth="364"
                  initialHeight="20">
   <BACKGROUND backgroundColour="ffffff"/>
   <IMAGEBUTTON name="delPresetButton" id="c99e5b0420e312f1" memberName="delPresetButton"
@@ -398,7 +409,14 @@ BEGIN_JUCER_METADATA
                colourDown="0"/>
   <GENERICCOMPONENT name="presetsListComponent" id="20346992263b5250" memberName="presetsListComponent"
                     virtualName="" explicitFocusOrder="0" pos="138 1 135 18" class="PresetsListComponent"
-                    params="&quot;presets&quot;"/>
+                    params=""/>
+  <IMAGEBUTTON name="openFolderButton" id="28837be39f03b4a2" memberName="openFolderButton"
+               virtualName="" explicitFocusOrder="0" pos="346 2 16 16" tooltip="refresh preset list"
+               buttonText="refresh preset list" connectedEdges="0" needsCallback="1"
+               radioGroupId="0" keepProportions="1" resourceNormal="openinexplorer_png"
+               opacityNormal="1" colourNormal="0" resourceOver="openinexplorer_png"
+               opacityOver="0.600000024" colourOver="0" resourceDown="openinexplorer_png"
+               opacityDown="0.400000006" colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -618,6 +636,28 @@ static const unsigned char resource_PresetsComponent_right_png[] = { 137,80,78,7
 
 const char* PresetsComponent::right_png = (const char*) resource_PresetsComponent_right_png;
 const int PresetsComponent::right_pngSize = 988;
+
+// JUCER_RESOURCE: openinexplorer_png, 969, "../../../../../../audio/soft/FuegoQ4/Source/resources/openinexplorer.png"
+static const unsigned char resource_PresetsComponent_openinexplorer_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,16,0,0,0,16,8,6,0,0,0,31,243,255,97,0,0,0,25,116,69,88,116,83,111,102,
+116,119,97,114,101,0,65,100,111,98,101,32,73,109,97,103,101,82,101,97,100,121,113,201,101,60,0,0,3,32,105,84,88,116,88,77,76,58,99,111,109,46,97,100,111,98,101,46,120,109,112,0,0,0,0,0,60,63,120,112,97,
+99,107,101,116,32,98,101,103,105,110,61,34,239,187,191,34,32,105,100,61,34,87,53,77,48,77,112,67,101,104,105,72,122,114,101,83,122,78,84,99,122,107,99,57,100,34,63,62,32,60,120,58,120,109,112,109,101,
+116,97,32,120,109,108,110,115,58,120,61,34,97,100,111,98,101,58,110,115,58,109,101,116,97,47,34,32,120,58,120,109,112,116,107,61,34,65,100,111,98,101,32,88,77,80,32,67,111,114,101,32,53,46,48,45,99,48,
+54,48,32,54,49,46,49,51,52,55,55,55,44,32,50,48,49,48,47,48,50,47,49,50,45,49,55,58,51,50,58,48,48,32,32,32,32,32,32,32,32,34,62,32,60,114,100,102,58,82,68,70,32,120,109,108,110,115,58,114,100,102,61,
+34,104,116,116,112,58,47,47,119,119,119,46,119,51,46,111,114,103,47,49,57,57,57,47,48,50,47,50,50,45,114,100,102,45,115,121,110,116,97,120,45,110,115,35,34,62,32,60,114,100,102,58,68,101,115,99,114,105,
+112,116,105,111,110,32,114,100,102,58,97,98,111,117,116,61,34,34,32,120,109,108,110,115,58,120,109,112,61,34,104,116,116,112,58,47,47,110,115,46,97,100,111,98,101,46,99,111,109,47,120,97,112,47,49,46,
+48,47,34,32,120,109,108,110,115,58,120,109,112,77,77,61,34,104,116,116,112,58,47,47,110,115,46,97,100,111,98,101,46,99,111,109,47,120,97,112,47,49,46,48,47,109,109,47,34,32,120,109,108,110,115,58,115,
+116,82,101,102,61,34,104,116,116,112,58,47,47,110,115,46,97,100,111,98,101,46,99,111,109,47,120,97,112,47,49,46,48,47,115,84,121,112,101,47,82,101,115,111,117,114,99,101,82,101,102,35,34,32,120,109,112,
+58,67,114,101,97,116,111,114,84,111,111,108,61,34,65,100,111,98,101,32,80,104,111,116,111,115,104,111,112,32,67,83,53,32,87,105,110,100,111,119,115,34,32,120,109,112,77,77,58,73,110,115,116,97,110,99,
+101,73,68,61,34,120,109,112,46,105,105,100,58,48,51,68,65,57,53,68,67,52,66,69,68,49,49,69,50,57,57,66,66,66,49,51,70,66,48,52,52,50,69,50,70,34,32,120,109,112,77,77,58,68,111,99,117,109,101,110,116,73,
+68,61,34,120,109,112,46,100,105,100,58,48,51,68,65,57,53,68,68,52,66,69,68,49,49,69,50,57,57,66,66,66,49,51,70,66,48,52,52,50,69,50,70,34,62,32,60,120,109,112,77,77,58,68,101,114,105,118,101,100,70,114,
+111,109,32,115,116,82,101,102,58,105,110,115,116,97,110,99,101,73,68,61,34,120,109,112,46,105,105,100,58,48,51,68,65,57,53,68,65,52,66,69,68,49,49,69,50,57,57,66,66,66,49,51,70,66,48,52,52,50,69,50,70,
+34,32,115,116,82,101,102,58,100,111,99,117,109,101,110,116,73,68,61,34,120,109,112,46,100,105,100,58,48,51,68,65,57,53,68,66,52,66,69,68,49,49,69,50,57,57,66,66,66,49,51,70,66,48,52,52,50,69,50,70,34,
+47,62,32,60,47,114,100,102,58,68,101,115,99,114,105,112,116,105,111,110,62,32,60,47,114,100,102,58,82,68,70,62,32,60,47,120,58,120,109,112,109,101,116,97,62,32,60,63,120,112,97,99,107,101,116,32,101,110,
+100,61,34,114,34,63,62,55,7,79,96,0,0,0,63,73,68,65,84,120,218,98,96,160,2,104,1,226,255,100,98,144,94,134,159,64,236,4,197,255,241,176,177,225,159,44,64,130,13,138,97,0,23,27,27,96,99,132,154,68,17,248,
+79,169,222,81,3,70,13,160,74,74,164,8,0,4,24,0,138,187,46,129,51,32,16,54,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
+
+const char* PresetsComponent::openinexplorer_png = (const char*) resource_PresetsComponent_openinexplorer_png;
+const int PresetsComponent::openinexplorer_pngSize = 969;
 
 
 //[EndFile] You can add extra defines here...
