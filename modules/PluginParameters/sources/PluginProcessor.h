@@ -112,8 +112,19 @@ public:
     int groupIndex;
     if (param->registeredAtHost()){ //if automated, notify host     
                                   //and get corresponding localParamGroup and groupIndex 
-      //notify host      
-      sendParamChangeMessageToListeners (globalIndex, newValue);      
+      
+      if (param->getOption(Param::autoChangeGestures)){
+        //hosts like Logic require that you indicate when a parameter starts a gesture (changes)
+        beginParameterChangeGesture(globalIndex);
+        //notify host      
+        sendParamChangeMessageToListeners (globalIndex, newValue);
+        //hosts like Logic require that you indicate when a parameter ends a gesture (changes)
+        endParameterChangeGesture(globalIndex);
+      } else {
+        //notify host      
+        sendParamChangeMessageToListeners (globalIndex, newValue);
+      }
+      
       localParamGroup=groupAutomated[globalIndex];
       groupIndex=indexInGroupAutomated[globalIndex];
       

@@ -122,6 +122,12 @@ public:
                                         to make sure that we are not doing anything to block it. 
                                         If that were the case (e.g. reading a new preset from
                                         from disk), please enable this option to create a new thread.
+ 
+    autoChangeGestures                  If  true, beginParameterChangeGesture() and endParameterChangeGesture() 
+                                        are called before and after (respectively) of each host update.
+                                        Otherwise you should call them manually (e.g. at sliderDragStarted() 
+                                        and sliderDragEnded()). Without them hosts like Logic won't receive the 
+                                        value updates.
   */
   enum Options{
     loadFromSession=0,
@@ -131,6 +137,7 @@ public:
     saveOnlyNonDefaultValues,
     forceRunAfterParamChangeInHost,
     createThreadForRunAfterParamChange,
+    autoChangeGestures,
     numOptions
   };
 
@@ -269,6 +276,20 @@ public:
   /** Update the parameter value from the default value (stored in the variable
       defaultValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
+
+  /* Hosts like Logic require that you indicate when a parameter starts a gesture (changes). 
+     Use this method indicate the start of a gesture for this parameter. 
+     However bear in mind that Options::autoChangeGestures is set to true by default so
+     you won't need to call it manually unless you disable it first using:
+     param->setOptions(Param::autoChangeGestures,false). */
+  void beginChangeGesture();
+  
+  /* Hosts like Logic require that you indicate when a parameter ends a gesture (changes). 
+    Use this method indicate the end of a gesture for this parameter. 
+    However bear in mind that Options::autoChangeGestures is set to true by default so
+    you won't need to call it manually unless you disable it first using:
+    param->setOptions(Param::autoChangeGestures,false). */
+  void endChangeGesture();
     
   Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, const String &type):
   pluginProcessor(nullptr),
@@ -322,6 +343,7 @@ public:
     settings[saveOnlyNonDefaultValues]=true;
     settings[forceRunAfterParamChangeInHost]=false;
     settings[createThreadForRunAfterParamChange]=false;
+    settings[autoChangeGestures]=true;
 
     #if JUCE_DEBUG
     // we should be able to use this name as an XML attribute name
@@ -1037,7 +1059,7 @@ protected:
   const PluginParameters_PluginFloatType defaultValue;  
   PluginParameters_PluginFloatType xmlValue;   
 
-public:  
+public:
   bool updateProcessorFromXml(){
     if (*value!=xmlValue && updateXml){     
       *value=xmlValue;

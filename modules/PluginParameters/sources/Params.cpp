@@ -100,6 +100,16 @@ void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagA
   resetUpdateFromFlag();
 }
 
+void Param::beginChangeGesture(){
+  if (pluginProcessor==nullptr) return; 
+  pluginProcessor->beginParameterChangeGesture(globalIndex);
+}
+
+void Param::endChangeGesture(){
+  if (pluginProcessor==nullptr) return; 
+  pluginProcessor->endParameterChangeGesture(globalIndex);
+}
+
 void StringParam::updateProcessorAndHostFromUi(const String valueArg) {    
   if (*value!=valueArg){
     *value=valueArg;
