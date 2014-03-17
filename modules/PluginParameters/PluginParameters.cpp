@@ -32,6 +32,5 @@ namespace PluginParameters{
   #include "sources/Params.cpp"
   #include "sources/ParamGroups.cpp"
   #include "sources/PluginProcessor.cpp"
-  #include "sources/Presets.cpp"
 }
 

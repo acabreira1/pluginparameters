@@ -67,9 +67,6 @@ namespace PluginParameters {
   #ifndef __PLUGINPARAMETERS_PLUGINPROCESSOR_HEADER__
   #include "sources/PluginProcessor.h"
   #endif
-  #ifndef __PLUGINPARAMETERS_PRESETS_HEADER__
-  #include "sources/Presets.h"
-  #endif
 }
 
 #if ! DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE
