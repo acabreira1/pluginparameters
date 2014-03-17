@@ -29,8 +29,56 @@
 #include "PluginProcessor.h"
 
 ThreadPoolJob::JobStatus runAfterParamChangeThread::runJob(){
-  paramGroup->runAfterParamChange(groupIndex,updateFromFlag);
-  if (paramGroup->getParentParamGroup()!=nullptr)
-    paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,updateFromFlag);
+  switch (runAfterParamChange){
+    case 3:
+      if (param->hostSet(newValue)){
+        //register non saved changes in the ParamGroup
+        if (param->getOption(Param::saveToPresets))
+          paramGroup->setNonSavedChanges(true);
+        paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+        if (paramGroup->getParentParamGroup()!=nullptr)
+          paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+        if (updateUi>=1)
+          param->updateUi(true);
+      } else {
+        if (param->getOption(Param::forceRunAfterParamChangeInHost)){
+          paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+          if (paramGroup->getParentParamGroup()!=nullptr)
+            paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+        }
+        if (updateUi>=1){
+          param->updateUi(true);
+        }
+      }
+      break;
+    case 2:
+      paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+      if (paramGroup->getParentParamGroup()!=nullptr)
+        paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());  
+      if (updateUi>=1){
+        param->updateUi(true);
+      }
+      break;
+    case 1:
+      if (param->hostSet(newValue)){
+        if (param->getOption(Param::saveToPresets))
+          paramGroup->setNonSavedChanges(true);
+        paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+        if (paramGroup->getParentParamGroup()!=nullptr)
+          paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+        if (updateUi>=1)
+          param->updateUi(true);
+      } else if (updateUi==2){
+        param->updateUi(true);
+      }
+      break;
+    case 0:
+      if (updateUi>=1){
+        param->updateUi(true);
+      }
+      break;
+    default:
+      break;
+  }  
   return ThreadPoolJob::jobHasFinished;
 }

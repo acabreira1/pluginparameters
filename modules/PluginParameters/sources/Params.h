@@ -82,18 +82,16 @@ private:
   const String type;
 
   bool updateUiFlag;
-    
-  bool forceRunAfterParamChangeInHostFlag;
-
-  UpdateFromFlags updateFromFlag;    
 
   friend class ParamGroup;
+
+  int globalIndex;
+
+  UpdateFromFlags updateFromFlag;    
 
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the 
       host with PluginProcessor::updateHostAndUi(...) */
   PluginProcessor* pluginProcessor;
-
-  int globalIndex;
     
 public:     
   /**Advanced settings:
@@ -115,7 +113,7 @@ public:
                                         from the host. Otherwise it will be called only
                                         if the parameter value changes.
     
-    createThreadForRunAfterParamChange: runAfterParamChange(...) is usually run in the UI 
+    createThreadForParamChange: runAfterParamChange(...) is usually run in the UI 
                                         thread if updateProcessorAndHostFromUi(...) is called
                                         or in the processing thread (uh uh!) if the host sends a new
                                         value for it. Specially in the latter case, it is important
@@ -136,7 +134,7 @@ public:
     saveToPresets,
     saveOnlyNonDefaultValues,
     forceRunAfterParamChangeInHost,
-    createThreadForRunAfterParamChange,
+    createThreadForParamChange,
     autoChangeGestures,
     numOptions
   };
@@ -145,14 +143,14 @@ protected:
   /** Stores all settings for this parameter */
   bool settings[numOptions];
 
-  /** if true loadXml(...) tells updateProcessorFromXml(...) to update *value according to xmlValue */
+  /** if true readXml(...) tells updateProcessorFromXml(...) to update *value according to xmlValue */
   bool updateXml;
 
   PluginParameters_HostFloatType xmlHostValue;        
 
   /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
       and skip the UI update */
-  void updateHostFromUi(PluginParameters_HostFloatType newValue);  
+  void updateProcessorHostFromUi(PluginParameters_HostFloatType newValue);  
 
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
@@ -182,12 +180,12 @@ public:
 
   /** Returns the attribute name under which this parameter is stored in XML.
       xmlName is set to name by default but you can change it with setXmlName(...). 
-      See loadXml(...) and saveXml(...) for more details. */ 
+      See readXml(...) and saveXml(...) for more details. */ 
   const String getXmlName() const { return xmlName; }
 
   /** Sets the attribute name under which this parameter is stored in XML 
       xmlName is set to name by default. 
-      See loadXml(...) and saveXml(...) for more details. */ 
+      See readXml(...) and saveXml(...) for more details. */ 
   void setXmlName(const String xmlNameArg){
     xmlName=xmlNameArg;
   }
@@ -223,7 +221,7 @@ public:
       If nothing can't be read from the XML it is set to the parameter default value.
       Note that it doesn't change the parameter value. 
       Call updateProcessorHostAndUiFromXml(...) to update it. */
-  virtual void loadXml(XmlElement *xml, XmlType xmlType) = 0;
+  virtual void readXml(XmlElement *xml, XmlType xmlType) = 0;
 
   /** Returns the current updateFrom flag */
   UpdateFromFlags getUpdateFromFlag(){
@@ -251,7 +249,7 @@ public:
     
   /** Set a parameter from the Processor to a new value and notify the host and 
       the UI (when it has changed) */  
-  void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);  
+  void updateProcessorHostAndUi(PluginParameters_HostFloatType newValue, const UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);  
     
   /** Notify the host about the current value of a parameter and update the UI.
       This is useful when you change the value of this parameter (maybe several times) 
@@ -263,7 +261,7 @@ public:
       and you don't want to notify the host until the end. */  
   void updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR);
     
-  /** Update value with the xmlValue read with loadXml and return true if it was different */
+  /** Update value with the xmlValue read with readXml and return true if it was different */
   virtual bool updateProcessorFromXml() = 0;
 
   /** Update the parameter value from the value loaded from Xml (stored in the variable
@@ -342,7 +340,7 @@ public:
     
     settings[saveOnlyNonDefaultValues]=true;
     settings[forceRunAfterParamChangeInHost]=false;
-    settings[createThreadForRunAfterParamChange]=false;
+    settings[createThreadForParamChange]=false;
     settings[autoChangeGestures]=true;
 
     #if JUCE_DEBUG
@@ -394,8 +392,9 @@ public:
     return false;
   }
 
-  bool hostSet(const PluginParameters_HostFloatType ){       
-    return false;
+  bool hostSet(const PluginParameters_HostFloatType ){
+    *value=virtualHostValue;
+    return true;
   }
      
   /** Updates the value from its UI denormalized value (it doesn't call load since Strings
@@ -427,7 +426,7 @@ public:
     return 1;
   }
     
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION) {
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION) {
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){      
       
@@ -588,7 +587,7 @@ public:
     return maxValue;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
       
@@ -772,7 +771,7 @@ public:
     return maxLogValue;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
       
@@ -977,7 +976,7 @@ public:
     return maxLogValue;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){   
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){   
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
 
@@ -1242,7 +1241,7 @@ public:
     return maxPosLogValue-minAbsLogValue+0.05;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){  
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){  
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
       
@@ -1452,7 +1451,7 @@ public:
     return maxValue;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
 
@@ -1566,7 +1565,7 @@ public:
     return 1;
   }
 
-  void loadXml(XmlElement *xml,XmlType xmlType=SESSION){    
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
     if ((xmlType==SESSION && settings[loadFromSession]) 
         || (xmlType==PRESET && settings[loadFromPresets])){
 

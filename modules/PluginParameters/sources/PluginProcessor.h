@@ -31,19 +31,31 @@
 
 #include "ParamGroups.h"
 
+#ifdef PluginParameters_ErrorLogger
+#define logError(msg) { Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+String(msg)); jassertfalse; }
+#else
+#define logError(msg) { }
+#endif
+
 class runAfterParamChangeThread : public ThreadPoolJob {
+  Param *param;
+  float newValue;
   ParamGroup *paramGroup;
   int groupIndex;
-  PluginParameters::UpdateFromFlags updateFromFlag;
+  int runAfterParamChange;
+  int updateUi;
 
   JobStatus runJob() override;
 
 public:
-  runAfterParamChangeThread(ParamGroup *paramGroup,int groupIndex, PluginParameters::UpdateFromFlags updateFromFlag)
+  runAfterParamChangeThread(int groupIndex,ParamGroup *paramGroup,Param *param,float newValue,int runAfterParamChange=1,int updateUi=1)
     :ThreadPoolJob(String(paramGroup->getName())+" "+String(groupIndex)),
+    param(param),
+    newValue(newValue),
     paramGroup(paramGroup),
     groupIndex(groupIndex),
-    updateFromFlag(updateFromFlag)
+    runAfterParamChange(runAfterParamChange),
+    updateUi(updateUi)
   {
   }
 };
@@ -52,6 +64,10 @@ public:
        and handle automatically automated and not automated parameters */
 class PluginProcessor : public AudioProcessor, public ParamGroup{
 private:
+
+  #ifdef PluginParameters_ErrorLogger
+  FileLogger *fileLogger;
+  #endif
 
   ThreadPool runAfterParamChangeThreads;
 
@@ -104,14 +120,23 @@ public:
   #endif
   }
   
-  /** generalization of setParameterNotifyingHost to be able to deal transparently
-      with automated and non automated parameters */ 
-  void updateHostAndUi(Param *const param, float newValue,bool runAfterParamChange=true,bool updateUi=true){
+  /** Coordinates all updates, generalization of setParameterNotifyingHost to be able 
+      to deal transparently with automated and non automated parameters. 
+
+      if runAfterParamChange==0: runAfterParamChange will never be called.
+      if runAfterParamChange==1: runAfterParamChange will be called if there's a value change.
+      if runAfterParamChange==2: runAfterParamChange will be called in any case.
+      
+      if updateUi==0: no updateUi is requested.
+      if updateUi==1: an updateUi is requested if there's a value change and runAfterParamChange==1.
+      if updateUi==2: an updateUi is requested in any case.
+  */ 
+  void updateProcessorHostAndUi(Param *const param, float newValue,int runAfterParamChange=1,int updateUi=1){
     const int globalIndex=param->getGlobalIndex();
-    ParamGroup *localParamGroup;
+    ParamGroup *paramGroup;
     int groupIndex;
     if (param->registeredAtHost()){ //if automated, notify host     
-                                  //and get corresponding localParamGroup and groupIndex 
+                                    //and get corresponding localParamGroup and groupIndex 
       
       if (param->getOption(Param::autoChangeGestures)){
         //hosts like Logic require that you indicate when a parameter starts a gesture (changes)
@@ -125,33 +150,50 @@ public:
         sendParamChangeMessageToListeners (globalIndex, newValue);
       }
       
-      localParamGroup=groupAutomated[globalIndex];
+      paramGroup=groupAutomated[globalIndex];
       groupIndex=indexInGroupAutomated[globalIndex];
       
     } else { //if not automated skip host notification
              // but get corresponding localParamGroup and groupIndex
-      localParamGroup=groupNonAutomated[globalIndex];
+      paramGroup=groupNonAutomated[globalIndex];
       groupIndex=indexInGroupNonAutomated[globalIndex];
     }
-    
-    if (runAfterParamChange){
-      //register non saved changes in the ParamGroup
-      if (param->getOption(Param::saveToPresets))
-        localParamGroup->setNonSavedChanges(true);
-      
-      if (param->getOption(Param::createThreadForRunAfterParamChange)){
-        //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
-        runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(localParamGroup,groupIndex,param->getUpdateFromFlag()),true);
-      } else {
-        localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
-        if (localParamGroup->getParentParamGroup()!=nullptr)
-          localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());          
-      }
-    }
-    if (updateUi){
-      param->updateUi(true);
-    }
-    
+
+    if (param->getOption(Param::createThreadForParamChange)){
+      //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
+      runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(groupIndex,paramGroup,param,newValue,runAfterParamChange,updateUi),true);
+    } else {
+      switch (runAfterParamChange){
+        case 2:
+          paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+          if (paramGroup->getParentParamGroup()!=nullptr)
+            paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());  
+          if (updateUi>=1){
+            param->updateUi(true);
+          }
+          break;
+        case 1:
+          if (param->hostSet(newValue)){
+            if (param->getOption(Param::saveToPresets))
+              paramGroup->setNonSavedChanges(true);
+            paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+            if (paramGroup->getParentParamGroup()!=nullptr)
+              paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+            if (updateUi>=1)
+              param->updateUi(true);
+          } else if (updateUi==2){
+            param->updateUi(true);
+          }
+          break;
+        case 0:
+          if (updateUi>=1){
+            param->updateUi(true);
+          }
+          break;
+        default:
+          break;
+      }  
+    }    
   }
   
   int getNumParameters() override{
@@ -183,21 +225,16 @@ public:
       ParamGroup * const localParamGroup=groupAutomated[index];
       const int groupIndex=indexInGroupAutomated[index];
       Param * const param=localParamGroup->getParam(groupIndex);
-      if (param->hostSet(newValue)){
-        param->updateUi(true);
-        if (param->getOption(Param::createThreadForRunAfterParamChange)){
-          //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
-          runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(localParamGroup,groupIndex,param->getUpdateFromFlag()),true);
-        } else {
+      if (param->getOption(Param::createThreadForParamChange)){
+        //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
+        runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(groupIndex,localParamGroup,param,newValue,3,1),true);
+      } else {
+        if (param->hostSet(newValue)){          
           localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
           if (localParamGroup->getParentParamGroup()!=nullptr)
-            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());          
-        }
-      } else if (param->getOption(Param::forceRunAfterParamChangeInHost)){
-        if (param->getOption(Param::createThreadForRunAfterParamChange)){
-          //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
-          runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(localParamGroup,groupIndex,param->getUpdateFromFlag()),true);
-        } else {
+            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+          param->updateUi(true);
+        } else if (param->getOption(Param::forceRunAfterParamChangeInHost)){
           localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
           if (localParamGroup->getParentParamGroup()!=nullptr)
             localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());          
@@ -235,10 +272,21 @@ public:
     groupAutomated(nullptr),
     indexInGroupAutomated(nullptr),
     groupNonAutomated(nullptr),
-    indexInGroupNonAutomated(nullptr){            
+    indexInGroupNonAutomated(nullptr),
+    fileLogger(nullptr),
+    runAfterParamChangeThreads(1){    
+      #ifdef PluginParameters_ErrorLogger
+      Logger::setCurrentLogger(fileLogger=new FileLogger(File::getSpecialLocation(File::userDesktopDirectory).getChildFile(String("errors.txt")),"error log:\n"));        
+      #endif
   }
   
   ~PluginProcessor(){
+    #ifdef PluginParameters_ErrorLogger
+    Logger::setCurrentLogger(nullptr);
+    if (fileLogger)
+      deleteAndZero(fileLogger);
+    #endif
+
     if (groupAutomated){
       delete[] groupAutomated;
       groupAutomated=nullptr;

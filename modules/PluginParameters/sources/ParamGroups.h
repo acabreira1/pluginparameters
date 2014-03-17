@@ -151,11 +151,11 @@ public:
   const String getName() const { return name; }  
  
   /** Returns the tag name under which this ParamGroup is added to its parent ParamGroup 
-      See loadXml(...) and saveXml(...) for more details. */ 
+      See readXml(...) and saveXml(...) for more details. */ 
   String getXmlName() const { return xmlName; }
 
   /** Sets the tag name under which this ParamGroup is added to its parent ParamGroup 
-      See loadXml(...) and saveXml(...) for more details. */ 
+      See readXml(...) and saveXml(...) for more details. */ 
   void setXmlName(const String xmlNameArg){
     xmlName=xmlNameArg;
   }
@@ -479,9 +479,9 @@ public:
   
   /** Save this ParamGroup to disk as XML. It creates a 
       root tag with the name of this ParamGroup */
-  virtual bool savePreset(const File &file,const String &dtdToUse=""){
+  virtual bool savePreset(const File &file,bool applyRecursively,const String &dtdToUse=""){
     XmlElement xml(getName());
-    saveXml(&xml,false,true,PRESET);
+    saveXml(&xml,false,applyRecursively,PRESET);
 
     if (xml.writeToFile(file,dtdToUse)){
       setNonSavedChanges(false);
@@ -512,10 +512,10 @@ public:
   }
   
   /** Preload Xml values from all parameters into xmlValue. It is not 
-      advisable to run this on the Processing thread since it may
-      take a little while to parse all this parameters from Xml 
+      advisable to run this on the Processing thread since it is accessing 
+      the disk and may take a little while to parse all this parameters from Xml 
       and normalize them. */
-  virtual void loadXml(XmlElement *xml, const bool applyRecursively, XmlType xmlType=SESSION){
+  virtual void readXml(XmlElement *xml, const bool applyRecursively, XmlType xmlType=SESSION){
     //this child couldn't be found
     if (xml==nullptr)
       return;
@@ -523,13 +523,13 @@ public:
     Param *param;
     for (int i=0;i<getNumParams();i++){
       param=getParam(i);
-      param->loadXml(xml,xmlType);      
+      param->readXml(xml,xmlType);      
     }      
     
     if (applyRecursively){
       for (int g=0;g<getNumParamGroups();g++){
         XmlElement *childXml=xml->getChildByName(getParamGroup(g)->getXmlName());
-        getParamGroup(g)->loadXml(childXml,true,xmlType);
+        getParamGroup(g)->readXml(childXml,true,xmlType);
       }
     }        
   }   
@@ -537,17 +537,17 @@ public:
   /** Load this paramGroup from disk. If the file doesn't contain
       XML with a tag that matches the name of this ParamGroup, 
       it won't be loaded and it will return false. */
-  virtual bool loadPreset(const File &file){  
+  virtual bool readPreset(const File &file){  
     XmlDocument myDocument (file);
     ScopedPointer <XmlElement> xml(myDocument.getDocumentElement());
     //this file doesn't contain xml with the same tag name it was saved
     if (xml==nullptr || xml->getTagName()!=getName()) { jassertfalse; return false; }          
-    loadXml(xml,true,PRESET);
+    readXml(xml,true,PRESET);
     return true;
   }
   
-  /* Update all parameters from xmlValue after loadXml(...) has been called. 
-     This should be considerably faster than loadXml (which loads everything from
+  /* Update all parameters from xmlValue after readXml(...) has been called. 
+     This should be considerably faster than readXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. */
   virtual void updateProcessorFromXml(const bool applyRecursively){
     runBeforeParamGroupUpdate();
@@ -564,8 +564,8 @@ public:
     runAfterParamGroupUpdate();        
   }  
 
-  /* Update all parameters from xmlValue after loadXml(...) has been called. 
-     This should be considerably faster than loadXml (which loads everything from
+  /* Update all parameters from xmlValue after readXml(...) has been called. 
+     This should be considerably faster than readXml (which loads everything from
      disk into memory) so you can risk to put it in the processing thread. 
      Update for each parameter the Host and the UI accordingly. */
   virtual void updateProcessorHostAndUiFromXml(bool forceUpdateHost, bool forceUpdateUi,const bool applyRecursively){

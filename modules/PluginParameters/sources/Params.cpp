@@ -36,10 +36,10 @@ can't be written in the header file are placed here.
 
 //protected
 
-void Param::updateHostFromUi(PluginParameters_HostFloatType newHostValue){
+void Param::updateProcessorHostFromUi(PluginParameters_HostFloatType newHostValue){
   if (pluginProcessor==nullptr) return;  
   updateFromFlag=UPDATE_FROM_UI;
-  pluginProcessor->updateHostAndUi(this,newHostValue,true,false); 
+  pluginProcessor->updateProcessorHostAndUi(this,newHostValue,1,0); 
   resetUpdateFromFlag();
 }
 
@@ -49,10 +49,10 @@ void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdat
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromXml()){
-      pluginProcessor->updateHostAndUi(this,xmlHostValue,false);    
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
       resetUpdateFromFlag();
     } else if (forceUpdateHost){
-      pluginProcessor->updateHostAndUi(this,xmlHostValue,false,forceUpdateUi);    
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
       resetUpdateFromFlag();
     } else if (forceUpdateUi){
       updateUi(true);
@@ -64,10 +64,10 @@ void Param::updateProcessorHostAndUiFromDefaultXml(bool forceUpdateHost,bool for
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromDefaultXml()){
-      pluginProcessor->updateHostAndUi(this,xmlHostValue,false);
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);
       resetUpdateFromFlag();
     } else if (forceUpdateHost){
-      pluginProcessor->updateHostAndUi(this,xmlHostValue,false,forceUpdateUi);    
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
       resetUpdateFromFlag();
     } else if (forceUpdateUi){
       updateUi(true);
@@ -75,28 +75,24 @@ void Param::updateProcessorHostAndUiFromDefaultXml(bool forceUpdateHost,bool for
   }
 }
 
-void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){    
-  if (hostSet(newHostValue)){  
-    if (pluginProcessor==nullptr) return;
-    updateFromFlag=updateFromFlagArg;     
-    pluginProcessor->updateHostAndUi(this,newHostValue);    
-    resetUpdateFromFlag();  
-  }  
+void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){     
+  if (pluginProcessor==nullptr) return;
+  updateFromFlag=updateFromFlagArg;     
+  pluginProcessor->updateProcessorHostAndUi(this,newHostValue,1,1);    
+  resetUpdateFromFlag();  
 }
 
 void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
   if (pluginProcessor==nullptr) return;
   updateFromFlag=updateFromFlagArg;
-
-  pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange);    
+  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),(runAfterParamChange)?2:0,2);    
   resetUpdateFromFlag();
 }
 
 void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
   if (pluginProcessor==nullptr) return;
   updateFromFlag=updateFromFlagArg;
-
-  pluginProcessor->updateHostAndUi(this,hostGet(),runAfterParamChange,false);    
+  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),(runAfterParamChange)?2:0,0);    
   resetUpdateFromFlag();
 }
 
@@ -111,48 +107,47 @@ void Param::endChangeGesture(){
 }
 
 void StringParam::updateProcessorAndHostFromUi(const String valueArg) {    
-  if (*value!=valueArg){
-    *value=valueArg;
-    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));    
+  if (*value!=valueArg){  
+    virtualHostValue=valueArg;
+    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));   
     //this parameter can't be automated (maped as a PluginParameters_HostFloatType)
-    //so hostSet doesn't do anything, we must update *value manually
-    //and notify the host always with 0    
+    //so hostSet doesn't do anything apart from updating *value from virtualHostValue
+    //the host always is notified with 0 but this is bogus since StrinParams can not be 
+    //registered at the host
   }     
 }
 
 void FloatParam::updateProcessorAndHostFromUi(const double valueArg){  
   if (maxValue==minValue)
-    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
   PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
   if (newHostValue<0)
     newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
     newHostValue=(PluginParameters_HostFloatType)(1.f);
     
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);
 }
 
 void LogParam::updateProcessorAndHostFromUi(const double valueArg){
   
   if (maxLogValue==minLogValue)
-    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
   PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minLogValue)/(maxLogValue-minLogValue);
   if (newHostValue<0)
     newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
     newHostValue=(PluginParameters_HostFloatType)(1.f);
   
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);  
 }
 
 void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){  
   if (maxLogValue==minLogValue){ //do not let idiots make this crash
     if (valueArg>0)
-      Param::updateHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
+      Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
     else
-      Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
+      Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
   }
   PluginParameters_HostFloatType newHostValue; 
   //using the host parameter scale of [0,1]
@@ -171,16 +166,15 @@ void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){
   else if (newHostValue>1)
     newHostValue=(PluginParameters_HostFloatType)(1.f);
   
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);  
 }
 
 void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
   if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
       if (valueArg>0)
-        Param::updateHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
+        Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
       else
-        Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
+        Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
     }  
   PluginParameters_HostFloatType newHostValue; 
   //using the host parameter scale of [0,1]
@@ -203,26 +197,23 @@ void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
   else if (newHostValue>1)
     newHostValue=(PluginParameters_HostFloatType)(1.f);
   
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);  
 }
 
 void IntParam::updateProcessorAndHostFromUi(const int valueArg){  
   if (maxValue==minValue)
-    Param::updateHostFromUi((PluginParameters_HostFloatType)(0.f));
+    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
   PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
   if (newHostValue<0)
     newHostValue=(PluginParameters_HostFloatType)(0.f);
   else if (newHostValue>1)
     newHostValue=(PluginParameters_HostFloatType)(1.f);
   
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);  
 }
 
 void BoolParam::updateProcessorAndHostFromUi(const bool valueArg){  
   PluginParameters_HostFloatType newHostValue=(valueArg)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
   
-  if (hostSet(newHostValue))
-    Param::updateHostFromUi(newHostValue);  
+  Param::updateProcessorHostFromUi(newHostValue);  
 }
