@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">PluginParameters
-   &#160;<span id="projectnumber">1.1</span>
+   &#160;<span id="projectnumber">1.1.4</span>
    </div>
    <div id="projectbrief">JUCE module providing utilities to manage automatically different types of audio plugin parameters</div>
   </td>
@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
@@ -110,8 +111,31 @@ Inheritance diagram for Param:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:adf7c3ac791f996a56160a12f379cbd99"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Options</a> { <br/>
+&#160;&#160;<b>loadFromSession</b> =0, 
+<b>saveToSession</b>, 
+<b>loadFromPresets</b>, 
+<b>saveToPresets</b>, 
+<br/>
+&#160;&#160;<b>saveOnlyNonDefaultValues</b>, 
+<b>forceRunAfterParamChangeInHost</b>, 
+<b>createThreadForParamChange</b>, 
+<b>autoChangeGestures</b>, 
+<br/>
+&#160;&#160;<b>numOptions</b>
+<br/>
+ }</td></tr>
+<tr class="separator:adf7c3ac791f996a56160a12f379cbd99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:accf0880411957f3174f28d73adff189e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#accf0880411957f3174f28d73adff189e">setOption</a> (const <a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Options</a> settingId, const bool newValue)</td></tr>
+<tr class="separator:accf0880411957f3174f28d73adff189e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa22f02244a829970f0dd39eaed370bcc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa22f02244a829970f0dd39eaed370bcc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>getOption</b> (const <a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Options</a> settingId) const </td></tr>
+<tr class="separator:aa22f02244a829970f0dd39eaed370bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62290b6b7f2cb8f687bf2e623249df86"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a62290b6b7f2cb8f687bf2e623249df86">registeredAtHost</a> () const </td></tr>
 <tr class="separator:a62290b6b7f2cb8f687bf2e623249df86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae5d8be73081330d3164d4e45d7c41e3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#aae5d8be73081330d3164d4e45d7c41e3">getGlobalIndex</a> () const </td></tr>
@@ -124,8 +148,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1f0da266b976f1a4ae4320a20914ba6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19d952c090b29ed7541981588ba357c4"><td class="memItemLeft" align="right" valign="top">const String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a19d952c090b29ed7541981588ba357c4">getType</a> () const </td></tr>
 <tr class="separator:a19d952c090b29ed7541981588ba357c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25bb346a56b484ce44f5d7209be07d96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a25bb346a56b484ce44f5d7209be07d96">updateUi</a> (const bool enable)</td></tr>
-<tr class="separator:a25bb346a56b484ce44f5d7209be07d96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39160f844ff7ad48b6409eb32d68d02b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a39160f844ff7ad48b6409eb32d68d02b">updateUi</a> (const bool request=true)</td></tr>
+<tr class="separator:a39160f844ff7ad48b6409eb32d68d02b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c602ab88fcc128d5178a7742c30f483"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a4c602ab88fcc128d5178a7742c30f483">updateUiRequested</a> ()</td></tr>
 <tr class="separator:a4c602ab88fcc128d5178a7742c30f483"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a985b6cba3c8bc0ad715d526eb6fd6b1c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a985b6cba3c8bc0ad715d526eb6fd6b1c"></a>
@@ -134,16 +158,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>updateUiIsOn</b> () c
 <tr class="memitem:a946d71384444fd3a0e441bfa93d6a7f1"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
 PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a946d71384444fd3a0e441bfa93d6a7f1">hostGet</a> () const =0</td></tr>
 <tr class="separator:a946d71384444fd3a0e441bfa93d6a7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eda2fdba094c3a62c9b97acc39f9e03"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a9eda2fdba094c3a62c9b97acc39f9e03">loadXml</a> (XmlElement *xml)=0</td></tr>
-<tr class="separator:a9eda2fdba094c3a62c9b97acc39f9e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae03678e324c309faa400af586c713ea8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ae03678e324c309faa400af586c713ea8">loadXmlIsOn</a> () const </td></tr>
-<tr class="separator:ae03678e324c309faa400af586c713ea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af27a6f7091a59ef793df4099bb97dfe1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af27a6f7091a59ef793df4099bb97dfe1">setLoadXml</a> (const bool enable)</td></tr>
-<tr class="separator:af27a6f7091a59ef793df4099bb97dfe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa6f7bb4806972d42ef882c90d6a7483"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#afa6f7bb4806972d42ef882c90d6a7483">saveXmlIsOn</a> () const </td></tr>
-<tr class="separator:afa6f7bb4806972d42ef882c90d6a7483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac48455c4b5ed02e48af55d4a9c6587ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ac48455c4b5ed02e48af55d4a9c6587ba">setSaveXml</a> (const bool enable)</td></tr>
-<tr class="separator:ac48455c4b5ed02e48af55d4a9c6587ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7220c0f4780e6570950c7ca9ea4f89b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ab7220c0f4780e6570950c7ca9ea4f89b">readXml</a> (XmlElement *xml, XmlType xmlType)=0</td></tr>
+<tr class="separator:ab7220c0f4780e6570950c7ca9ea4f89b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84c365d9a4d14b0b53477f11341bac7a"><td class="memItemLeft" align="right" valign="top">UpdateFromFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a84c365d9a4d14b0b53477f11341bac7a">getUpdateFromFlag</a> ()</td></tr>
 <tr class="separator:a84c365d9a4d14b0b53477f11341bac7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2698c4b06111e0d015116f7f72077fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ad2698c4b06111e0d015116f7f72077fa">resetUpdateFromFlag</a> ()</td></tr>
@@ -152,16 +168,16 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 <tr class="separator:af149e9cdd1957e3f6f3ba059d65ef1ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac73e286454c64d9a22a59ae69755a3cc"><td class="memItemLeft" align="right" valign="top">virtual const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ac73e286454c64d9a22a59ae69755a3cc">getMax</a> () const =0</td></tr>
 <tr class="separator:ac73e286454c64d9a22a59ae69755a3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac36603cd1bd58f076d636200af79647b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ac36603cd1bd58f076d636200af79647b">saveXml</a> (XmlElement *xml) const =0</td></tr>
-<tr class="separator:ac36603cd1bd58f076d636200af79647b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a263105ef7831d162c60bdefb41f39c7f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a263105ef7831d162c60bdefb41f39c7f">saveXml</a> (XmlElement *xml, XmlType xmlType) const =0</td></tr>
+<tr class="separator:a263105ef7831d162c60bdefb41f39c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af412ad99fb3d5f8524bdc02802e78933"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af412ad99fb3d5f8524bdc02802e78933">hostSet</a> (const PluginParameters_HostFloatType hostValue)=0</td></tr>
 <tr class="separator:af412ad99fb3d5f8524bdc02802e78933"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace51ffa4f7639b25da410dc67d387e36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ace51ffa4f7639b25da410dc67d387e36">updateProcessorHostAndUi</a> (PluginParameters_HostFloatType newValue, UpdateFromFlags updateFromFlag)</td></tr>
-<tr class="separator:ace51ffa4f7639b25da410dc67d387e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f6a4f78b84d2adff16e8fb4bb4aa572"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a4f6a4f78b84d2adff16e8fb4bb4aa572">updateHostAndUi</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag)</td></tr>
-<tr class="separator:a4f6a4f78b84d2adff16e8fb4bb4aa572"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad19ccf0bead0196a77cf05929e55899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#aad19ccf0bead0196a77cf05929e55899">updateHost</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag)</td></tr>
-<tr class="separator:aad19ccf0bead0196a77cf05929e55899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96b63b999b85816c9ab01005d619c84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af96b63b999b85816c9ab01005d619c84">updateProcessorHostAndUi</a> (PluginParameters_HostFloatType newValue, const UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR)</td></tr>
+<tr class="separator:af96b63b999b85816c9ab01005d619c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6cd32481cdb8f77fc4e357585979291"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ad6cd32481cdb8f77fc4e357585979291">updateHostAndUi</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR)</td></tr>
+<tr class="separator:ad6cd32481cdb8f77fc4e357585979291"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af78a40df3e3b54fe09188d89732d5053"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af78a40df3e3b54fe09188d89732d5053">updateHost</a> (bool runAfterParamChange, UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR)</td></tr>
+<tr class="separator:af78a40df3e3b54fe09188d89732d5053"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab34138d32a62b59aaaa0088f192da8f9"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ab34138d32a62b59aaaa0088f192da8f9">updateProcessorFromXml</a> ()=0</td></tr>
 <tr class="separator:ab34138d32a62b59aaaa0088f192da8f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac27d69463b70ddc6628db4be4ed2a1bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#ac27d69463b70ddc6628db4be4ed2a1bc">updateProcessorHostAndUiFromXml</a> (bool forceUpdateHost=false, bool forceUpdateUi=false)</td></tr>
@@ -170,14 +186,20 @@ PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom
 <tr class="separator:a25079a12e8ecf90a5354dd1e080f3cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb49c476d021692e18ae08ea66fbe6cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#acb49c476d021692e18ae08ea66fbe6cc">updateProcessorHostAndUiFromDefaultXml</a> (bool forceRunAfterParamChange=false, bool forceUpdateUi=false)</td></tr>
 <tr class="separator:acb49c476d021692e18ae08ea66fbe6cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42fd18f46b6397b9cb12ca8327204ca2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42fd18f46b6397b9cb12ca8327204ca2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Param</b> (const String &amp;name, const bool registerAtHostFlag, const bool loadSaveXmlFlag, const String &amp;type)</td></tr>
-<tr class="separator:a42fd18f46b6397b9cb12ca8327204ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a048256e48c230d7b8445e83603bf3565"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a048256e48c230d7b8445e83603bf3565"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>beginChangeGesture</b> ()</td></tr>
+<tr class="separator:a048256e48c230d7b8445e83603bf3565"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a862433a42a64dba3d853676a013f2574"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a862433a42a64dba3d853676a013f2574"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>endChangeGesture</b> ()</td></tr>
+<tr class="separator:a862433a42a64dba3d853676a013f2574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a603041714375efc4e0383cca7bf9d2e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a603041714375efc4e0383cca7bf9d2e9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Param</b> (const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, const String &amp;type)</td></tr>
+<tr class="separator:a603041714375efc4e0383cca7bf9d2e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a24ba8fb14067bdf76c92977d64ae4ed0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a24ba8fb14067bdf76c92977d64ae4ed0">updateHostFromUi</a> (PluginParameters_HostFloatType newValue)</td></tr>
-<tr class="separator:a24ba8fb14067bdf76c92977d64ae4ed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f2282ea3000bb1988e3f8fa2a8e589"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af7f2282ea3000bb1988e3f8fa2a8e589">updateProcessorHostFromUi</a> (PluginParameters_HostFloatType newValue)</td></tr>
+<tr class="separator:af7f2282ea3000bb1988e3f8fa2a8e589"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af845731d06ec2424c8c666f1cb4522d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af845731d06ec2424c8c666f1cb4522d3"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Param</b> (const <a class="el" href="class_param.html">Param</a> &amp;)</td></tr>
 <tr class="separator:af845731d06ec2424c8c666f1cb4522d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -187,12 +209,10 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ae9a4c4e2bf3da298c28dfb189bcf6ef0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9a4c4e2bf3da298c28dfb189bcf6ef0"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>loadXmlFlag</b></td></tr>
-<tr class="separator:ae9a4c4e2bf3da298c28dfb189bcf6ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51b35204a12c4ff24f0a461bab1cbde8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51b35204a12c4ff24f0a461bab1cbde8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlFlag</b></td></tr>
-<tr class="separator:a51b35204a12c4ff24f0a461bab1cbde8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3086c226a5c2ed95656902681a62c0d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#af3086c226a5c2ed95656902681a62c0d">settings</a> [numOptions]</td></tr>
+<tr class="separator:af3086c226a5c2ed95656902681a62c0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e1e27c8ab67a27ecfba2698cec37713"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_param.html#a6e1e27c8ab67a27ecfba2698cec37713">updateXml</a></td></tr>
+<tr class="separator:a6e1e27c8ab67a27ecfba2698cec37713"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a713c8075cc15186facd58c28dbca0ac3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a713c8075cc15186facd58c28dbca0ac3"></a>
 PluginParameters_HostFloatType&#160;</td><td class="memItemRight" valign="bottom"><b>xmlHostValue</b></td></tr>
 <tr class="separator:a713c8075cc15186facd58c28dbca0ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -205,7 +225,28 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for all parameters. Distinctions by type are made below. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="adf7c3ac791f996a56160a12f379cbd99"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Options</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Advanced settings:</p>
+<p>loadFromSession: Try to load this parameter value from the plugin session saved in the host.</p>
+<p>saveToSession: Save this parameter value to the plugin session saved in the host.</p>
+<p>loadFromPresets: Try to load this parameter value from the plugin presets (managed using the PluginParameters module).</p>
+<p>saveToPresets: Save this parameter value to the plugin presets (managed using the PluginParameters module).</p>
+<p>forceRunAfterParamChangeInHost: if enabled runAfterParamChange(...) will <em>always</em> be called when an (automated) parameter is updated from the host. Otherwise it will be called only if the parameter value changes.</p>
+<p>createThreadForParamChange: runAfterParamChange(...) is usually run in the UI thread if updateProcessorAndHostFromUi(...) is called or in the processing thread (uh uh!) if the host sends a new value for it. Specially in the latter case, it is important to make sure that we are not doing anything to block it. If that were the case (e.g. reading a new preset from from disk), please enable this option to create a new thread.</p>
+<p>autoChangeGestures If true, beginParameterChangeGesture() and endParameterChangeGesture() are called before and after (respectively) of each host update. Otherwise you should call them manually (e.g. at sliderDragStarted() and sliderDragEnded()). Without them hosts like Logic won't receive the value updates. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="aae5d8be73081330d3164d4e45d7c41e3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -374,7 +415,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the attribute name under which this parameter is stored in XML. xmlName is set to name by default but you can change it with setXmlName(...). See loadXml(...) and saveXml(...) for more details. </p>
+<p>Returns the attribute name under which this parameter is stored in XML. xmlName is set to name by default but you can change it with setXmlName(...). See readXml(...) and saveXml(...) for more details. </p>
 
 </div>
 </div>
@@ -431,7 +472,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 
 </div>
 </div>
-<a class="anchor" id="a9eda2fdba094c3a62c9b97acc39f9e03"></a>
+<a class="anchor" id="ab7220c0f4780e6570950c7ca9ea4f89b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -439,11 +480,21 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void loadXml </td>
+          <td class="memname">virtual void readXml </td>
           <td>(</td>
           <td class="paramtype">XmlElement *&#160;</td>
-          <td class="paramname"><em>xml</em></td><td>)</td>
+          <td class="paramname"><em>xml</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">XmlType&#160;</td>
+          <td class="paramname"><em>xmlType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -454,31 +505,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 </div><div class="memdoc">
 <p>Preloads an XML attribute into the auxiliary internal variable xmlValue. If nothing can't be read from the XML it is set to the parameter default value. Note that it doesn't change the parameter value. Call updateProcessorHostAndUiFromXml(...) to update it. </p>
 
-<p>Implemented in <a class="el" href="class_bool_param.html#a7679a7f9439c1f690f085585e2adcc33">BoolParam</a>, <a class="el" href="class_int_param.html#a7679a7f9439c1f690f085585e2adcc33">IntParam</a>, <a class="el" href="class_log_with_sign_param.html#a7679a7f9439c1f690f085585e2adcc33">LogWithSignParam</a>, <a class="el" href="class_log_with0_param.html#a7679a7f9439c1f690f085585e2adcc33">LogWith0Param</a>, <a class="el" href="class_log_param.html#a7679a7f9439c1f690f085585e2adcc33">LogParam</a>, <a class="el" href="class_float_param.html#a7679a7f9439c1f690f085585e2adcc33">FloatParam</a>, and <a class="el" href="class_string_param.html#a7679a7f9439c1f690f085585e2adcc33">StringParam</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae03678e324c309faa400af586c713ea8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool loadXmlIsOn </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns true if this parameter will be imported from xml </p>
+<p>Implemented in <a class="el" href="class_bool_param.html#a527c9efd5348fa870b60109167283f45">BoolParam</a>, <a class="el" href="class_int_param.html#a527c9efd5348fa870b60109167283f45">IntParam</a>, <a class="el" href="class_log_with_sign_param.html#a527c9efd5348fa870b60109167283f45">LogWithSignParam</a>, <a class="el" href="class_log_with0_param.html#a527c9efd5348fa870b60109167283f45">LogWith0Param</a>, <a class="el" href="class_log_param.html#a527c9efd5348fa870b60109167283f45">LogParam</a>, <a class="el" href="class_float_param.html#a527c9efd5348fa870b60109167283f45">FloatParam</a>, and <a class="el" href="class_string_param.html#a527c9efd5348fa870b60109167283f45">StringParam</a>.</p>
 
 </div>
 </div>
@@ -530,7 +557,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 
 </div>
 </div>
-<a class="anchor" id="ac36603cd1bd58f076d636200af79647b"></a>
+<a class="anchor" id="a263105ef7831d162c60bdefb41f39c7f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -541,8 +568,18 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
           <td class="memname">virtual void saveXml </td>
           <td>(</td>
           <td class="paramtype">XmlElement *&#160;</td>
-          <td class="paramname"><em>xml</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramname"><em>xml</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">XmlType&#160;</td>
+          <td class="paramname"><em>xmlType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -553,11 +590,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 </div><div class="memdoc">
 <p>Stores the parameter value as an XML attribute </p>
 
-<p>Implemented in <a class="el" href="class_bool_param.html#a3ddefa980b8b4e27942196049109ba06">BoolParam</a>, <a class="el" href="class_int_param.html#a3ddefa980b8b4e27942196049109ba06">IntParam</a>, <a class="el" href="class_log_with_sign_param.html#a3ddefa980b8b4e27942196049109ba06">LogWithSignParam</a>, <a class="el" href="class_log_with0_param.html#a3ddefa980b8b4e27942196049109ba06">LogWith0Param</a>, <a class="el" href="class_log_param.html#a3ddefa980b8b4e27942196049109ba06">LogParam</a>, <a class="el" href="class_float_param.html#a3ddefa980b8b4e27942196049109ba06">FloatParam</a>, and <a class="el" href="class_string_param.html#a3ddefa980b8b4e27942196049109ba06">StringParam</a>.</p>
+<p>Implemented in <a class="el" href="class_bool_param.html#a464717545cbb76e783d337cd7da5812d">BoolParam</a>, <a class="el" href="class_int_param.html#a464717545cbb76e783d337cd7da5812d">IntParam</a>, <a class="el" href="class_log_with_sign_param.html#a464717545cbb76e783d337cd7da5812d">LogWithSignParam</a>, <a class="el" href="class_log_with0_param.html#a464717545cbb76e783d337cd7da5812d">LogWith0Param</a>, <a class="el" href="class_log_param.html#a464717545cbb76e783d337cd7da5812d">LogParam</a>, <a class="el" href="class_float_param.html#a464717545cbb76e783d337cd7da5812d">FloatParam</a>, and <a class="el" href="class_string_param.html#a464717545cbb76e783d337cd7da5812d">StringParam</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="afa6f7bb4806972d42ef882c90d6a7483"></a>
+<a class="anchor" id="accf0880411957f3174f28d73adff189e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -565,60 +602,21 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool saveXmlIsOn </td>
+          <td class="memname">void setOption </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">const <a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Options</a>&#160;</td>
+          <td class="paramname"><em>settingId</em>, </td>
         </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns true if this parameter will be exported to xml </p>
-
-</div>
-</div>
-<a class="anchor" id="af27a6f7091a59ef793df4099bb97dfe1"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
         <tr>
-          <td class="memname">void setLoadXml </td>
-          <td>(</td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Import this parameter from xml (set to true by default) when the user requests it </p>
-
-</div>
-</div>
-<a class="anchor" id="ac48455c4b5ed02e48af55d4a9c6587ba"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void setSaveXml </td>
-          <td>(</td>
           <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td class="paramname"><em>newValue</em>&#160;</td>
+        </tr>
+        <tr>
           <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -627,7 +625,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Export this parameter to xml (set to true by default) when the user requests it </p>
+<p>Check if a specific setting is set. Refer to <a class="el" href="class_param.html#adf7c3ac791f996a56160a12f379cbd99">Param::Options</a> to see what options are available. </p>
 
 </div>
 </div>
@@ -652,11 +650,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Sets the attribute name under which this parameter is stored in XML xmlName is set to name by default. See loadXml(...) and saveXml(...) for more details. </p>
+<p>Sets the attribute name under which this parameter is stored in XML xmlName is set to name by default. See readXml(...) and saveXml(...) for more details. </p>
 
 </div>
 </div>
-<a class="anchor" id="aad19ccf0bead0196a77cf05929e55899"></a>
+<a class="anchor" id="af78a40df3e3b54fe09188d89732d5053"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -670,7 +668,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">UpdateFromFlags&#160;</td>
-          <td class="paramname"><em>updateFromFlag</em>&#160;</td>
+          <td class="paramname"><em>updateFromFlag</em> = <code>UPDATE_FROM_PROCESSOR</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -683,7 +681,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 
 </div>
 </div>
-<a class="anchor" id="a4f6a4f78b84d2adff16e8fb4bb4aa572"></a>
+<a class="anchor" id="ad6cd32481cdb8f77fc4e357585979291"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -697,7 +695,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">UpdateFromFlags&#160;</td>
-          <td class="paramname"><em>updateFromFlag</em>&#160;</td>
+          <td class="paramname"><em>updateFromFlag</em> = <code>UPDATE_FROM_PROCESSOR</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -707,31 +705,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
       </table>
 </div><div class="memdoc">
 <p>Notify the host about the current value of a parameter and update the UI. This is useful when you change the value of this parameter (maybe several times) and you don't want to notify the host and the UI until the end. </p>
-
-</div>
-</div>
-<a class="anchor" id="a24ba8fb14067bdf76c92977d64ae4ed0"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void updateHostFromUi </td>
-          <td>(</td>
-          <td class="paramtype">PluginParameters_HostFloatType&#160;</td>
-          <td class="paramname"><em>newValue</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI and skip the UI update </p>
 
 </div>
 </div>
@@ -781,13 +754,13 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Update value with the xmlValue read with loadXml and return true if it was different </p>
+<p>Update value with the xmlValue read with readXml and return true if it was different </p>
 
 <p>Implemented in <a class="el" href="class_bool_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">BoolParam</a>, <a class="el" href="class_int_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">IntParam</a>, <a class="el" href="class_log_with_sign_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">LogWithSignParam</a>, <a class="el" href="class_log_with0_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">LogWith0Param</a>, <a class="el" href="class_log_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">LogParam</a>, <a class="el" href="class_float_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">FloatParam</a>, and <a class="el" href="class_string_param.html#a4a82739a7041e34d1e8b7bb1b1179dc7">StringParam</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ace51ffa4f7639b25da410dc67d387e36"></a>
+<a class="anchor" id="af96b63b999b85816c9ab01005d619c84"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -800,8 +773,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">UpdateFromFlags&#160;</td>
-          <td class="paramname"><em>updateFromFlag</em>&#160;</td>
+          <td class="paramtype">const UpdateFromFlags&#160;</td>
+          <td class="paramname"><em>updateFromFlag</em> = <code>UPDATE_FROM_PROCESSOR</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -868,7 +841,32 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 
 </div>
 </div>
-<a class="anchor" id="a25bb346a56b484ce44f5d7209be07d96"></a>
+<a class="anchor" id="af7f2282ea3000bb1988e3f8fa2a8e589"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void updateProcessorHostFromUi </td>
+          <td>(</td>
+          <td class="paramtype">PluginParameters_HostFloatType&#160;</td>
+          <td class="paramname"><em>newValue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI and skip the UI update </p>
+
+</div>
+</div>
+<a class="anchor" id="a39160f844ff7ad48b6409eb32d68d02b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -879,7 +877,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
           <td class="memname">void updateUi </td>
           <td>(</td>
           <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td class="paramname"><em>request</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -918,6 +916,49 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="af3086c226a5c2ed95656902681a62c0d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool settings[numOptions]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Stores all settings for this parameter </p>
+
+</div>
+</div>
+<a class="anchor" id="a6e1e27c8ab67a27ecfba2698cec37713"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool updateXml</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>if true readXml(...) tells updateProcessorFromXml(...) to update *value according to xmlValue </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>modules/PluginParameters/sources/Params.h</li>
 <li>modules/PluginParameters/sources/Params.cpp</li>
@@ -925,7 +966,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 12 2013 15:08:28 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 26 2014 21:40:29 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
