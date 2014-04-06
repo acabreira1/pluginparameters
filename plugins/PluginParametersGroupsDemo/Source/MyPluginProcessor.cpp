@@ -68,7 +68,7 @@ void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
   if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){         
     
     //Preload XML values into memory
-    loadXml(xmlState,true,SESSION);
+    readXml(xmlState,true,SESSION);
     //Update the parameter values from the preloaded XML values
     updateProcessorHostAndUiFromXml(true,true,true);     
   }
