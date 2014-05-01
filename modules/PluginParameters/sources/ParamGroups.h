@@ -194,7 +194,7 @@ public:
   void addParamGroup(const int paramGroupIndex, ParamGroup *paramGroup){
     //Oh oh! You are not adding the parameter groups in the same order that you enumerated
     //their indexes. Please go and fix it.
-    if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; return;}
+    if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are not adding the parameter groups in the same order that you enumerated their indexes."); return;}
     
     paramGroup->pluginProcessor=getProcessor();
     paramGroup->parentParamGroup=this;
@@ -223,7 +223,7 @@ public:
   }
     
   Param *getParam(const int index) const{
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     return paramList[index];
   }
 
@@ -238,7 +238,7 @@ public:
   void addParam(const int paramIndex,Param * const param,bool forceUniqueXmlName=true){ 
     //Oh oh! You are not adding the parameters in the same order that you enumerated
     //their indexes. Please go and fix it.   
-    if (paramIndex!=paramList.size()) {jassertfalse; return;}    
+    if (paramIndex!=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are not adding the parameters in the same order that you enumerated their indexes."); return;}    
 
     param->pluginProcessor=getProcessor();
 
@@ -267,13 +267,13 @@ public:
   
   StringParam *getStringParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="String");   
+    if (paramList[index]->getType()!="String") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return dynamic_cast<StringParam *>(paramList[index]);
   }
   
@@ -292,13 +292,13 @@ public:
   
   FloatParam *getFloatParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="Float");   
+    if (paramList[index]->getType()!="Float") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return dynamic_cast<FloatParam *>(paramList[index]);
   }
   
@@ -317,13 +317,13 @@ public:
   
   LogParam *getLogParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="Log");    
+    if (paramList[index]->getType()!="Log") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return dynamic_cast<LogParam *>(paramList[index]);
   }
    
@@ -342,13 +342,13 @@ public:
 
   LogWith0Param *getLogWith0Param(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="LogWith0");    
+    if (paramList[index]->getType()!="LogWith0") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}  
     return dynamic_cast<LogWith0Param *>(paramList[index]);
   }  
    
@@ -367,13 +367,13 @@ public:
 
   LogWithSignParam *getLogWithSignParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="LogWithSign");    
+    if (paramList[index]->getType()!="LogWithSign") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;} 
     return dynamic_cast<LogWithSignParam *>(paramList[index]);
   }  
    
@@ -392,13 +392,13 @@ public:
   
   IntParam *getIntParam(const int index) const{
     /* wrong index */ 
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="Int");    
+    if (paramList[index]->getType()!="Int") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}  
     return dynamic_cast<IntParam *>(paramList[index]);
   }  
   
@@ -417,13 +417,13 @@ public:
 
   BoolParam *getBoolParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    jassert(paramList[index]->getType()=="Bool");
+    if (paramList[index]->getType()!="Bool") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return dynamic_cast<BoolParam *>(paramList[index]);
   }  
   
@@ -541,7 +541,7 @@ public:
     XmlDocument myDocument (file);
     ScopedPointer <XmlElement> xml(myDocument.getDocumentElement());
     //this file doesn't contain xml with the same tag name it was saved
-    if (xml==nullptr || xml->getTagName()!=getName()) { jassertfalse; return false; }          
+    if (xml==nullptr || xml->getTagName()!=getName()) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Error reading preset file. Tag name doesn't match the name of the ParamGroup"); return false; }          
     readXml(xml,true,PRESET);
     return true;
   }
@@ -907,7 +907,7 @@ private:
   PluginParameters_PluginFloatType maxValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addFloatParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
     }
@@ -954,7 +954,7 @@ private:
   const PluginParameters_PluginFloatType factor;
   
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,factor,false);
     }
@@ -1002,7 +1002,7 @@ private:
   PluginParameters_PluginFloatType maxValue;
 
 public:   
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,factor,false);
     }
@@ -1051,7 +1051,7 @@ private:
   PluginParameters_PluginFloatType minAbsValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,minAbsValue,factor,false);
     }
@@ -1099,7 +1099,7 @@ private:
   PluginParameters_PluginIntType maxValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addIntParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
     }
@@ -1143,7 +1143,7 @@ private:
   bool* const values;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addBoolParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),false);
     }
@@ -1174,7 +1174,7 @@ private:
   String* const values;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
       ParamGroup::addStringParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),false);
     }
@@ -1471,7 +1471,7 @@ private:
   PluginParameters_PluginFloatType maxValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addFloatParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
@@ -1529,7 +1529,7 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,factor,false);        
@@ -1588,7 +1588,7 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,factor,false);        
@@ -1648,7 +1648,7 @@ private:
   PluginParameters_PluginFloatType mostProbableValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,minAbsValue,factor,false);        
@@ -1705,7 +1705,7 @@ private:
   PluginParameters_PluginIntType maxValue;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addIntParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
@@ -1759,7 +1759,7 @@ private:
   bool** const values;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addBoolParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),false);
@@ -1796,7 +1796,7 @@ private:
   String** const values;
 
 public: 
-  void initParameters(){
+  void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
         ParamGroup::addStringParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),false);
