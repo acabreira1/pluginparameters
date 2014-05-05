@@ -48,19 +48,17 @@ void ParamGroup::addStringParamMatrix(const int paramIndex, const String &name, 
 StringParamArray *ParamGroup::getStringParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="String");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<StringParamArray *>(paramGroupList[index]);
+  StringParamArray *pointer=dynamic_cast<StringParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 StringParamMatrix *ParamGroup::getStringParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="String");
-  /* Double check this ParamGroup. This might not be a ParamMatrix */   
-  return dynamic_cast<StringParamMatrix *>(paramGroupList[index]);
+  StringParamMatrix *pointer=dynamic_cast<StringParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 void ParamGroup::addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, bool saveOnlySizedArrayFlag){
@@ -78,19 +76,17 @@ void ParamGroup::addFloatParamMatrix(const int paramIndex, const String &name, c
 FloatParamArray *ParamGroup::getFloatParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<FloatParamArray *>(paramGroupList[index]);
+  FloatParamArray *pointer=dynamic_cast<FloatParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 FloatParamMatrix *ParamGroup::getFloatParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Float");   
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<FloatParamMatrix *>(paramGroupList[index]);
+  FloatParamMatrix *pointer=dynamic_cast<FloatParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 
@@ -109,19 +105,17 @@ void ParamGroup::addLogParamMatrix(const int paramIndex, const String &name, con
 LogParamArray *ParamGroup::getLogParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<LogParamArray *>(paramGroupList[index]);
+  LogParamArray *pointer=dynamic_cast<LogParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 LogParamMatrix *ParamGroup::getLogParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Log");   
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<LogParamMatrix *>(paramGroupList[index]);
+  LogParamMatrix *pointer=dynamic_cast<LogParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 void ParamGroup::addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue,const PluginParameters_PluginFloatType maxValue, const PluginParameters_PluginFloatType factor, bool saveOnlySizedArrayFlag){
@@ -139,19 +133,17 @@ void ParamGroup::addLogWith0ParamMatrix(const int paramIndex, const String &name
 LogWith0ParamArray *ParamGroup::getLogWith0ParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<LogWith0ParamArray *>(paramGroupList[index]);
+  LogWith0ParamArray *pointer=dynamic_cast<LogWith0ParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 LogWith0ParamMatrix *ParamGroup::getLogWith0ParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="LogWith0");   
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<LogWith0ParamMatrix *>(paramGroupList[index]);
+  LogWith0ParamMatrix *pointer=dynamic_cast<LogWith0ParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 
@@ -170,19 +162,17 @@ void ParamGroup::addLogWithSignParamMatrix(const int paramIndex,const String &na
 LogWithSignParamArray *ParamGroup::getLogWithSignParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<LogWithSignParamArray *>(paramGroupList[index]);
+  LogWithSignParamArray *pointer=dynamic_cast<LogWithSignParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 LogWithSignParamMatrix *ParamGroup::getLogWithSignParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="LogWithSign");   
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<LogWithSignParamMatrix *>(paramGroupList[index]);
+  LogWithSignParamMatrix *pointer=dynamic_cast<LogWithSignParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 void ParamGroup::addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue,const PluginParameters_PluginIntType maxValue, bool saveOnlySizedArrayFlag){
@@ -200,19 +190,17 @@ void ParamGroup::addIntParamMatrix(const int paramIndex,const String &name, cons
 IntParamArray *ParamGroup::getIntParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Int");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<IntParamArray *>(paramGroupList[index]);
+  IntParamArray *pointer=dynamic_cast<IntParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 IntParamMatrix *ParamGroup::getIntParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Int");
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<IntParamMatrix *>(paramGroupList[index]);
+  IntParamMatrix *pointer=dynamic_cast<IntParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 void ParamGroup::addBoolParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag){
@@ -230,17 +218,15 @@ void ParamGroup::addBoolParamMatrix(const int paramIndex,const String &name, con
 BoolParamArray *ParamGroup::getBoolParamArray(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch an array with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
-  /* Double check this ParamGroup. This might not be a ParamArray */
-  return dynamic_cast<BoolParamArray *>(paramGroupList[index]);
+  BoolParamArray *pointer=dynamic_cast<BoolParamArray *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }
 
 BoolParamMatrix *ParamGroup::getBoolParamMatrix(const int index) const{
   /* wrong index */
   if (index<0 || index>=paramGroupList.size()) {jassertfalse; return nullptr;}
-  /* You are trying to fetch a matrix with elements of another type... */
-  jassert(paramGroupList[index]->getParam(0)->getType()=="Bool");   
-  /* Double check this ParamGroup. This might not be a ParamMatrix */
-  return dynamic_cast<BoolParamMatrix *>(paramGroupList[index]);
+  BoolParamMatrix *pointer=dynamic_cast<BoolParamMatrix *>(paramGroupList[index]);
+  if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a ParamGroup of another kind..."); return nullptr;}
+  return pointer;
 }

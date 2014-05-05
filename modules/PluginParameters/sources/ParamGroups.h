@@ -130,7 +130,7 @@ public:
   /** Gets the ParamGroup to which this ParamGroup was added */
   ParamGroup* getParentParamGroup() const{
     return parentParamGroup;
-  }    
+  }
 
   /** Returns the number of automated parameters added so far */
   const int getNumAutomatedParams() const {
@@ -273,8 +273,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="String") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return dynamic_cast<StringParam *>(paramList[index]);
+    StringParam *pointer=dynamic_cast<StringParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }
   
   void addStringParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String *const value,bool forceUniqueXmlName=true){      
@@ -298,8 +299,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="Float") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return dynamic_cast<FloatParam *>(paramList[index]);
+    FloatParam *pointer=dynamic_cast<FloatParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }
   
   void addFloatParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),bool forceUniqueXmlName=true){
@@ -323,8 +325,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="Log") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return dynamic_cast<LogParam *>(paramList[index]);
+    LogParam *pointer=dynamic_cast<LogParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }
    
    void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
@@ -348,8 +351,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="LogWith0") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}  
-    return dynamic_cast<LogWith0Param *>(paramList[index]);
+    LogWith0Param *pointer=dynamic_cast<LogWith0Param *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }  
    
    void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
@@ -373,8 +377,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="LogWithSign") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;} 
-    return dynamic_cast<LogWithSignParam *>(paramList[index]);
+    LogWithSignParam *pointer=dynamic_cast<LogWithSignParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }  
    
    void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
@@ -398,8 +403,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="Int") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}  
-    return dynamic_cast<IntParam *>(paramList[index]);
+    IntParam *pointer=dynamic_cast<IntParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }  
   
   void addIntParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,PluginParameters_PluginIntType *const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1,bool forceUniqueXmlName=true){
@@ -423,8 +429,9 @@ public:
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
         getLogParam(), getIntParam(), getIntParam(), 
         getBoolParam()  */
-    if (paramList[index]->getType()!="Bool") { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return dynamic_cast<BoolParam *>(paramList[index]);
+    BoolParam *pointer=dynamic_cast<BoolParam *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
   }  
   
   void addBoolParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool *const value,bool forceUniqueXmlName=true){

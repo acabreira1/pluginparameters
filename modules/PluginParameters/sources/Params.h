@@ -78,8 +78,6 @@ private:
   const String name;
 
   String xmlName;
-    
-  const String type;
 
   bool updateUiFlag;
 
@@ -190,9 +188,6 @@ public:
     xmlName=xmlNameArg;
   }
     
-    /** Returns a string label for the type of this parameter */
-  const String getType() const { return type; }
-
   /** Submit a request for an update in the UI. updateUiRequested() must be called then from
       the UI to query its state. */
   void updateUi(const bool request=true){
@@ -289,12 +284,11 @@ public:
     param->setOptions(Param::autoChangeGestures,false). */
   void endChangeGesture();
     
-  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, const String &type):
+  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions):
   pluginProcessor(nullptr),
   globalIndex(0),
   name(name),
   xmlName(name),
-  type(type),  
   registerAtHostFlag(registerAtHostFlag),
   updateUiFlag(false),
   updateFromFlag(UPDATE_FROM_HOST),
@@ -450,7 +444,7 @@ public:
   }
 
   StringParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String * const value):
-  Param(name,registerAtHostFlag,loadSaveOptions,"String"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   value(value),
   defaultValue(*value),
   xmlValue(*value){
@@ -625,7 +619,7 @@ public:
   }
     
   FloatParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-  Param(name,registerAtHostFlag,loadSaveOptions,"Float"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minValue(minValue),
   maxValue(maxValue),
@@ -814,7 +808,7 @@ public:
   }
     
   LogParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions,"Log"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -1025,7 +1019,7 @@ public:
   }
 
   LogWith0Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions,"LogWith0"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
   minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
   maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
@@ -1307,7 +1301,7 @@ public:
   }
 
   LogWithSignParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions,"LogWithSign"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue))),
   maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
   maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
@@ -1488,7 +1482,7 @@ public:
   }
     
   IntParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
-  Param(name,registerAtHostFlag,loadSaveOptions,"Int"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   value(value),
   defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue))),
   minValue(minValue),
@@ -1589,7 +1583,7 @@ public:
   }
     
   BoolParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool * const value):
-  Param(name,registerAtHostFlag,loadSaveOptions,"Bool"),
+  Param(name,registerAtHostFlag,loadSaveOptions),
   defaultValue(*value),
   xmlValue(*value),
   value(value){
