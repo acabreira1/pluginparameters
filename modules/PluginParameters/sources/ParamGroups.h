@@ -223,7 +223,7 @@ public:
   }
     
   Param *getParam(const int index) const{
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     return paramList[index];
   }
 
@@ -267,7 +267,7 @@ public:
   
   StringParam *getStringParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -293,7 +293,7 @@ public:
   
   FloatParam *getFloatParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -319,7 +319,7 @@ public:
   
   LogParam *getLogParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -345,7 +345,7 @@ public:
 
   LogWith0Param *getLogWith0Param(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -371,7 +371,7 @@ public:
 
   LogWithSignParam *getLogWithSignParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -397,7 +397,7 @@ public:
   
   IntParam *getIntParam(const int index) const{
     /* wrong index */ 
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -423,7 +423,7 @@ public:
 
   BoolParam *getBoolParam(const int index) const{
     /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds."); return nullptr;}
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
         getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
@@ -539,7 +539,7 @@ public:
         getParamGroup(g)->readXml(childXml,true,xmlType);
       }
     }        
-  }   
+  }
   
   /** Load this paramGroup from disk. If the file doesn't contain
       XML with a tag that matches the name of this ParamGroup, 

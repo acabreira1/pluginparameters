@@ -626,6 +626,7 @@ public:
   value(value){    
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
+    jassert(minValue<maxValue);
   }
 };
 
@@ -817,6 +818,7 @@ public:
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
+    jassert(minValue<maxValue);
 
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
@@ -1028,6 +1030,7 @@ public:
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
+    jassert(minValue<maxValue);
 
     //force *value to the [0,maxValue] range
     xmlValue=*value=defaultValue;
@@ -1312,6 +1315,7 @@ public:
     //minValue should be negative and maxValue positive, otherwise use LogWith0.
     jassert(minNegativeValue<0);
     jassert(maxPositiveValue>0);
+    jassert(minNegativeValue<maxPositiveValue);
       
     //log values are stricly positive, please define a strictly positive range
     jassert(minAbsValue>0);
@@ -1489,6 +1493,7 @@ public:
   maxValue(maxValue){
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
+    jassert(minValue<maxValue);
   }
 };
 

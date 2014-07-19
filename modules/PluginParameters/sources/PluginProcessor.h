@@ -96,7 +96,7 @@ public:
     return JucePlugin_Name; 
   }
   
-  bool acceptsMidi() const override{
+  virtual bool acceptsMidi() const override{
   #if JucePlugin_WantsMidiInput
     return true;
   #else
@@ -104,7 +104,7 @@ public:
   #endif
   }
 
-  bool producesMidi() const override{
+  virtual bool producesMidi() const override{
   #if JucePlugin_ProducesMidiOutput
     return true;
   #else
@@ -112,7 +112,7 @@ public:
   #endif
   } 
 
-  bool silenceInProducesSilenceOut() const override{
+  virtual bool silenceInProducesSilenceOut() const override{
   #if JucePlugin_SilenceInProducesSilenceOut
     return true;
   #else
@@ -196,11 +196,11 @@ public:
     }    
   }
   
-  int getNumParameters() override{
+  virtual int getNumParameters() override{
     return getNumAutomatedParams();
   }
   
-  const String getParameterName (int index) override{
+  virtual const String getParameterName (int index) override{
     if (index>=0 && index<getNumAutomatedParams()){
       String name=groupAutomated[index]->getParam(indexInGroupAutomated[index])->getXmlName();
       ParamGroup *paramGroup=groupAutomated[index];
@@ -213,14 +213,14 @@ public:
       return String::empty;
   }  
 
-  float getParameter (int index) override{
+  virtual float getParameter (int index) override{
     if (index>=0 && index<getNumAutomatedParams())  
       return groupAutomated[index]->getParam(indexInGroupAutomated[index])->hostGet();
     else
       return 0.f;
   }
 
-  void setParameter (int index, float newValue) override{     
+  virtual void setParameter (int index, float newValue) override{     
     if (index>=0 && index<getNumAutomatedParams()){
       ParamGroup * const localParamGroup=groupAutomated[index];
       const int groupIndex=indexInGroupAutomated[index];
