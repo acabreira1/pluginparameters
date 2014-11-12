@@ -38,7 +38,7 @@
 #ifndef __MIDINOTEVELOCITY_H
 #define __MIDINOTEVELOCITY_H
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 
 class MidiNoteGain: public ParamGroup{
   double sampleRate;

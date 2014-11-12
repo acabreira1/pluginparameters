@@ -1,0 +1,311 @@
+## Setup
+
+* Easy. Copy the library files PluginParameters.cpp and PluginParameters.h to your Source folder and include the library:
+
+    `include "PluginParameters.h"`
+
+##Overview
+
+PluginParameters contains three main classes, which are the main building components of this library:
+
+* class **Param**
+
+  This is the base class for all different types of parameters ( **StringParam**, **FloatParam**, **LogParam**, **LogWith0Param**, **LogWithSignParam**, **IntParam**, **BoolParam** ).
+
+* class **ParamGroup**
+
+  This is the base class for all groups of parameters, in particular, **ParamArray** which is the base class for all Array types ( **StringParamArray**, **FloatParamArray**, **LogParamArray**, **LogWith0ParamArray**, **LogWithSignParamArray**, **IntParamArray**, **BoolParamArray** ) and **ParamMatrix** which is the base class for all Matrix types ( **StringParamMatrix**, **FloatParamMatrix**, **LogParamMatrix**, **LogWith0ParamMatrix**, **LogWithSignParamMatrix**, **IntParamMatrix**, **BoolParamMatrix** ).
+
+* class **PluginProcessor**
+
+  This class hosts the root **ParamGroup** for a plugin and all methods necessary to handle its parameters.
+
+At each instance of a **Param** class, a few methods are available to send values from the **PluginProcessor** thread to the **Host** and/or the **PluginUserInterface** thread, or from the **PluginUserInterface** thread to the **Host** and/or the **PluginProcessor** thread:
+
+* _updateProcessorAndHostFromXml(...)_ : **Host** or **PluginUserInterface** --> **PluginProcessor**
+
+* _updateProcessorAndHostFromUi(...)_ : **PluginUserInterface** --> **PluginProcessor** and **Host**
+
+* _updateProcessorHostAndUi(...)_ : **PluginProcessor** or **PluginUserInterface** --> **PluginProcessor**, **PluginUserInterface** and **Host**
+
+* _updateHostAndUi(...)_ : **PluginProcessor** or **PluginUserInterface** --> **PluginUserInterface** and **Host**
+
+* _updateHost(...)_: **PluginProcessor** or **PluginUserInterface** --> **Host**
+
+The **Host** holds the values of the parameters normalized to the [0,1] range and its requests to update the values of **PluginProcessor** (stored in standard vairbales) or **PluginUserInterface** (stored in the widgets used to represent them graphically) _are handled automatically_. 
+
+The **PluginUserInterface** thread is assumed to use a timer to handle updates from the **PluginProcessor** by calling regularly _bool updateUiRequested()_ to see if there were any changes in the parameter values.
+
+## Basic Usage
+
+###Learning from an example
+
+PluginBasicTemplate (https://github.com/4drX/pluginparameters/tree/master/example_projects/PluginBasicTemplate) is an example project where all the possible parameter types are declared and used to control a simple gain processor. 
+
+###Setting up a plugin with the library PluginParameters, step by step
+
+Probably the easiest way to start writing you own plugin is to use the previous template. However below you'll find the necessary steps to write new code from scratch, which might be useful to understand in detail how this library works. 
+
+1. You will need to start creating a class which inherits from **PluginProcessor**.
+
+ `class MyPluginProcessor: public PluginProcessor`
+
+2. Next, you can declare the plugin parameters:
+  
+ PluginProcessor inherits internally from ParamGroup and is defined by default as the root ParamGroup of the plugin. Therefore it is a container for the plugin parameters. First, declare their associated variables:
+  
+ >     float floatVar;
+ >     float float2Var;
+ >     float logVar;
+  
+ Next, define an index for each parameter starting at 0 (enum helps you do it in a convenient way).
+  
+ >     enum Params{        
+ >       floatIndex=0,
+ >       float2Index,
+ >       logIndex
+ >     }; 
+  
+ Finally you will need to implement _void initParameters()_ to initialize all parameters in the same order that you wrote their indexes in the enum list (if you fail to do so in debug mode, no worries, jassert will break the program and you will have a chance to correct it).
+  
+ >     void MyPluginProcessor::initParameters(){        
+ >           addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
+ >           addFloatParam(float2Index,"float",true,true,&float2Var,-6.f,6.f);
+ >           addLogParam(logIndex,"logIndex",true,true,&logVar,0.001f,6.f);
+ >           ...
+ >     }
+  
+ Note that all Parameters have similar arguments. Here's a brief description of them:
+ 
+   _const int paramIndex_: is used to identify this parameter with a numeric index. The declared parameter can be latter accessed using _getParam(paramIndex)_ from its ParamGroup. In order to invoke methods specific to each type, you can use: _getStringParam(paramIndex), getFloatParam(paramIndex), getLogParam(paramIndex), getLogWith0Param(paramIndex), getLogWithSignParam(paramIndex), getIntParam(paramIndex), getBoolParam(paramIndex)_.  
+
+   _const String &name_: identifies this parameter. It is used to set internally xmlName which will be used to set the attribute name of this parameter value when it is saved to XML (a custom xmlName can be set using _setXmlName(...)_). If several parameters are added with the same xmlName, a numeric suffix will be automatically added to them to make them unique (e.g. in the example code above floatVar will have attribute name "float", and float2Var will have attribute name "float:2" although the name of both is "float").
+
+   _const bool automationFlag_: defines whether this parameter will be defined in the host. Set it to true if you want to support automation (allow the host to set its value). If automationFlag is set to false, the method _getParam(paramIndex)-> updateHost(...)_ will have no effect and _getParam(paramIndex)->updateProcessorHostAndUi(...)_, _getParam(paramIndex)->updateHostAndUi(...)_ will only update the Processor and the UI or only the UI respectively.  
+
+   _const bool loadSaveXmlFlag_: defines whether this parameter will be saved to XML by default. If it set to true, an attribute name xmlName will be created inside the tag of its ParamGroup holding its value. Otherwise, its value will be neither saved nor loaded. It is possible to selectively not load it from XML using _getParam(paramIndex)->setLoadXml(false)_ or not write it to XML using _getParam(paramIndex)->setSaveXml(false)_.
+
+   _Type *const value_: pointer to the variable associated with the defined parameter. Note that its defaultValue will be set to the value of the pointed variable at the moment of adding the parameter in _initParameters()_.
+   
+   _const PluginIntType minValue,const PluginIntType maxValue_: set the range of this parameter (used to define the mapping between the parameter value and the internal representation of it inside the host (in the [0,1] range)).
+
+   It is also possible to add other ParamGroups (groups of parameters declared in other classes) to this plugin in a nested way. See [Creating nested ParamGroups](https://github.com/4drX/pluginparameters/wiki#creating-nested-paramgroups) for more details on how to do this.
+
+3. Make sure that you call **initAllParameters()** at the constructor of your plugin class **when all the variables associated with the plugin parameters have been initialized** (so that their defaultValues are defined correctly as mentioned previously).
+
+  >     MyPluginProcessor::MyPluginProcessor(){
+  >       floatVar=0.f;
+  >       logVar=1.f;
+  >       initAllParameters();
+  >     }
+
+4. Define the code that is to be executed when a parameter value changes.
+
+  >     void MyPluginProcessor::runAfterParamChange(int paramIndex,UpdateFromFlags updateFromFlag){
+  >       //Generally you don't want to run any updates when you are loading from XML 
+  >       //because it is often more efficient to initialize everything all at once when 
+  >       //all the parameter values have been loaded by overriding
+  >       //updateProcessorHostAndUiFromXml(...) (see below).
+  >       if (updateFromFlag&UPDATE_FROM_XML) return;
+  >         
+  >       switch(paramIndex){    
+  >         case floatIndex: {
+  >           //floatVar changed
+  >         }  
+  >         case float2Index: {
+  >           //float2Var changed
+  >         }  
+  >         case logIndex: {
+  >           //logVar changed
+  >         }  
+  >         default: break;
+  >       }
+  >     }
+
+  >     void MyPluginProcessor::updateProcessorHostAndUiFromXml(const bool recursively, bool forceValueChanged, bool forceUpdateUi){            
+  >       ParamGroup::updateProcessorHostAndUiFromXml(recursively, forceValueChanged, forceUpdateUi);
+  >             
+  >       //Initialize the plugin from the values read from XML
+  >       float2Var=floatVar=logVar;
+  >     }
+
+  updateFromFlag will hold one of the following values:
+
+  >     enum UpdateFromFlags{
+  >       UPDATE_FROM_HOST=0x01,
+  >       UPDATE_FROM_UI=0x02,
+  >       UPDATE_FROM_PROCESSOR=0x04,
+  >       UPDATE_FROM_XML=0x08
+  >     }; 
+
+  _UPDATE_FROM_HOST_ in only set by default when the host sends automation changes.
+
+  _UPDATE_FROM_UI_ is meant to indicate when the value is changed from the User Interface. It is the result of calling: _getXXXParam(paramIndex)->updateProcessorAndHostFromUi(...)_, _getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_UI)_, _getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_UI)_ or _getParam(paramIndex)-> updateHost(...,UPDATE_FROM_UI)_.
+
+  _UPDATE_FROM_PROCESSOR_ is meant to indicate when the value is changed in the processing thread. It is the result of calling: _getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_PROCESSOR)_, _getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_PROCESSOR)_ or _getParam(paramIndex)-> updateHost(...,UPDATE_FROM_PROCESSOR)_.
+
+  _UPDATE_FROM_XML_ is meant to indicate that the value was read from XML at the beginning of a session or from a file (using loadXml(...) or loadXmlFile(...) respectively) and now the PluginProcessor variables have been updated with it. It is the result of calling: _getParam(paramIndex)->updateProcessorHostAndUiFromXml(...)_, _getParam(paramIndex)->updateProcessorHostAndUi(...,UPDATE_FROM_XML)_, _getParam(paramIndex)->updateHostAndUi(...,UPDATE_FROM_XML)_ or _getParam(paramIndex)-> updateHost(...,UPDATE_FROM_XML)_.
+
+5. Implement  _const String getParameterText(int index)_ to define how the host will be representing the parameter values.
+
+  >     const String MyPluginProcessor::getParameterText (int index){    
+  >         return String (getParameter (index), 2);
+  >     }
+
+6. Implement _void getStateInformation(...)_ and _void setStateInformation(...)_ to save the value of parameters in XML format into memory at the end of the session and restore them at the beginning of the session.
+
+  >     void MyPluginProcessor::getStateInformation (MemoryBlock& destData){   
+  >       //save all the parameter values into an XML tag with name JucePlugin_Name
+  >       XmlElement xml(JucePlugin_Name);    
+  >       saveXml(&xml,false,true);
+  >       //Save it as binary data
+  >       copyXmlToBinary (xml, destData);
+  >     }
+
+  >     void MyPluginProcessor::setStateInformation (const void* data, int sizeInBytes){
+  >       //Convert the binary data saved in getStateInformation(...) back into XML.
+  >       ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+  >         
+  >       // Check that it is valid XML and that the tag has name JucePlugin_Name.
+  >       if (xmlState != 0 && xmlState->getTagName()==JucePlugin_Name){         
+  >         //Preload XML values into memory
+  >         loadXml(xmlState, true);
+  >         //Update the parameter values from the preloaded XML values
+  >         updateProcessorHostAndUiFromXml(true,true,true);     
+  >       }
+  >     }
+
+  You may need to modify this code if you add a preset system to your plugin. Otherwise it will work for most cases.
+
+7. Define a few methods to define how the host represents the input and output channels and whether the input and the output are stereo or not.
+
+  >     const String MyPluginProcessor::getInputChannelName (const int channelIndex) const{
+  >         return String (channelIndex + 1);
+  >     }
+
+  >     const String MyPluginProcessor::getOutputChannelName (const int channelIndex) const{
+  >         return String (channelIndex + 1);
+  >     }
+
+  >     bool MyPluginProcessor::isInputChannelStereoPair (int /*index*/) const{
+  >         return true;
+  >     }
+
+  >     bool MyPluginProcessor::isOutputChannelStereoPair (int /*index*/) const{
+  >         return true;
+  >     }
+
+  See the [JUCE AudioProcessor](http://rawmaterialsoftware.com/juce/api/classAudioProcessor.html) class for more details.
+
+8. Implement the processing part of your plugin:
+
+  _void prepareToPlay(double sampleRate, int samplesPerBlock)_
+
+  _void releaseResources()_
+
+  _void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)_
+
+  See the [JUCE AudioProcessor](http://rawmaterialsoftware.com/juce/api/classAudioProcessor.html) class for documentation about these methods.
+
+9. Hook up the User Interface to display the parameter values and update them when they change.
+
+  Pass as a pointer to the MyPluginProcessor class instance as an argument of the constructor of the main UI component: e.g. MainComponent.
+
+  >     AudioProcessorEditor* MyPluginProcessor::createEditor(){
+  >         return new MainComponent (this);
+  >     }
+
+  Create a MainComponent using [the Jucer](https://github.com/julianstorer/JUCE/tree/master/extras/the%20jucer) and adding MyPluginProcessor *myPluginProcessor as an argument of the constructor.
+
+  Use _updateProcessorAndHostFromUi(...)_ to update the value of the parameter variables in MyPluginProcessor and update the Host, when its associated widget (e.g. a Slider) is changed:
+
+  >     void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
+  >     {
+  >         if (sliderThatWasMoved == floatVarSlider)
+  >         {        
+  >             myPluginProcessor->getFloatParam(MyPluginProcessor::floatVarIndex)->updateProcessorAndHostFromUi(floatVarSlider->getValue());
+  >         } 
+  >         ...
+    
+  Use _bool updateUiRequested()_ and _Type uiGet()_ at the timer callback of the User Interface to update the parameter representation (if its value changed at MyPluginProcessor or at the host):
+
+  >     FloatParam *floatVarParam=myPluginProcessor->getFloatParam(MyPluginProcessor::floatVarIndex);
+  >     if (floatVarSlider && floatVarParam->updateUiRequested()){
+  >       floatVarSlider->setValue (floatVarParam->uiGet(), false);
+  >     }
+
+10. Finally add some code in the cpp file to create the plugin handle:
+
+  >     AudioProcessor* JUCE_CALLTYPE createPluginFilter(){
+  >         return new MyPluginProcessor();
+  >     }
+
+## Advanced usage
+
+### Creating nested ParamGroups
+
+class PluginProcessor is in fact inheriting from ParamGroup, so this is the root ParamGroup of the plugin. Other ParamGroups can be nested to it using the addParamGroup(...) method as follows:
+
+Given a new ParamGroup, e.g.:
+
+>     class Delay : public ParamGroup{
+>     
+>       float feedback;
+>       ...
+>       
+>       enum Params{        
+>         feedbackIndex=0,
+>         ...
+>       };
+>     
+>       void initParameters(){        
+>         addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
+>         ...
+>       }
+>       
+>       Delay():ParamGroup("Delay"){
+>         ...
+>       }
+>     };
+
+(Note that the argument of ParamGroup: "Delay" is the name of it and the name of the XML tag that will contain all the parameters in the ParamGroup as attributes. However you can change the later using setXmlName(...))
+
+It can be added to the MyPluginProcessor class by defining its index and using _void addParamGroup(...)_ as follows:
+
+>     class MyPluginProcessor: public PluginProcessor{
+>     
+>       float floatVar;
+>       float float2Var;
+>       float logVar;
+>     
+>       Delay delay;
+>       Delay delay2;
+>     
+>       enum Params{        
+>         floatIndex=0,
+>         float2Index,
+>         logIndex
+>       }; 
+>     
+>       enum ParamGroups{
+>         delayIndex=0,
+>         delay2Index
+>       };
+>     
+>     void MyPluginProcessor::initParameters(){        
+>           addFloatParam(floatIndex,"float",true,true,&floatVar,-6.f,6.f);
+>           addFloatParam(float2Index,"float",true,true,&float2Var,-6.f,6.f);
+>           addLogParam(logIndex,"logIndex",true,true,&logVar,0.001f,6.f);
+>           
+>           addParamGroup(delayIndex,&delay);
+>           addParamGroup(delay2Index,&delay2);
+>       }
+>     };  
+
+Note that ParamGroups have to be added also in the same order than their indexes in enum ParamGroups or a jassert will break the program in debug mode.
+
+Besides if there is more than one ParamGroup with the same name (in this case _delay_ and _delay2_), they will be automatically saved under different XML tag names using a numeric suffix. In the example code above the first "Delay" ParamGroup (_delay_) will have tag name "Delay" and the second one (_delay2_) will have tag name "Delay:2".
+
+Finally, use _ParamGroup *getParamGroup(paramGroupIndex)_ and _ParamGroup *getParentParamGroup()_ to navigate across ParamGroups.
+ 
+There is an example project (https://github.com/4drX/pluginparameters/tree/master/example_projects/PluginModularTemplate) which shows how to use this feature to create processing modules (in this case, Midi Effects) that can be then easily embedded in different plugins.

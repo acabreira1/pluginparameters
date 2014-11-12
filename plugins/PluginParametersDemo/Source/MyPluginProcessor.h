@@ -86,9 +86,9 @@ public:
     float asymSignedLogVar;
     int intVar;
     bool boolVar;
-    bool boolButtonVar;    
+    bool boolButtonVar;
       
-    enum Params{        
+    enum Params{
       floatIndex=0,
       logIndex,
       logWith0Index,
@@ -104,8 +104,8 @@ public:
       addFloatParam(floatIndex,"float",true,SAVE,&floatVar,-6.f,6.f);
       addLogParam(logIndex,"log",true,SAVE,&logVar,0.001f,6.f);
       addLogWith0Param(logWith0Index,"logWith0",true,SAVE,&logWith0Var,0.001f,6.f);
-      addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,SAVE,&symSignedLogVar,-6.f,6.f,0.001f);
-      addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,SAVE,&asymSignedLogVar,-4.f,3.f,0.001f);        
+      addLogWithSignParam(symSignedLogIndex,"symSignedLog",true,SAVE,&symSignedLogVar,-6.f,6.f);
+      addLogWithSignParam(asymSignedLogIndex,"asymSignedLog",true,SAVE,&asymSignedLogVar,-4.f,3.f);
       addIntParam(intIndex,"int",true,SAVE,&intVar,0,3);
       addBoolParam(boolIndex,"bool",true,SAVE,&boolVar);
       addBoolParam(boolButtonIndex,"boolButton",true,SAVE,&boolButtonVar);        

@@ -284,15 +284,15 @@ public:
     param->setOptions(Param::autoChangeGestures,false). */
   void endChangeGesture();
     
-  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions):
-  pluginProcessor(nullptr),
-  globalIndex(0),
-  name(name),
-  xmlName(name),
-  registerAtHostFlag(registerAtHostFlag),
-  updateUiFlag(false),
-  updateFromFlag(UPDATE_FROM_HOST),
-  updateXml(false)
+  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions):    
+    registerAtHostFlag(registerAtHostFlag),
+    name(name),
+    xmlName(name),
+    updateUiFlag(false),
+    globalIndex(0),
+    updateFromFlag(UPDATE_FROM_HOST),
+    pluginProcessor(nullptr),    
+    updateXml(false)
   {
     switch (loadSaveOptions){
       case SAVE:{
@@ -344,6 +344,8 @@ public:
         jassert (t.isLetterOrDigit() || *t == '_' || *t == '-' || *t == ':');
     #endif            
   }
+  
+  virtual ~Param(){}
 };
 
 //-----------------------------------------------------------------------------------
@@ -444,10 +446,11 @@ public:
   }
 
   StringParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String * const value):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  value(value),
-  defaultValue(*value),
-  xmlValue(*value){
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    value(value),
+    defaultValue(*value),
+    xmlValue(*value)
+  {
     // Strings cannot be automated! 
     // (They aren't supported at least in VST)
     // Try again setting argument registerAtHostFlag=false
@@ -617,13 +620,14 @@ public:
       xml->setAttribute(Param::getXmlName(),(double)(*value));
     }
   }
-    
+
   FloatParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
-  minValue(minValue),
-  maxValue(maxValue),
-  value(value){    
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    minValue(minValue),
+    maxValue(maxValue),
+    value(value),
+    defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
+  {    
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
     jassert(minValue<maxValue);
@@ -632,17 +636,17 @@ public:
 
 class LogParam : public Param{
 private:
-  PluginParameters_PluginFloatType minLogValue;
-  PluginParameters_PluginFloatType maxLogValue;
   const PluginParameters_PluginFloatType factor;
+  PluginParameters_PluginFloatType minLogValue;
+  PluginParameters_PluginFloatType maxLogValue;  
     
   // (prevent copy constructor and operator= being generated..)
   // avoids warning C4512: "assignment operator could not be generated"
   LogParam (const LogParam&);
   LogParam& operator=(const LogParam &other);
 
-protected:
-  PluginParameters_PluginFloatType * const value;
+protected:  
+  PluginParameters_PluginFloatType * const value;  
   const PluginParameters_PluginFloatType defaultValue; 
   PluginParameters_PluginFloatType xmlValue;  
 
@@ -808,13 +812,14 @@ public:
     }
   }
     
-  LogParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
-  minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
-  maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
-  factor(factor),
-  value(value){
+  LogParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    factor(1),  
+    minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
+    maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),  
+    value(value),
+    defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
+  {
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
@@ -1020,13 +1025,14 @@ public:
     }
   }
 
-  LogWith0Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue))),
-  minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
-  maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
-  value(value),
-  factor(factor){
+  LogWith0Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1)):
+    Param(name,registerAtHostFlag,loadSaveOptions),  
+    factor(1),
+    minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
+    maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
+    value(value),
+    defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
+  {
     //log values are stricly positive, please define a strictly positive range
     jassert(minValue>0);
     jassert(maxValue>0);
@@ -1038,11 +1044,11 @@ public:
 };
 
 class LogWithSignParam : public Param{
-private:  
+private:
+  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType maxNegLogValue;
   PluginParameters_PluginFloatType maxPosLogValue;  
   PluginParameters_PluginFloatType minAbsLogValue;
-  const PluginParameters_PluginFloatType factor;
   const PluginParameters_HostFloatType centerValue;
     
   // (prevent copy constructor and operator= being generated..)
@@ -1303,22 +1309,23 @@ public:
     }
   }
 
-  LogWithSignParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1)):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue))),
-  maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
-  maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
-  minAbsLogValue((PluginParameters_PluginFloatType)(factor*log10((double)minAbsValue))),
-  centerValue((PluginParameters_HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)minAbsValue))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)minAbsValue)))),
-  value(value),
-  factor(factor){   
+  LogWithSignParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1)):
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    factor(1),
+    maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
+    maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
+    minAbsLogValue((PluginParameters_PluginFloatType)(factor*log10((double)0.001))),
+    centerValue((PluginParameters_HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)0.001))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)0.001)))),
+    value(value),
+    defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue)))
+  {
     //minValue should be negative and maxValue positive, otherwise use LogWith0.
     jassert(minNegativeValue<0);
     jassert(maxPositiveValue>0);
     jassert(minNegativeValue<maxPositiveValue);
       
     //log values are stricly positive, please define a strictly positive range
-    jassert(minAbsValue>0);
+    //jassert(0.001>0);
 
     //force *value to the [minNegativeValue,maxPositiveValue] range
     xmlValue=*value=defaultValue;
@@ -1486,11 +1493,12 @@ public:
   }
     
   IntParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  value(value),
-  defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue))),
-  minValue(minValue),
-  maxValue(maxValue){
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    minValue(minValue),
+    maxValue(maxValue),
+    value(value),
+    defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue)))
+  {
     //force *value to the [minValue,maxValue] range
     xmlValue=*value=defaultValue;
     jassert(minValue<maxValue);
@@ -1588,10 +1596,11 @@ public:
   }
     
   BoolParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool * const value):
-  Param(name,registerAtHostFlag,loadSaveOptions),
-  defaultValue(*value),
-  xmlValue(*value),
-  value(value){
+    Param(name,registerAtHostFlag,loadSaveOptions),
+    value(value),
+    defaultValue(*value),
+    xmlValue(*value)
+  {
   }
 
 };

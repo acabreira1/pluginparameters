@@ -1,0 +1,7 @@
+Upgrade notes: 1.1.2 > 1.1.4 
+
+* Various methods have been renamed to replace "XmlFile" by "Preset".
+* loadXml(...) and saveXml(...) now must specify at the end if they are saving to the SESSION or a PRESET (see plugin examples for more details).
+* the 4th parameter in most addXXXParam(...) methods is no longer a bool but an integer (which lets you choose between the options in the enumerator LoadSaveSettings). You can safely replace old values of false by DONT_SAVE and old values of true by SAVE, but now you have the option to choose between SAVE_ONLY_IN_SESSION or SAVE_ONLY_IN_PRESETS. 
+* new options have been introduced in the Param class and a common method has been stablished to set them: setOption(...) and get them: getOption(...). See comments in Param::Options for more details. Methods setSaveXml(...), saveXmlIsOn(), setLoadXml(...) and loadXmlIsOn() have been removed.
+* Added support for ParameterChangeGesture's (otherwise hosts like Logic are not updated about parameter changes). By default each change is a gesture (Param::autoChangeGestures), otherwise use param->setOption(Param::autoChangeGestures,false) to disable it and use param->startChangeGesture() and param->endChangeGesture() to set them.

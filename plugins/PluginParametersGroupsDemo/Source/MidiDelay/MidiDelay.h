@@ -38,7 +38,7 @@
 #ifndef __MIDIDELAY_H
 #define __MIDIDELAY_H
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 
 class MidiDelay: public ParamGroup{
   double sampleRate;

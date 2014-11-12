@@ -58,8 +58,8 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "MyPluginProcessor.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
+#include "../MyPluginProcessor.h"
 #include "MidiDelay.h"
 //[/Headers]
 

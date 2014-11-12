@@ -39,14 +39,15 @@
 #include "MainComponent.h"
 
 MyPluginProcessor::MyPluginProcessor():
-floatVar(1.f),
-boolVar(false),
-logVar(0),
-intVar(2),
-logWith0Var(0),
-symSignedLogVar(0),
-asymSignedLogVar(0)
-{    
+  floatVar(1.f),
+  logVar(0),  
+  logWith0Var(0),
+  symSignedLogVar(0),
+  asymSignedLogVar(0),
+  intVar(2),
+  boolVar(false),
+  boolButtonVar(false)
+{
     initAllParameters();
 }
 

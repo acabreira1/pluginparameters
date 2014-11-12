@@ -38,7 +38,7 @@
 #ifndef __MIDISUSTAIN_H
 #define __MIDISUSTAIN_H
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 
 class MidiSustain: public ParamGroup{
   bool panicFlag;
@@ -92,10 +92,11 @@ public:
   }
 
   MidiSustain():
-  ParamGroup("Sustain"),
-  enable(false),
-  panicFlag(false),
-  lastChannel(1){    
+  ParamGroup("Sustain"),  
+    panicFlag(false),
+    lastChannel(1),
+    enable(false)
+  {
   }
   
   ~MidiSustain(){

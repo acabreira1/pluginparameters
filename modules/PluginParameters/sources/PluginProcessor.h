@@ -31,6 +31,10 @@
 
 #include "ParamGroups.h"
 
+#ifndef JucePlugin_Name
+#define JucePlugin_Name "PluginProcessor"
+#endif
+
 #ifdef PluginParameters_ErrorLogger
 #define logError(msg) { Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+String(msg)); jassertfalse; }
 #else
@@ -38,37 +42,37 @@
 #endif
 
 class runAfterParamChangeThread : public ThreadPoolJob {
+  int groupIndex;
+  ParamGroup *paramGroup;
   Param *param;
   float newValue;
-  ParamGroup *paramGroup;
-  int groupIndex;
   int runAfterParamChange;
-  int updateUi;
+  int updateUi;  
 
   JobStatus runJob() override;
 
 public:
   runAfterParamChangeThread(int groupIndex,ParamGroup *paramGroup,Param *param,float newValue,int runAfterParamChange=1,int updateUi=1)
     :ThreadPoolJob(String(paramGroup->getName())+" "+String(groupIndex)),
+    groupIndex(groupIndex),
+    paramGroup(paramGroup),
     param(param),
     newValue(newValue),
-    paramGroup(paramGroup),
-    groupIndex(groupIndex),
     runAfterParamChange(runAfterParamChange),
-    updateUi(updateUi)
+    updateUi(updateUi)    
   {
   }
 };
 
 /**  methods to redirect all parameters to the global list referred by the host        
        and handle automatically automated and not automated parameters */
-class PluginProcessor : public AudioProcessor, public ParamGroup{
-private:
-
+class PluginProcessor : public ParamGroup, public AudioPluginInstance{
+protected:  
   #ifdef PluginParameters_ErrorLogger
   FileLogger *fileLogger;
   #endif
 
+private:  
   ThreadPool runAfterParamChangeThreads;
 
   ParamGroup **groupAutomated;
@@ -91,11 +95,13 @@ private:
       mapGlobalIndex(root->getParamGroup(g),countIfAutomate,map,indexMap);    
   }
   
-public:            
-  const String getName() const override{ 
-    return JucePlugin_Name; 
+public:
+
+  const String getName() const {
+    return ParamGroup::getName();
   }
-  
+
+  #ifdef JucePlugin_WantsMidiInput  
   virtual bool acceptsMidi() const override{
   #if JucePlugin_WantsMidiInput
     return true;
@@ -103,7 +109,9 @@ public:
     return false;
   #endif
   }
+  #endif
 
+  #ifdef JucePlugin_ProducesMidiOutput  
   virtual bool producesMidi() const override{
   #if JucePlugin_ProducesMidiOutput
     return true;
@@ -111,7 +119,9 @@ public:
     return false;
   #endif
   } 
+  #endif
 
+  #ifdef JucePlugin_SilenceInProducesSilenceOut  
   virtual bool silenceInProducesSilenceOut() const override{
   #if JucePlugin_SilenceInProducesSilenceOut
     return true;
@@ -119,6 +129,7 @@ public:
     return false;
   #endif
   }
+  #endif
   
   /** Coordinates all updates, generalization of setParameterNotifyingHost to be able 
       to deal transparently with automated and non automated parameters. 
@@ -237,7 +248,7 @@ public:
         } else if (param->getOption(Param::forceRunAfterParamChangeInHost)){
           localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
           if (localParamGroup->getParentParamGroup()!=nullptr)
-            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());          
+            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
         }
       }
     } 
@@ -267,24 +278,33 @@ public:
     mapGlobalIndex(this,false,groupNonAutomated,indexInGroupNonAutomated);  
   }
 
-  PluginProcessor():
-    ParamGroup(JucePlugin_Name),
+  // method of AudioPluginInstance
+  virtual void fillInPluginDescription (PluginDescription&) const {}
+
+  PluginProcessor(const String name=JucePlugin_Name):
+    ParamGroup(name),
+    #ifdef PluginParameters_ErrorLogger
+    fileLogger(nullptr),    
+    #endif
+    runAfterParamChangeThreads(1),
     groupAutomated(nullptr),
     indexInGroupAutomated(nullptr),
     groupNonAutomated(nullptr),
-    indexInGroupNonAutomated(nullptr),
-    fileLogger(nullptr),
-    runAfterParamChangeThreads(1){    
+    indexInGroupNonAutomated(nullptr)    
+    {    
       #ifdef PluginParameters_ErrorLogger
-      Logger::setCurrentLogger(fileLogger=new FileLogger(File::getSpecialLocation(File::userDesktopDirectory).getChildFile(String("errors.txt")),"error log:\n"));        
+      fileLogger=new FileLogger(File::getSpecialLocation(File::userDesktopDirectory).getChildFile(String("errors.txt")),"error log:\n"),
+      Logger::setCurrentLogger(fileLogger);        
       #endif
   }
   
   ~PluginProcessor(){
     #ifdef PluginParameters_ErrorLogger
     Logger::setCurrentLogger(nullptr);
-    if (fileLogger)
-      deleteAndZero(fileLogger);
+    if (fileLogger){
+      delete fileLogger;
+      fileLogger=nullptr;
+    }
     #endif
 
     if (groupAutomated){

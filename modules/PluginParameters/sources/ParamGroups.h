@@ -330,15 +330,15 @@ public:
     return pointer;
   }
    
-   void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
-    addParam(paramIndex,param=new LogParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,factor),forceUniqueXmlName);
+    addParam(paramIndex,param=new LogParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }   
 
-  void addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);  
+  void addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);  
 
-  void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);  
+  void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);  
   
   LogParamArray *getLogParamArray(const int index) const;
   LogParamMatrix *getLogParamMatrix(const int index) const;
@@ -356,15 +356,15 @@ public:
     return pointer;
   }  
    
-   void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
     Param *param;
-    addParam(paramIndex,param=new LogWith0Param(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,factor),forceUniqueXmlName);    
+    addParam(paramIndex,param=new LogWith0Param(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);    
     paramsToUnallocateAtDestructor.add(param);
   }
 
-  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
+  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
 
-  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
   
   LogWith0ParamArray *getLogWith0ParamArray(const int index) const;
   LogWith0ParamMatrix *getLogWith0ParamMatrix(const int index) const;
@@ -382,15 +382,15 @@ public:
     return pointer;
   }  
    
-   void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType factor = (PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
    Param *param;
-   addParam(paramIndex,param=new LogWithSignParam(name,registerAtHostFlag,loadSaveOptions,value,minNegativeValue,maxPositiveValue,minAbsValue,factor),forceUniqueXmlName);
+   addParam(paramIndex,param=new LogWithSignParam(name,registerAtHostFlag,loadSaveOptions,value,minNegativeValue,maxPositiveValue),forceUniqueXmlName);
   paramsToUnallocateAtDestructor.add(param);
 }  
 
-  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
+  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
 
-  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
 
   LogWithSignParamArray *getLogWithSignParamArray(const int index) const;
   LogWithSignParamMatrix *getLogWithSignParamMatrix(const int index) const;
@@ -667,10 +667,10 @@ public:
   }
   
   ParamGroup(const String &name):
+    nonSavedChanges(true),
     parentParamGroup(nullptr),
     numAutomatedParams(0),
-    numNonAutomatedParams(0),
-    nonSavedChanges(true),
+    numNonAutomatedParams(0),    
     name(name),
     xmlName(name),
     pluginProcessor(nullptr),
@@ -684,7 +684,7 @@ public:
       #endif
     }
 
-  ~ParamGroup(){
+  virtual ~ParamGroup(){
     paramGroupList.clear(false);
     paramGroupsToUnallocateAtDestructor.clear(true);
     paramList.clear(false);    
@@ -902,7 +902,9 @@ public:
   updateOnlySizedArrayFlag(updateOnlySizedArrayFlag)
   {
     saveXmlOptionCopy=new bool[maxSize];
-  }    
+  }  
+  
+  virtual ~ParamArray(){}
   
 };
 
@@ -958,12 +960,11 @@ private:
   PluginParameters_PluginFloatType* const values;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
-  const PluginParameters_PluginFloatType factor;
   
 public: 
   void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,factor,false);
+      ParamGroup::addLogParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
     }
   }
 
@@ -991,12 +992,11 @@ public:
     return ParamGroup::getLogParam(i)->updateProcessorAndHostFromUi(valueArg);
   } 
   
-  LogParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
@@ -1004,14 +1004,13 @@ public:
 class LogWith0ParamArray : public ParamArray{
 private:
   PluginParameters_PluginFloatType* const values;
-  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
 
 public:   
   void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,factor,false);
+      ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
     }
   }
 
@@ -1039,12 +1038,11 @@ public:
     return ParamGroup::getLogWith0Param(i)->updateProcessorAndHostFromUi(valueArg);
   }
   
-  LogWith0ParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogWith0ParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
@@ -1052,15 +1050,13 @@ public:
 class LogWithSignParamArray : public ParamArray{
 private:
   PluginParameters_PluginFloatType* const values;
-  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
-  PluginParameters_PluginFloatType minAbsValue;
 
 public: 
   void initParameters() override{
     for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,minAbsValue,factor,false);
+      ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
     }
   }
 
@@ -1088,13 +1084,11 @@ public:
     return ParamGroup::getLogWithSignParam(i)->updateProcessorAndHostFromUi(valueArg);
   }
   
-  LogWithSignParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogWithSignParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  minAbsValue(minAbsValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
@@ -1467,7 +1461,9 @@ public:
   updateOnlySizedMatrixFlag(updateOnlySizedMatrixFlag)
   {
     saveXmlOptionCopy=new bool[maxCols*maxRows];
-  } 
+  }
+  
+  virtual ~ParamMatrix(){}
 };
 
 /** ParamGroup containing a matrix of FloatParams. */
@@ -1529,7 +1525,6 @@ public:
 class LogParamMatrix : public ParamMatrix{
 private:
   PluginParameters_PluginFloatType** const values;
-  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
   bool sparseCompressionFlag; 
@@ -1539,7 +1534,7 @@ public:
   void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,factor,false);        
+        ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
       }
     }
   }
@@ -1575,12 +1570,11 @@ public:
     return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
   } 
 
-  LogParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
@@ -1588,7 +1582,6 @@ public:
 class LogWith0ParamMatrix : public ParamMatrix{
 private:
   PluginParameters_PluginFloatType** const values;
-  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
   bool sparseCompressionFlag; 
@@ -1598,7 +1591,7 @@ public:
   void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,factor,false);        
+        ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
       }
     }
   }
@@ -1634,12 +1627,11 @@ public:
     return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
   }
   
-  LogWith0ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogWith0ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
@@ -1647,10 +1639,8 @@ public:
 class LogWithSignParamMatrix : public ParamMatrix{
 private:
   PluginParameters_PluginFloatType** const values;
-  const PluginParameters_PluginFloatType factor;
   PluginParameters_PluginFloatType minValue;
   PluginParameters_PluginFloatType maxValue;
-  PluginParameters_PluginFloatType minAbsValue;
   bool sparseCompressionFlag; 
   PluginParameters_PluginFloatType mostProbableValue;
 
@@ -1658,7 +1648,7 @@ public:
   void initParameters() override{
     for (int i=0;i<ParamMatrix::getMaxRows();i++){
       for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,minAbsValue,factor,false);        
+        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
       }
     }
   }
@@ -1694,13 +1684,11 @@ public:
     return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
   } 
   
-  LogWithSignParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const PluginParameters_PluginFloatType minAbsValue=(PluginParameters_PluginFloatType)(0.001), const PluginParameters_PluginFloatType factor=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogWithSignParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
-  maxValue(maxValue),
-  minAbsValue(minAbsValue),
-  factor(factor)
+  maxValue(maxValue)
   {} 
 };
 
