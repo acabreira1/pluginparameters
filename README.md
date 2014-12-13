@@ -22,7 +22,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 * Provides common ParamGroups as Arrays and Matrices for each defined parameter type.
 * Should compile correctly in Visual Studio and Xcode.
 
-###Only with a commercial license!
+###Only with a commercial license
 
 * Preset Manager.
 * Undo/Redo's from parameter changes made in the UI.
