@@ -4,7 +4,7 @@ PluginParameters is a [JUCE module](http://www.juce.com/documentation/juce-modul
 
 ##License
 
-This version of the PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html). Please consider a symbolic donation if you wish to see it updated. Alternatively, a Commercial License (available for 199eur) allows you to use this module in closed-source projects and provides you full compatibility with the latest release of JUCE, support for XCode and Visual Studio and extra features.
+This version of the PluginParameters module is released under the [GPLv.2](http://www.gnu.org/licenses/gpl-2.0.html). Please consider a symbolic donation if you wish to see it updated. Alternatively, a Commercial License (available for 250eur) allows you to use this module in closed-source projects and provides you full compatibility with the latest release of JUCE, support for XCode and Visual Studio and extra features.
 
 For more details, send me a Personal Message at [the JUCE forum](http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters) (MarC).
 
@@ -27,7 +27,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 * Preset Manager.
 * Undo/Redo's from parameter changes made in the UI.
 * Custom float parameter mappings.
-* Parameters with other float and int types.
+* Parameters with all float and int types.
 
 The Preset manager is a class which provides utilities to load, save, rename, delete, reset XML preset files that store all parameter values of a ParamGroup recursively. It marks files that are loaded as read-only so that they cannot loaded twice or modified outside the plugin, supports preset "folder-files" (where the actual preset file is created inside a folder of the same name) and tracks unsaved changes with an "*" next to the preset file name.
 
