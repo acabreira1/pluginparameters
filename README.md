@@ -35,10 +35,6 @@ A demo of a possible UI for this class is available in the [PluginParametersGrou
 
 Please refer to the last section of [Reference](https://github.com/4drX/pluginparameters/wiki#undosredos-only-with-a-commercial-license) (Advanced Usages), to see how Undos/Redos, custom float parameter mappings and parameters with other float and int types are supported.
 
-###What it doesn't do
-
-* Parameter changes are not thread safe however this shouldn't be a problem in most cases, if you know what you are doing (See forum post: [What's best practice for GUI change notification?](http://www.rawmaterialsoftware.com/viewtopic.php?f=8&t=10531)).
-
 ##[Reference](https://github.com/4drX/pluginparameters/wiki)
 
 This page provides detailed instructions to create your plugin from scratch using the PluginParameters module. Alternatively, you can build on the example plugins available in the "plugins" folder: 
