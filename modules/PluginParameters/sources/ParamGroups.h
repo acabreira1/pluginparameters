@@ -6,17 +6,8 @@
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the 
-   GNU General Public License (Version 2), as published by the Free Software 
-   Foundation. A copy of the license is included in the JUCE distribution, or 
-   can be found online at www.gnu.org/licenses.
-
-   PluginParameters is distributed in the hope that it will be useful, but 
-   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-   details.
-
-  ------------------------------------------------------------------------------
+   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
    To release a closed-source product which uses PluginParameters, commercial 
    licenses are available. For more information, please send me a PM (Personal 
@@ -73,6 +64,8 @@ private:
 
   String xmlName;
 
+  bool xmlNameInGetParameterName;
+
   String xmlFileName;
 
   /** List of all parameters included in this group */
@@ -91,6 +84,10 @@ private:
       with PluginProcessor::updateHostAndUi(...) */
   PluginProcessor* pluginProcessor;
 
+  /** Pointer to the PluginProcessor's UndoManager instance by default. It can also
+      be set up to point to independent UndoManagers. */
+  UndoManager *undoManager;
+
 protected:
   /** Returns the pointer to the (Extended)AudioProcessor instance */
   PluginProcessor* getProcessor() const{
@@ -99,11 +96,22 @@ protected:
 
   void setPluginProcessor(PluginProcessor* pluginProcessorArg){
     pluginProcessor=pluginProcessorArg;    
-  }
+  }  
   
   bool *saveXmlOptionCopy;  
   
-public:  
+public:
+  /** Sets the pointer to the UndoManager instance 
+      (by default the same that its parent ParamGroup) */
+  void setUndoManager(UndoManager *undoManagerArg){
+    undoManager=undoManagerArg;
+  }
+
+  /** Returns the pointer to the UndoManager instance */
+  UndoManager* getUndoManager() const{
+    return undoManager;
+  }  
+  
   /** Set if there are changes in the parameters that have not been saved in Xml */
   void setNonSavedChanges(bool nonSavedChangesArg){
     bool oldNonSavedChanges=nonSavedChanges;
@@ -158,7 +166,19 @@ public:
       See readXml(...) and saveXml(...) for more details. */ 
   void setXmlName(const String xmlNameArg){
     xmlName=xmlNameArg;
+  }  
+  
+  /** Show in the parameter name displayed by the host the name of this 
+      paramGroup (enabled by default). By default all nested paramGroups 
+      are included.*/
+  void setXmlNameInGetParameterName(const bool show){
+    xmlNameInGetParameterName=show;
   }
+
+  bool getXmlNameInGetParameterName() const{
+    return xmlNameInGetParameterName;
+  }
+
 
   /** Returns the number of parameters included in this group (subgroups are ignored) */
   const int getNumParams() const { 
@@ -197,6 +217,7 @@ public:
     if (paramGroupIndex!=paramGroupList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are not adding the parameter groups in the same order that you enumerated their indexes."); return;}
     
     paramGroup->pluginProcessor=getProcessor();
+    paramGroup->undoManager=getUndoManager();
     paramGroup->parentParamGroup=this;
     paramGroup->numAutomatedParams=numAutomatedParams;
     paramGroup->numNonAutomatedParams=numNonAutomatedParams;
@@ -270,8 +291,8 @@ public:
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
     StringParam *pointer=dynamic_cast<StringParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
@@ -291,28 +312,59 @@ public:
   StringParamArray *getStringParamArray(const int index) const;
   StringParamMatrix *getStringParamMatrix(const int index) const;
   
-  FloatParam *getFloatParam(const int index) const{
+  template<class FloatType,class FloatTypeMap>
+  FloatTypeParam<FloatType,FloatTypeMap> *getFloatTypeParam(const int index) const{
     /* wrong index */
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
-    FloatParam *pointer=dynamic_cast<FloatParam *>(paramList[index]);
+    FloatTypeParam<FloatType,FloatTypeMap> *pointer=dynamic_cast<FloatTypeParam<FloatType,FloatTypeMap> *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
   }
-  
-  void addFloatParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0),bool forceUniqueXmlName=true){
+
+  template<class FloatType>
+  FloatTypeParam<FloatType> *getFloatTypeParam(const int index) const{
+    /* wrong index */
+    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
+    /* You are trying to fetch a parameter with another type... 
+        You want to use another method from the following list: 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
+        getBoolParam()  */
+    FloatTypeParam<FloatType> *pointer=dynamic_cast<FloatTypeParam<FloatType> *>(paramList[index]);
+    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+    return pointer;
+  }
+
+  FloatParam* getFloatParam(const int index) const{
+    return getFloatTypeParam<float>(index);
+  }
+
+  template<class FloatType,class FloatTypeMap>
+  void addFloatTypeParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(0),bool forceUniqueXmlName=true){
     Param *param;
-    addParam(paramIndex,param=new FloatParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
+    addParam(paramIndex,param=new FloatTypeParam<FloatType,FloatTypeMap>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
+    paramsToUnallocateAtDestructor.add(param);
+  }
+
+  template<class FloatType>
+  void addFloatTypeParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(0),bool forceUniqueXmlName=true){
+    Param *param;
+    addParam(paramIndex,param=new FloatTypeParam<FloatType>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }   
 
-  void addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
+  void addFloatParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
+    addFloatTypeParam<float>(paramIndex,name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,forceUniqueXmlName);
+  }   
 
-  void addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
+
+  void addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
 
   FloatParamArray *getFloatParamArray(const int index) const;
   FloatParamMatrix *getFloatParamMatrix(const int index) const;
@@ -322,23 +374,23 @@ public:
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
     LogParam *pointer=dynamic_cast<LogParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
   }
    
-   void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
     Param *param;
     addParam(paramIndex,param=new LogParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
   }   
 
-  void addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);  
+  void addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);  
 
-  void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);  
+  void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);  
   
   LogParamArray *getLogParamArray(const int index) const;
   LogParamMatrix *getLogParamMatrix(const int index) const;
@@ -348,23 +400,23 @@ public:
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
     LogWith0Param *pointer=dynamic_cast<LogWith0Param *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
   }  
    
-   void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
     Param *param;
     addParam(paramIndex,param=new LogWith0Param(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);    
     paramsToUnallocateAtDestructor.add(param);
   }
 
-  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
+  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
 
-  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
   
   LogWith0ParamArray *getLogWith0ParamArray(const int index) const;
   LogWith0ParamMatrix *getLogWith0ParamMatrix(const int index) const;
@@ -374,49 +426,59 @@ public:
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
     LogWithSignParam *pointer=dynamic_cast<LogWithSignParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
   }  
    
-   void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType *const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1),bool forceUniqueXmlName=true){
+   void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minNegativeValue=(float)(-1),const float maxPositiveValue=(float)(1),bool forceUniqueXmlName=true){
    Param *param;
    addParam(paramIndex,param=new LogWithSignParam(name,registerAtHostFlag,loadSaveOptions,value,minNegativeValue,maxPositiveValue),forceUniqueXmlName);
   paramsToUnallocateAtDestructor.add(param);
 }  
 
-  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true);
+  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
 
-  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
 
   LogWithSignParamArray *getLogWithSignParamArray(const int index) const;
   LogWithSignParamMatrix *getLogWithSignParamMatrix(const int index) const;
   
-  IntParam *getIntParam(const int index) const{
+  template<class IntType>
+  IntTypeParam<IntType> *getIntTypeParam(const int index) const{
     /* wrong index */ 
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
-    IntParam *pointer=dynamic_cast<IntParam *>(paramList[index]);
+    IntTypeParam<IntType> *pointer=dynamic_cast<IntTypeParam<IntType> *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
-  }  
+  }
+
+  IntParam *getIntParam(const int index) const{
+    return getIntTypeParam<int>(index);  
+  }
   
-  void addIntParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,PluginParameters_PluginIntType *const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1,bool forceUniqueXmlName=true){
+  template<class IntType>
+  void addIntTypeParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,IntType *const value, const IntType minValue=0,const IntType maxValue=1,bool forceUniqueXmlName=true){
     Param *param;
-    addParam(paramIndex,param=new IntParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
+    addParam(paramIndex,param=new IntTypeParam<IntType>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
-  }    
+  }
 
-  void addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), bool saveOnlySizedArrayFlag=true);  
+  void addIntParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,int *const value, const int minValue=0,const int maxValue=1,bool forceUniqueXmlName=true){
+    addIntTypeParam<int>(paramIndex,name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,forceUniqueXmlName);
+  }
 
-  void addIntParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int* const values,int *const size,const int maxSize,const int minValue=(int)(0),const int maxValue=(int)(1), bool saveOnlySizedArrayFlag=true);  
+
+  void addIntParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const int minValue=(int)(0),const int maxValue=(int)(1), const bool saveOnlySizedMatrixFlag=true);
   
   IntParamArray *getIntParamArray(const int index) const;
   IntParamMatrix *getIntParamMatrix(const int index) const;
@@ -426,8 +488,8 @@ public:
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
         You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getFloatParam(), getLogParam(), 
-        getLogParam(), getIntParam(), getIntParam(), 
+        getStringParam(), getFloatParam(), getLogParam(), 
+        getIntParam(), 
         getBoolParam()  */
     BoolParam *pointer=dynamic_cast<BoolParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
@@ -666,15 +728,17 @@ public:
     }
   }
   
-  ParamGroup(const String &name):
+  ParamGroup(const String &name):    
     nonSavedChanges(true),
     parentParamGroup(nullptr),
     numAutomatedParams(0),
     numNonAutomatedParams(0),    
     name(name),
     xmlName(name),
+    xmlNameInGetParameterName(true),
     pluginProcessor(nullptr),
-    saveXmlOptionCopy(nullptr)
+    undoManager(nullptr),   
+    saveXmlOptionCopy(nullptr)   
     {
       #if JUCE_DEBUG
       // we should be able to use this name as an XML attribute name
@@ -701,7 +765,7 @@ public:
 
 /** ParamGroup base class for array of Params. */
 class ParamArray : public ParamGroup{       
-  PluginParameters_PluginIntType *const size;
+  int *const size;
 
 protected:      
   const int maxSize;
@@ -715,7 +779,7 @@ public:
   virtual void initParameters() = 0;
   
   /** Returns the size of the "visible" array */
-  PluginParameters_PluginIntType getSize() const{
+  int getSize() const{
     if (size==nullptr)
       return maxSize;
     else
@@ -723,7 +787,7 @@ public:
   }
   
   /** Returns the maximum (allocated) size of the array */
-  PluginParameters_PluginIntType getMaxSize() const{
+  int getMaxSize() const{
     return maxSize;
   }
   
@@ -902,18 +966,18 @@ public:
   updateOnlySizedArrayFlag(updateOnlySizedArrayFlag)
   {
     saveXmlOptionCopy=new bool[maxSize];
-  }  
-  
-  virtual ~ParamArray(){}
+  }
+
+  virtual ~ParamArray() {}
   
 };
 
 /** ParamGroup containing an array of FloatParams. */
 class FloatParamArray : public ParamArray{
 private:
-  PluginParameters_PluginFloatType* const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float* const values;
+  float minValue;
+  float maxValue;
 
 public: 
   void initParameters() override{
@@ -923,30 +987,30 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginParameters_PluginFloatType getValue(int i) const{
+  float getValue(int i) const{
     if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getFloatParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getFloatParam(i)->setMax(maxValueArg);
   }
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg) const{
-    return ParamGroup::getFloatParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getFloatParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
-  FloatParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  FloatParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
@@ -957,9 +1021,9 @@ public:
 /** ParamGroup containing an array of LogParams. */
 class LogParamArray : public ParamArray{
 private:
-  PluginParameters_PluginFloatType* const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float* const values;
+  float minValue;
+  float maxValue;
   
 public: 
   void initParameters() override{
@@ -969,30 +1033,30 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginParameters_PluginFloatType getValue(int i) const{
+  float getValue(int i) const{
     if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogParam(i)->setMax(maxValueArg);
   }
    
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg) const{
-    return ParamGroup::getLogParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogParam(i)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
-  LogParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
@@ -1003,9 +1067,9 @@ public:
 /** ParamGroup containing an array of LogWith0Params. */
 class LogWith0ParamArray : public ParamArray{
 private:
-  PluginParameters_PluginFloatType* const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float* const values;
+  float minValue;
+  float maxValue;
 
 public:   
   void initParameters() override{
@@ -1015,30 +1079,30 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginParameters_PluginFloatType getValue(int i) const{
+  float getValue(int i) const{
     if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }    
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWith0Param(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWith0Param(i)->setMax(maxValueArg);
   }
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg) const{
-    return ParamGroup::getLogWith0Param(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogWith0Param(i)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
-  LogWith0ParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogWith0ParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
@@ -1049,9 +1113,9 @@ public:
 /** ParamGroup containing an array of LogWithSignParams. */
 class LogWithSignParamArray : public ParamArray{
 private:
-  PluginParameters_PluginFloatType* const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float* const values;
+  float minValue;
+  float maxValue;
 
 public: 
   void initParameters() override{
@@ -1061,30 +1125,30 @@ public:
   }
 
   /** Returns the value of position i in the array */
-  PluginParameters_PluginFloatType getValue(int i) const{
+  float getValue(int i) const{
     if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }
  
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWithSignParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getLogWithSignParam(i)->setMax(maxValueArg);
   }
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg) const{
-    return ParamGroup::getLogWithSignParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogWithSignParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
-  LogWithSignParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType* const values,int *const size,const int maxSize,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), bool saveOnlySizedArrayFlag=true):
+  LogWithSignParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
@@ -1095,9 +1159,9 @@ public:
 /** ParamGroup containing an array of IntParams. */
 class IntParamArray : public ParamArray{
 private:
-  PluginParameters_PluginIntType* const values;
-  PluginParameters_PluginIntType minValue;
-  PluginParameters_PluginIntType maxValue;
+  int* const values;
+  int minValue;
+  int maxValue;
 
 public: 
   void initParameters() override{
@@ -1107,30 +1171,30 @@ public:
   } 
 
   /** Returns the value of position i in the array */
-  PluginParameters_PluginIntType getValue(int i) const{
+  int getValue(int i) const{
     if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
       return values[i];
     else return 0;
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginIntType minValueArg){
+  void setMin(int minValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getIntParam(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginIntType maxValueArg){
+  void setMax(int maxValueArg){
     for (int i=0;i<ParamArray::getMaxSize();i++)
       ParamGroup::getIntParam(i)->setMax(maxValueArg);
   }
 
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const int valueArg) const{
-    return ParamGroup::getIntParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const int valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getIntParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
-  IntParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType* const values,int *const size,const int maxSize,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), bool saveOnlySizedArrayFlag=true):
+  IntParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int* const values,int *const size,const int maxSize,const int minValue=(int)(0),const int maxValue=(int)(1), bool saveOnlySizedArrayFlag=true):
   ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
   values(values),
   minValue(minValue),
@@ -1157,9 +1221,9 @@ public:
     else return 0;
   }    
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const bool valueArg) const{
-    return ParamGroup::getBoolParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const bool valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getBoolParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
   BoolParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true):
@@ -1188,9 +1252,9 @@ public:
     else return String::empty;
   }    
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,const String valueArg) const{
-    return ParamGroup::getStringParam(i)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,const String valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getStringParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
   StringParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true):
@@ -1210,8 +1274,8 @@ public:
 /** ParamGroup base class for a matrix of Params. */
 class ParamMatrix : public ParamGroup{
 protected:
-  PluginParameters_PluginIntType *const numRows;
-  PluginParameters_PluginIntType *const numCols;
+  int *const numRows;
+  int *const numCols;
   const int maxRows;
   const int maxCols;
   const bool registerAtHostFlag;
@@ -1224,7 +1288,7 @@ public:
   virtual void initParameters() = 0;
   
   /** Returns the number of rows of the "visible" array */
-  PluginParameters_PluginIntType getNumRows() const{
+  int getNumRows() const{
     if (numRows!=nullptr)
       return *numRows;
     else
@@ -1232,7 +1296,7 @@ public:
   }
   
   /** Returns the number of columns of the "visible" array */
-  PluginParameters_PluginIntType getNumCols() const{
+  int getNumCols() const{
     if (numCols!=nullptr)
       return *numCols;
     else 
@@ -1240,18 +1304,18 @@ public:
   }
   
   /** Returns the maximum (allocated) size of the array */
-  PluginParameters_PluginIntType getMaxRows() const{
+  int getMaxRows() const{
     return maxRows;
   }
   
-  PluginParameters_PluginIntType getMaxCols() const{
+  int getMaxCols() const{
     return maxCols;
   }  
   
   /** Returns the minimum range of each parameter in the matrix */
   const double getMin() const{
     if (((numCols!=nullptr && *numCols>0)||maxCols>0) && ((numRows!=nullptr && *numRows>0)||maxRows>0))
-      return getParam(0)->getMin();
+      return getParam(0,0)->getMin();
     else
       return 0;
   }
@@ -1259,21 +1323,26 @@ public:
   /** Returns the maximum range of each parameter in the matrix */
   const double getMax() const{
     if (((numCols!=nullptr && *numCols>0)||maxCols>0) && ((numRows!=nullptr && *numRows>0)||maxRows>0))
-      return getParam(0)->getMax();
+      return getParam(0,0)->getMax();
     else
       return 0;
   }	
   
+  Param *getParam(const int row,const int col) const{
+    const int index=row*getNumCols()+col;
+    return ParamGroup::getParam(index);
+  }
+
   /** Update the host and the UI about all parameters in this row */
   void updateHostAndUiRow(int row,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR){
     for (int col=0;col<getNumCols();col++)
-      getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
+      getParam(row,col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
   
   /** Update the host and the UI about all parameters in this column */
   void updateHostAndUiCol(int col,bool forceRunAfterParamChange,UpdateFromFlags updateFromFlag=UPDATE_FROM_PROCESSOR){
     for (int row=0;row<getNumRows();row++)
-      getParam(row*getNumCols()+col)->updateHost(forceRunAfterParamChange,updateFromFlag);
+      getParam(row,col)->updateHost(forceRunAfterParamChange,updateFromFlag);
   }
 
   virtual void updateUi(const bool request,const bool applyRecursively){
@@ -1282,7 +1351,7 @@ public:
 
     for (int i=0;i<rows;i++)
       for (int j=0;j<cols;j++)
-        getParam(i*maxCols+j)->updateUi(request);
+        getParam(i,j)->updateUi(request);
     
     if (applyRecursively){     
       for (int g=0;g<getNumParamGroups();g++)
@@ -1302,11 +1371,11 @@ public:
       switch(xmlType){
         case SESSION:
           for (int i=0;i<ParamMatrix::maxRows*ParamMatrix::maxCols;i++)
-            saveXmlOptionCopy[i]=getParam(i)->getOption(Param::saveToSession);
+            saveXmlOptionCopy[i]=ParamGroup::getParam(i)->getOption(Param::saveToSession);
           break;
         case PRESET:
           for (int i=0;i<ParamMatrix::maxRows*ParamMatrix::maxCols;i++)
-            saveXmlOptionCopy[i]=getParam(i)->getOption(Param::saveToPresets);
+            saveXmlOptionCopy[i]=ParamGroup::getParam(i)->getOption(Param::saveToPresets);
           break;
         default:
           break;
@@ -1318,14 +1387,14 @@ public:
         case SESSION:
           for (int i=0;i<ParamMatrix::getNumRows();i++){        
             for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
-              getParam(ParamMatrix::maxCols*i+j)->setOption(Param::saveToSession,false);
+              getParam(i,j)->setOption(Param::saveToSession,false);
             }        
           }
           break;
         case PRESET:
           for (int i=0;i<ParamMatrix::getNumRows();i++){        
             for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
-              getParam(ParamMatrix::maxCols*i+j)->setOption(Param::saveToPresets,false);
+              getParam(i,j)->setOption(Param::saveToPresets,false);
             }        
           }
           break;
@@ -1340,11 +1409,11 @@ public:
       switch(xmlType){
         case SESSION:
           for (int i=0;i<maxRows*maxCols;i++)
-            getParam(i)->setOption(Param::saveToSession,saveXmlOptionCopy[i]);
+            ParamGroup::getParam(i)->setOption(Param::saveToSession,saveXmlOptionCopy[i]);
           break;
         case PRESET:
           for (int i=0;i<maxRows*maxCols;i++)
-            getParam(i)->setOption(Param::saveToPresets,saveXmlOptionCopy[i]);
+            ParamGroup::getParam(i)->setOption(Param::saveToPresets,saveXmlOptionCopy[i]);
           break;
         default:
           break;
@@ -1366,7 +1435,7 @@ public:
 
     for (int i=0;i<updateRowsSize;i++)
       for (int j=0;j<updateColsSize;j++)
-        getParam(i*maxCols+j)->updateProcessorFromDefaultXml();
+        getParam(i,j)->updateProcessorFromDefaultXml();
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
@@ -1390,7 +1459,7 @@ public:
 
     for (int i=0;i<updateRowsSize;i++)
       for (int j=0;j<updateColsSize;j++)
-        getParam(i*maxCols+j)->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi);
+        getParam(i,j)->updateProcessorHostAndUiFromDefaultXml(forceRunAfterParamChange,forceUpdateUi);
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
@@ -1414,7 +1483,7 @@ public:
 
     for (int i=0;i<updateRowsSize;i++)
       for (int j=0;j<updateColsSize;j++)
-        getParam(i*maxCols+j)->updateProcessorFromXml();
+        getParam(i,j)->updateProcessorFromXml();
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
@@ -1438,7 +1507,7 @@ public:
 
     for (int i=0;i<updateRowsSize;i++)
       for (int j=0;j<updateColsSize;j++)
-        getParam(i*maxCols+j)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi);
+        getParam(i,j)->updateProcessorHostAndUiFromXml(forceUpdateHost,forceUpdateUi);
       
     if (applyRecursively){
       for (int i=0;i<getNumParamGroups();i++)
@@ -1462,16 +1531,16 @@ public:
   {
     saveXmlOptionCopy=new bool[maxCols*maxRows];
   }
-  
-  virtual ~ParamMatrix(){}
+
+  virtual ~ParamMatrix() {}
 };
 
 /** ParamGroup containing a matrix of FloatParams. */
 class FloatParamMatrix : public ParamMatrix{
 private:
-  PluginParameters_PluginFloatType** const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float** const values;
+  float minValue;
+  float maxValue;
 
 public: 
   void initParameters() override{
@@ -1487,7 +1556,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginParameters_PluginFloatType getValue(int i,int j) const{
+  float getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
         && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
       return values[i][j];
@@ -1495,25 +1564,25 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
   }
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg) const{
-    return ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
-  FloatParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  FloatParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
@@ -1524,11 +1593,11 @@ public:
 /** ParamGroup containing a matrix of LogParams. */
 class LogParamMatrix : public ParamMatrix{
 private:
-  PluginParameters_PluginFloatType** const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float** const values;
+  float minValue;
+  float maxValue;
   bool sparseCompressionFlag; 
-  PluginParameters_PluginFloatType mostProbableValue;
+  float mostProbableValue;
 
 public: 
   void initParameters() override{
@@ -1544,7 +1613,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginParameters_PluginFloatType getValue(int i,int j) const{
+  float getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
         && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
       return values[i][j];
@@ -1552,25 +1621,25 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);     
   }
 
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg) const{
-    return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
 
-  LogParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
@@ -1581,11 +1650,11 @@ public:
 /** ParamGroup containing a matrix of LogWith0Params. */
 class LogWith0ParamMatrix : public ParamMatrix{
 private:
-  PluginParameters_PluginFloatType** const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float** const values;
+  float minValue;
+  float maxValue;
   bool sparseCompressionFlag; 
-  PluginParameters_PluginFloatType mostProbableValue;
+  float mostProbableValue;
 
 public: 
   void initParameters() override{
@@ -1601,7 +1670,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginParameters_PluginFloatType getValue(int i,int j) const{
+  float getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
         && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
       return values[i][j];
@@ -1609,25 +1678,25 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
   }
 
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg) const{
-    return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
   }
   
-  LogWith0ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogWith0ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
@@ -1638,11 +1707,11 @@ public:
 /** ParamGroup containing a matrix of LogWithSignParams. */
 class LogWithSignParamMatrix : public ParamMatrix{
 private:
-  PluginParameters_PluginFloatType** const values;
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+  float** const values;
+  float minValue;
+  float maxValue;
   bool sparseCompressionFlag; 
-  PluginParameters_PluginFloatType mostProbableValue;
+  float mostProbableValue;
 
 public: 
   void initParameters() override{
@@ -1658,7 +1727,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginParameters_PluginFloatType getValue(int i,int j) const{
+  float getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
         && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
       return values[i][j];
@@ -1666,25 +1735,25 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginFloatType minValueArg){
+  void setMin(float minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginFloatType maxValueArg){
+  void setMax(float maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
   }
 
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg) const{
-    return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
-  LogWithSignParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1), const bool saveOnlySizedMatrixFlag=true):
+  LogWithSignParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
@@ -1695,9 +1764,9 @@ public:
 /** ParamGroup containing a matrix of IntParams. */
 class IntParamMatrix : public ParamMatrix{
 private:
-  PluginParameters_PluginIntType** const values;  
-  PluginParameters_PluginIntType minValue;
-  PluginParameters_PluginIntType maxValue;
+  int** const values;  
+  int minValue;
+  int maxValue;
 
 public: 
   void initParameters() override{
@@ -1713,7 +1782,7 @@ public:
   }
 
   /** Returns the value of position i,j in the array */
-  PluginParameters_PluginIntType getValue(int i,int j) const{
+  int getValue(int i,int j) const{
     if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
         && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
       return values[i][j];
@@ -1721,25 +1790,25 @@ public:
   }  
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(PluginParameters_PluginIntType minValueArg){
+  void setMin(int minValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(PluginParameters_PluginIntType maxValueArg){
+  void setMax(int maxValueArg){
     for (int i=0;i<ParamMatrix::getMaxRows();i++)
       for (int j=0;j<ParamMatrix::getMaxCols();j++)
         ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);
   }
 
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const int valueArg) const{
-    return ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const int valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
-  IntParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const PluginParameters_PluginIntType minValue=(PluginParameters_PluginIntType)(0),const PluginParameters_PluginIntType maxValue=(PluginParameters_PluginIntType)(1), const bool saveOnlySizedMatrixFlag=true):
+  IntParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const int minValue=(int)(0),const int maxValue=(int)(1), const bool saveOnlySizedMatrixFlag=true):
   ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   values(values),
   minValue(minValue),
@@ -1774,9 +1843,9 @@ public:
     else return 0;
   }   
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const bool valueArg) const{
-    return ParamGroup::getBoolParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const bool valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getBoolParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
   BoolParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true):
@@ -1811,9 +1880,9 @@ public:
     else return String::empty;
   }   
  
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const String valueArg) const{
-    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(int i,int j,const String valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
+    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
   } 
   
   StringParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true):

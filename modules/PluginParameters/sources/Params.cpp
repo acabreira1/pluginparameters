@@ -6,17 +6,8 @@
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the 
-   GNU General Public License (Version 2), as published by the Free Software 
-   Foundation. A copy of the license is included in the JUCE distribution, or 
-   can be found online at www.gnu.org/licenses.
-
-   PluginParameters is distributed in the hope that it will be useful, but 
-   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-   details.
-
-  ------------------------------------------------------------------------------
+   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
    To release a closed-source product which uses PluginParameters, commercial 
    licenses are available. For more information, please send me a PM (Personal 
@@ -29,31 +20,135 @@
 #include "PluginProcessor.h"
 #include "Params.h"
 
+class UpdateStringParamAction : public UndoableAction{
+  public:
+    UpdateStringParamAction( StringParam* const stringParam,
+                    const String &newValue,
+                    const String &oldValue,
+                    UpdateFromFlags updateFromFlag)
+      :stringParam(stringParam),
+       newValue(newValue),
+       oldValue(oldValue),
+       updateFromFlag(updateFromFlag),
+       firstPerform(true)
+    { jassert(stringParam!=nullptr); }
+
+    bool perform(){
+      //no need to updateUi() first (because it comes from an UI update)
+      if (firstPerform){
+        stringParam->updateProcessorAndHostFromUi(newValue,nullptr,false,updateFromFlag);
+        firstPerform=false;
+      } else {
+        //result of a redo action
+        stringParam->updateProcessorAndHostFromUi(newValue,nullptr,false,UPDATE_FROM_PROCESSOR);
+        stringParam->updateUi();
+      }
+      return true;
+    }
+
+    bool undo(){
+      stringParam->updateProcessorAndHostFromUi(oldValue,nullptr,false,UPDATE_FROM_PROCESSOR);
+      stringParam->updateUi();
+      return true;
+    }
+
+    int getSizeInUnits(){
+      return (int) sizeof (*this);
+    }
+
+    Param *getParam() const{
+      return static_cast<Param*>(stringParam);
+    }
+
+  private:
+    StringParam *const stringParam;
+    const String newValue;
+    const String oldValue;
+    UpdateFromFlags updateFromFlag;
+    bool firstPerform;
+
+  JUCE_DECLARE_NON_COPYABLE (UpdateStringParamAction)
+};
+
+class UpdateParamFromUiAction: public UndoableAction{
+  public:
+    UpdateParamFromUiAction( Param * const param,
+                    PluginProcessor *const pluginProcessor,
+                    const PluginParameters_HostFloatType newHostValue,
+                    const PluginParameters_HostFloatType oldHostValue)
+      :param(param),
+       pluginProcessor(pluginProcessor),
+       newHostValue(newHostValue),
+       oldHostValue(oldHostValue),
+       firstPerform(true)
+    {}
+
+    bool perform(){
+      if (pluginProcessor==nullptr) return false;  
+      //no need to updateUi() first (because it comes from an UI update)
+      if (firstPerform){
+        pluginProcessor->updateProcessorHostAndUi(param,newHostValue,UPDATE_FROM_UI,1,0); 
+        firstPerform=false;
+      } else {
+        //result of a redo action
+        pluginProcessor->updateProcessorHostAndUi(param,newHostValue,UPDATE_FROM_PROCESSOR,1,1); 
+      }
+      return true;
+    }
+
+    bool undo(){
+      if (pluginProcessor==nullptr) return false;  
+      pluginProcessor->updateProcessorHostAndUi(param,oldHostValue,UPDATE_FROM_PROCESSOR,1,1); 
+      return true;
+    }
+
+    int getSizeInUnits(){
+      return (int) sizeof (*this);
+    }
+
+    Param *getParam() const{
+      return param;
+    }
+
+  private:
+    Param *const param;
+    PluginProcessor *const pluginProcessor;
+    const PluginParameters_HostFloatType newHostValue;
+    const PluginParameters_HostFloatType oldHostValue;
+    bool firstPerform;
+
+  JUCE_DECLARE_NON_COPYABLE (UpdateParamFromUiAction)
+};
+
 /*
 Only methods who implicate a circular reference and therefore
 can't be written in the header file are placed here.
 */
 
-//protected
-
-void Param::updateProcessorHostFromUi(PluginParameters_HostFloatType newHostValue){
-  if (pluginProcessor==nullptr) return;  
-  updateFromFlag=UPDATE_FROM_UI;
-  pluginProcessor->updateProcessorHostAndUi(this,newHostValue,1,0); 
-  resetUpdateFromFlag();
-}
-
 //public
 
-void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdateUi){      
+void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){     
+  if (pluginProcessor==nullptr) return;
+  pluginProcessor->updateProcessorHostAndUi(this,newHostValue,updateFromFlagArg,1,1);    
+}
+
+void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
+  if (pluginProcessor==nullptr) return;
+  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),updateFromFlagArg,(runAfterParamChange)?2:0,2);
+}
+
+void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
+  if (pluginProcessor==nullptr) return;
+  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),updateFromFlagArg,(runAfterParamChange)?2:0,0);
+}
+
+void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdateUi){
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromXml()){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
-      resetUpdateFromFlag();
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1); 
     } else if (forceUpdateHost){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
-      resetUpdateFromFlag();
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
     } else if (forceUpdateUi){
       updateUi(true);
     }   
@@ -64,36 +159,24 @@ void Param::updateProcessorHostAndUiFromDefaultXml(bool forceUpdateHost,bool for
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromDefaultXml()){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);
-      resetUpdateFromFlag();
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
     } else if (forceUpdateHost){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,0,(forceUpdateUi)?2:1);    
-      resetUpdateFromFlag();
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
     } else if (forceUpdateUi){
       updateUi(true);
     }   
   }
 }
 
-void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){     
+void Param::updateProcessorAndHostFromNormUi(PluginParameters_HostFloatType newHostValue, UndoManager *const undoManager, const bool dontCreateNewUndoTransaction, UpdateFromFlags updateFromFlag){
   if (pluginProcessor==nullptr) return;
-  updateFromFlag=updateFromFlagArg;     
-  pluginProcessor->updateProcessorHostAndUi(this,newHostValue,1,1);    
-  resetUpdateFromFlag();  
-}
-
-void Param::updateHostAndUi(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
-  if (pluginProcessor==nullptr) return;
-  updateFromFlag=updateFromFlagArg;
-  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),(runAfterParamChange)?2:0,2);    
-  resetUpdateFromFlag();
-}
-
-void Param::updateHost(bool runAfterParamChange, UpdateFromFlags updateFromFlagArg){      
-  if (pluginProcessor==nullptr) return;
-  updateFromFlag=updateFromFlagArg;
-  pluginProcessor->updateProcessorHostAndUi(this,hostGet(),(runAfterParamChange)?2:0,0);    
-  resetUpdateFromFlag();
+  if (undoManager==nullptr){
+    pluginProcessor->updateProcessorHostAndUi(this,newHostValue,updateFromFlag,1,0); 
+  } else {
+    if (!dontCreateNewUndoTransaction)
+      undoManager->beginNewTransaction("Param: '"+getName()+ "' changed.");
+    undoManager->perform(new UpdateParamFromUiAction(this,pluginProcessor,newHostValue,hostGet()));
+  }
 }
 
 void Param::beginChangeGesture(){
@@ -106,114 +189,26 @@ void Param::endChangeGesture(){
   pluginProcessor->endParameterChangeGesture(globalIndex);
 }
 
-void StringParam::updateProcessorAndHostFromUi(const String valueArg) {    
+void StringParam::updateProcessorAndHostFromUi(const String valueArg, UndoManager *const undoManager, const bool dontCreateNewUndoTransaction, UpdateFromFlags updateFromFlag) {    
   if (*value!=valueArg){  
-    virtualHostValue=valueArg;
-    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));   
-    //this parameter can't be automated (maped as a PluginParameters_HostFloatType)
-    //so hostSet doesn't do anything apart from updating *value from virtualHostValue
-    //the host always is notified with 0 but this is bogus since StrinParams can not be 
-    //registered at the host
+    if (undoManager==nullptr){
+      virtualHostValue=valueArg;
+      Param::updateProcessorAndHostFromNormUi((PluginParameters_HostFloatType)(0.f),undoManager,dontCreateNewUndoTransaction,updateFromFlag);   
+      //this parameter can't be automated (maped as a PluginParameters_HostFloatType)
+      //so hostSet doesn't do anything apart from updating *value from virtualHostValue
+      //the host always is notified with 0 but this is bogus since StrinParams can not be 
+      //registered at the host
+    } else {
+      if (dontCreateNewUndoTransaction){
+        Array<const UndoableAction*> undoableActions;
+        undoManager->getActionsInCurrentTransaction(undoableActions);
+        const UpdateParamFromUiAction *previousAction=dynamic_cast<const UpdateParamFromUiAction*>(undoableActions.getLast());
+        if (previousAction==nullptr || previousAction->getParam()!=this)
+          undoManager->beginNewTransaction("Param: '"+getName()+ "' changed.");
+      } else {
+        undoManager->beginNewTransaction("Param: '"+getName()+ "' changed.");
+      }
+      undoManager->perform(new UpdateStringParamAction(this,valueArg,*value,updateFromFlag));
+    }      
   }     
-}
-
-void FloatParam::updateProcessorAndHostFromUi(const double valueArg){  
-  if (maxValue==minValue)
-    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
-  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
-  if (newHostValue<0)
-    newHostValue=(PluginParameters_HostFloatType)(0.f);
-  else if (newHostValue>1)
-    newHostValue=(PluginParameters_HostFloatType)(1.f);
-    
-  Param::updateProcessorHostFromUi(newHostValue);
-}
-
-void LogParam::updateProcessorAndHostFromUi(const double valueArg){
-  
-  if (maxLogValue==minLogValue)
-    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
-  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minLogValue)/(maxLogValue-minLogValue);
-  if (newHostValue<0)
-    newHostValue=(PluginParameters_HostFloatType)(0.f);
-  else if (newHostValue>1)
-    newHostValue=(PluginParameters_HostFloatType)(1.f);
-  
-  Param::updateProcessorHostFromUi(newHostValue);  
-}
-
-void LogWith0Param::updateProcessorAndHostFromUi(const double valueArg){  
-  if (maxLogValue==minLogValue){ //do not let idiots make this crash
-    if (valueArg>0)
-      Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
-    else
-      Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
-  }
-  PluginParameters_HostFloatType newHostValue; 
-  //using the host parameter scale of [0,1]
-  //store positive log value above 0.05 
-  //all values in the range of [0,minLogValue] will be stored as 0
-  //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)
-  
-  //[minLogValue-0.05,minLogValue] represent -inf in the UI
-  if (valueArg>=minLogValue){      
-    newHostValue=(PluginParameters_HostFloatType)(0.05+(valueArg-minLogValue)*0.95/(maxLogValue-minLogValue));
-  } else {
-    newHostValue=(PluginParameters_HostFloatType)(0);
-  }           
-  if (newHostValue<0)
-    newHostValue=(PluginParameters_HostFloatType)(0.f);
-  else if (newHostValue>1)
-    newHostValue=(PluginParameters_HostFloatType)(1.f);
-  
-  Param::updateProcessorHostFromUi(newHostValue);  
-}
-
-void LogWithSignParam::updateProcessorAndHostFromUi(const double valueArg){
-  if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
-      if (valueArg>0)
-        Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(1.f)); //stupid question, stupid answer
-      else
-        Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f)); //stupid question, stupid answer
-    }  
-  PluginParameters_HostFloatType newHostValue; 
-  //using the host parameter scale of [0,1]
-  //store positive log value above 0.55 and negative log values below 0.45
-  //all values in the range of [-minLogValue,minLogValue] will be stored as 0
-  //at 0.5 (a margin of 0.05 should be safe to avoid confusing 0 with the former)  
-  
-  //in the UI we show a positive range of [0.05,0.05+maxPosLogValue-minAbsLogValue]
-  //and a negative range of [-(0.05+maxNegLogValue-minAbsLogValue),-0.05]
-  //(-0.05,0.05) represents -inf     
-  if (valueArg>=0.05){        
-    newHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(valueArg-0.05)*(1-centerValue-0.05)/(maxPosLogValue-minAbsLogValue));
-  } else if (valueArg<=-0.05){
-    newHostValue=(PluginParameters_HostFloatType)(centerValue-0.05+(valueArg+0.05)*(centerValue-0.05)/(maxNegLogValue-minAbsLogValue));
-  } else {
-    newHostValue=centerValue;
-  }       
-  if (newHostValue<0)
-    newHostValue=(PluginParameters_HostFloatType)(0.f);
-  else if (newHostValue>1)
-    newHostValue=(PluginParameters_HostFloatType)(1.f);
-  
-  Param::updateProcessorHostFromUi(newHostValue);  
-}
-
-void IntParam::updateProcessorAndHostFromUi(const int valueArg){  
-  if (maxValue==minValue)
-    Param::updateProcessorHostFromUi((PluginParameters_HostFloatType)(0.f));
-  PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(valueArg-minValue)/(maxValue-minValue);
-  if (newHostValue<0)
-    newHostValue=(PluginParameters_HostFloatType)(0.f);
-  else if (newHostValue>1)
-    newHostValue=(PluginParameters_HostFloatType)(1.f);
-  
-  Param::updateProcessorHostFromUi(newHostValue);  
-}
-
-void BoolParam::updateProcessorAndHostFromUi(const bool valueArg){  
-  PluginParameters_HostFloatType newHostValue=(valueArg)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
-  
-  Param::updateProcessorHostFromUi(newHostValue);  
 }

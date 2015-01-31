@@ -6,17 +6,8 @@
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the 
-   GNU General Public License (Version 2), as published by the Free Software 
-   Foundation. A copy of the license is included in the JUCE distribution, or 
-   can be found online at www.gnu.org/licenses.
-
-   PluginParameters is distributed in the hope that it will be useful, but 
-   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-   details.
-
-  ------------------------------------------------------------------------------
+   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
    To release a closed-source product which uses PluginParameters, commercial 
    licenses are available. For more information, please send me a PM (Personal 
@@ -34,17 +25,16 @@
   #define PluginParameters_Epsilon (PluginParameters_HostFloatType)1e-6
 #endif
 
+#ifndef PluginParameters_ErrorLogger
+  #define PluginParameters_ErrorLogger 0
+#endif
+
 #ifndef DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE
   #define DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE 0
 #endif
 
 #ifndef DEFINE_DEFAULT_HOST_TYPES
   typedef float PluginParameters_HostFloatType;
-#endif
-
-#ifndef DEFINE_DEFAULT_PLUGIN_TYPES
-  typedef float PluginParameters_PluginFloatType;
-  typedef int PluginParameters_PluginIntType;
 #endif
 
 #ifndef PLUGINPARAMETERS
@@ -66,7 +56,7 @@ namespace PluginParameters {
   #endif
   #ifndef __PLUGINPARAMETERS_PLUGINPROCESSOR_HEADER__
   #include "sources/PluginProcessor.h"
-  #endif
+  #endif  
 }
 
 #if ! DONT_SET_USING_PLUGINPARAMETERS_NAMESPACE

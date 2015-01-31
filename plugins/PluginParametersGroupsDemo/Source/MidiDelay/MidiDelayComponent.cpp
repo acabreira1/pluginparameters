@@ -162,13 +162,13 @@ void MidiDelayComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == delaySlider)
     {
         //[UserSliderCode_delaySlider] -- add your slider handling code here..
-        midiDelay->getFloatParam(MidiDelay::delayIndex)->updateProcessorAndHostFromUi(delaySlider->getValue());
+        midiDelay->getFloatParam(MidiDelay::delayIndex)->updateProcessorAndHostFromUi((float)delaySlider->getValue());
         //[/UserSliderCode_delaySlider]
     }
     else if (sliderThatWasMoved == feedbackSlider)
     {
         //[UserSliderCode_feedbackSlider] -- add your slider handling code here..
-        midiDelay->getFloatParam(MidiDelay::feedbackIndex)->updateProcessorAndHostFromUi(feedbackSlider->getValue());
+        midiDelay->getFloatParam(MidiDelay::feedbackIndex)->updateProcessorAndHostFromUi((float)feedbackSlider->getValue());
         //[/UserSliderCode_feedbackSlider]
     }
 

@@ -1,17 +1,16 @@
 {
   "id":             "PluginParameters",
   "name":           "PluginParameters",
-  "version":        "1.1.7",
+  "version":        "1.1.8",
   "description":    "Utilities to manage automatically different types of audio plugin parameters",
   "website":        "http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters",
   "license":        "GPL/Commercial",
 
   "dependencies":   [  { "id": "juce_audio_basics",   "version": "matching" }, 
-                                { "id": "juce_audio_plugin_client",   "version": "matching" }, 
                                 { "id": "juce_audio_utils",   "version": "matching" },
                                 { "id": "juce_core",   "version": "matching" }, 
-                                { "id": "juce_data_structures",   "version": "matching" },                               
-                                { "id": "juce_events",   "version": "matching" },                              
+                                { "id": "juce_data_structures",   "version": "matching" },
+                                { "id": "juce_events",   "version": "matching" },
                                 { "id": "juce_audio_processors",   "version": "matching" } ],
 
   "include":        "PluginParameters.h",

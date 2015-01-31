@@ -6,17 +6,8 @@
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the 
-   GNU General Public License (Version 2), as published by the Free Software 
-   Foundation. A copy of the license is included in the JUCE distribution, or 
-   can be found online at www.gnu.org/licenses.
-
-   PluginParameters is distributed in the hope that it will be useful, but 
-   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-   details.
-
-  ------------------------------------------------------------------------------
+   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
    To release a closed-source product which uses PluginParameters, commercial 
    licenses are available. For more information, please send me a PM (Personal 
@@ -71,7 +62,9 @@ enum XmlType{
 
 /** Base class for all parameters. Distinctions by type are made below. */
 class Param{
-private:            
+private:
+  JUCE_DECLARE_NON_COPYABLE (Param)
+
   /** This flag determines if a parameter will be automated in the host.  */  
   const bool registerAtHostFlag;
 
@@ -84,8 +77,6 @@ private:
   friend class ParamGroup;
 
   int globalIndex;
-
-  UpdateFromFlags updateFromFlag;    
 
   /** Pointer to the AudioProcessor class to be able notify parameter changes to the 
       host with PluginProcessor::updateHostAndUi(...) */
@@ -123,7 +114,7 @@ public:
                                         are called before and after (respectively) of each host update.
                                         Otherwise you should call them manually (e.g. at sliderDragStarted() 
                                         and sliderDragEnded()). Without them hosts like Logic won't receive the 
-                                        value updates.
+                                        value updates.    
   */
   enum Options{
     loadFromSession=0,
@@ -134,6 +125,7 @@ public:
     forceRunAfterParamChangeInHost,
     createThreadForParamChange,
     autoChangeGestures,
+    automationUndos,
     numOptions
   };
 
@@ -144,16 +136,7 @@ protected:
   /** if true readXml(...) tells updateProcessorFromXml(...) to update *value according to xmlValue */
   bool updateXml;
 
-  PluginParameters_HostFloatType xmlHostValue;        
-
-  /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
-      and skip the UI update */
-  void updateProcessorHostFromUi(PluginParameters_HostFloatType newValue);  
-
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  Param (const Param&);
-  Param& operator=(const Param &other);
+  PluginParameters_HostFloatType xmlHostValue;  
 
 public:
   /** Check if a specific setting is set. Refer to Param::Options to see what options are available. */
@@ -218,16 +201,6 @@ public:
       Call updateProcessorHostAndUiFromXml(...) to update it. */
   virtual void readXml(XmlElement *xml, XmlType xmlType) = 0;
 
-  /** Returns the current updateFrom flag */
-  UpdateFromFlags getUpdateFromFlag(){
-    return updateFromFlag;
-  }  
-    
-  /** Reset flags used in runAfterParamChange(...) to determine the origin and reason of the update */    
-  void resetUpdateFromFlag(){
-    updateFromFlag=UPDATE_FROM_HOST;    
-  }    
-
   /** Returns the minimum range of this parameter */  
   virtual const double getMin() const = 0;
     
@@ -270,6 +243,10 @@ public:
       defaultValue) and notify the host and the UI (if it has changed). */
   void updateProcessorHostAndUiFromDefaultXml(bool forceRunAfterParamChange=false,bool forceUpdateUi=false);
 
+  /** Update the host with a normalized value, set the UpdateFrom flag to UPDATE_FROM_UI 
+      and skip the UI update */
+  void updateProcessorAndHostFromNormUi(PluginParameters_HostFloatType newValue, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false, UpdateFromFlags updateFromFlag=UPDATE_FROM_UI);
+
   /* Hosts like Logic require that you indicate when a parameter starts a gesture (changes). 
      Use this method indicate the start of a gesture for this parameter. 
      However bear in mind that Options::autoChangeGestures is set to true by default so
@@ -282,17 +259,16 @@ public:
     However bear in mind that Options::autoChangeGestures is set to true by default so
     you won't need to call it manually unless you disable it first using:
     param->setOptions(Param::autoChangeGestures,false). */
-  void endChangeGesture();
-    
-  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions):    
-    registerAtHostFlag(registerAtHostFlag),
-    name(name),
-    xmlName(name),
-    updateUiFlag(false),
-    globalIndex(0),
-    updateFromFlag(UPDATE_FROM_HOST),
-    pluginProcessor(nullptr),    
-    updateXml(false)
+  void endChangeGesture(); 
+  
+  Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions):
+  registerAtHostFlag(registerAtHostFlag),
+  name(name),
+  xmlName(name),
+  updateUiFlag(false),
+  globalIndex(0),  
+  pluginProcessor(nullptr),
+  updateXml(false)      
   {
     switch (loadSaveOptions){
       case SAVE:{
@@ -344,32 +320,24 @@ public:
         jassert (t.isLetterOrDigit() || *t == '_' || *t == '-' || *t == ':');
     #endif            
   }
-  
-  virtual ~Param(){}
+
+  virtual ~Param() {}
 };
 
-//-----------------------------------------------------------------------------------
+/* Class that uses templates to define the common
+   methods and variables for all parameters.
+   (Not used in class Param to allow type independent
+    casts) */
+template<class Type>
+class TypeParam: public Param{
+  JUCE_DECLARE_NON_COPYABLE (TypeParam)
 
-
-/* String parameters can not be automated so their
-    automation is merely simulated so that their
-    interface presents no difference with the 
-    other parameters. */
-class StringParam : public Param{
-private:
-  String virtualHostValue;
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  StringParam (const StringParam&);
-  StringParam& operator=(const StringParam &other);
-    
 protected:
-  String * const value;
-  const String defaultValue;
-  String xmlValue;  
-      
-public:  
+  Type * const value;
+  Type defaultValue;
+  Type xmlValue;  
+
+public:
   bool updateProcessorFromXml(){
     if (*value!=xmlValue && updateXml){     
       *value=xmlValue;
@@ -379,7 +347,7 @@ public:
     updateXml=false;
     return false;
   }
-    
+
   bool updateProcessorFromDefaultXml(){
     if (*value!=defaultValue){
       *value=defaultValue;
@@ -388,6 +356,42 @@ public:
     return false;
   }
 
+  const Type getDefaultValue() const{
+    return defaultValue;    
+  }
+
+  Type getPreloadvalue() const{
+    return xmlValue;
+  }
+    
+  Type getValue() const{
+    return *value;
+  }
+
+  TypeParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, Type * const value):
+  Param(name,registerAtHostFlag,loadSaveOptions),
+  value(value),
+  defaultValue(*value),
+  xmlValue(*value){
+  }
+
+  virtual ~TypeParam() {}
+};
+
+//-----------------------------------------------------------------------------------
+
+
+/** String parameters can not be automated so their
+    automation is merely simulated so that their
+    interface presents no difference with the 
+    other parameters. */
+class StringParam : public TypeParam<String>{
+private:
+  JUCE_DECLARE_NON_COPYABLE (StringParam)
+
+  String virtualHostValue;    
+      
+public:
   bool hostSet(const PluginParameters_HostFloatType ){
     *value=virtualHostValue;
     return true;
@@ -395,7 +399,7 @@ public:
      
   /** Updates the value from its UI denormalized value (it doesn't call load since Strings
       can't be automated */ 
-  void updateProcessorAndHostFromUi(const String valueArg);  
+  void updateProcessorAndHostFromUi(const String valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false, UpdateFromFlags updateFromFlag=UPDATE_FROM_UI);  
 
   /** Returns the parameter value to set the UI */
   String uiGet() const{    
@@ -404,21 +408,15 @@ public:
 
   PluginParameters_HostFloatType hostGet() const{
     return (PluginParameters_HostFloatType)(0.f);
-  }  
-    
-  const String getDefaultValue() const{
-    return defaultValue;
-  }
-
-  String getValue() const{
-    return *value;
   }
     
   const double getMin() const{
+    //bogus
     return 0;
   }
     
   const double getMax() const{
+    //bogus
     return 1;
   }
     
@@ -446,1008 +444,760 @@ public:
   }
 
   StringParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String * const value):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    value(value),
-    defaultValue(*value),
-    xmlValue(*value)
+  TypeParam<String>(name,registerAtHostFlag,loadSaveOptions,value)
   {
     // Strings cannot be automated! 
     // (They aren't supported at least in VST)
     // Try again setting argument registerAtHostFlag=false
     jassert(registerAtHostFlag==false);
   }
+
+  virtual ~StringParam() {}
 };
 
-class FloatParam : public Param{
-private:
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;
+//-----------------------------------------------------------------------------------
 
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  FloatParam (const FloatParam&);
-  FloatParam& operator=(const FloatParam &other);
-    
+/** Base class for mappings in parameters of float type 
+
+   The parameter is stored at the processor unmapped,
+   shown at the UI mapped and its mapped value 
+   normalized to [0,1] at the host.
+*/
+template<class FloatType>
+class FloatTypeBaseMap {  
+  JUCE_DECLARE_NON_COPYABLE (FloatTypeBaseMap)
 protected:
-  PluginParameters_PluginFloatType * const value;
-  const PluginParameters_PluginFloatType defaultValue;
-  PluginParameters_PluginFloatType xmlValue;  
-    
-public:  
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
-    }
-    updateXml=false;
-    return false;
+  FloatType minMappedValue;
+  FloatType maxMappedValue;
+  FloatType minValue;
+  FloatType maxValue;
+  FloatType uiMin;
+  FloatType uiMax;
+
+  virtual void setMin(FloatType minValueArg,bool updateHostFlag=true) = 0;
+
+  virtual void setMax(FloatType maxValueArg,bool updateHostFlag=true) = 0;
+
+  virtual const FloatType map(const FloatType unmappedValue) const = 0;  
+
+  virtual const FloatType unmap(const FloatType mappedValue) const = 0;
+
+  virtual void updateMinMappedValue(){
+    uiMin=minMappedValue=map(minValue);    
   }
-    
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
-    }
-    return false;
+
+  virtual void updateMaxMappedValue(){
+    uiMax=maxMappedValue=map(maxValue);
   }
+
+  virtual const PluginParameters_HostFloatType mapProcessorToHost(FloatType *processorValue) const{
+    if (maxMappedValue==minMappedValue)
+      return (PluginParameters_HostFloatType)(0.);
+
+    const FloatType mappedValue=map(*processorValue);
     
-  bool hostSet(const PluginParameters_HostFloatType hostValue){    
-    PluginParameters_PluginFloatType oldValue=*value;
+    if (mappedValue<minMappedValue){
+      *processorValue=minValue;
+      return (PluginParameters_HostFloatType)(0.);
+    }
+
+    if (mappedValue>maxMappedValue){
+      *processorValue=maxValue;
+      return (PluginParameters_HostFloatType)(1.);
+    }
+    
+    return (PluginParameters_HostFloatType)((mappedValue-minMappedValue)/(maxMappedValue-minMappedValue));
+  }
+
+  virtual const FloatType mapHostToProcessor(const PluginParameters_HostFloatType hostValue) const{
     if (hostValue>1)
-      *value=maxValue;
-    else if (hostValue<0)
-      *value=minValue;
-    else
-      *value=minValue+(PluginParameters_PluginFloatType)(hostValue)*(maxValue-minValue);
+      return maxValue;
+    if (hostValue<0)
+      return minValue;
 
-    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
-      return true;
-      
-    return false;
+    return unmap(minMappedValue+(FloatType)(hostValue)*(maxMappedValue-minMappedValue));
   }
+
+  virtual const PluginParameters_HostFloatType mapUiToHost(const FloatType uiValue) const{
+    if (maxMappedValue==minMappedValue)
+      return (PluginParameters_HostFloatType)(0.);
     
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const double valueArg);
-    
-  /** Returns the parameter value to set the UI */
-  double uiGet() const{
-    if (*value<minValue)
-      return (double)(minValue);
-    else if (*value>maxValue)
-      return (double)(maxValue);
-    else
-      return (double)(*value);
+    if (uiValue<minMappedValue)
+      return (PluginParameters_HostFloatType)(0.);
+
+    if (uiValue>maxMappedValue)
+      return (PluginParameters_HostFloatType)(1.);
+
+    return (PluginParameters_HostFloatType)((uiValue-minMappedValue)/(maxMappedValue-minMappedValue));
   }
 
-  PluginParameters_HostFloatType hostGet() const{    
-    if (maxValue==minValue)
-      return (PluginParameters_HostFloatType)(0.f);
-    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(*value-minValue)/(maxValue-minValue);
-    if (newHostValue<0){
-      *value=minValue;
-      return (PluginParameters_HostFloatType)(0.f);
-    } else if (newHostValue>1){
-      *value=maxValue;
-      return (PluginParameters_HostFloatType)(1.f);
-    } else
-      return newHostValue;
-  }  
+  virtual const FloatType mapProcessorToUi(FloatType *processorValue) const{
+    const FloatType mappedValue=map(*processorValue);
 
-  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){        
-    if (defaultValue>=minValueArg){
-      minValue=minValueArg;
-      if (*value<minValueArg)
-        *value=minValueArg;
-      if (xmlValue<minValueArg)
-        xmlValue=minValueArg;
-    } else //minValue can't be greater than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
+    if (mappedValue>maxMappedValue){
+      return maxMappedValue;
     }
+    if (mappedValue<minMappedValue)
+      return minMappedValue;
+
+    return mappedValue;
   }
 
-  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
-    if (defaultValue<=maxValueArg){
-      maxValue=maxValueArg;
-      if (*value>maxValueArg)
-        *value=maxValueArg;
-      if (xmlValue>maxValueArg)
-        xmlValue=maxValueArg;
-    } else //maxValue can't be less than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
-    }
-  }
-
-  const PluginParameters_PluginFloatType getDefaultValue() const{
-    return defaultValue;    
-  }
-
-  PluginParameters_PluginFloatType getPreloadvalue() const{
-    return xmlValue;
-  }
-    
-  PluginParameters_PluginFloatType getValue() const{
-    return *value;
-  }
-
-  const double getMin() const{
-    return minValue;
-  }
-
-  const double getMax() const{
-    return maxValue;
-  }
-
-  void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
-    if ((xmlType==SESSION && settings[loadFromSession]) 
-        || (xmlType==PRESET && settings[loadFromPresets])){
-      
-      //tell updateProcessorFromXml(...) to update *value from xmlValue
-      updateXml=true;
-      
-      if (xml==nullptr)
-        xmlValue=defaultValue;
-      else
-        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));
-      if (maxValue==minValue){
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }
-      xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
-      if (xmlHostValue<0){
-        xmlValue=minValue;
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }
-      else if (xmlHostValue>1){
-        xmlValue=maxValue;
-        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-        return;
-      }      
-    }
-  }
-
-  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
-    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
-        && ( (xmlType==SESSION && settings[saveToSession]) 
-           || (xmlType==PRESET && settings[saveToPresets])) ){
-      xml->setAttribute(Param::getXmlName(),(double)(*value));
-    }
-  }
-
-  FloatParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    minValue(minValue),
-    maxValue(maxValue),
-    value(value),
-    defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
-  {    
-    //force *value to the [minValue,maxValue] range
-    xmlValue=*value=defaultValue;
-    jassert(minValue<maxValue);
-  }
-};
-
-class LogParam : public Param{
-private:
-  const PluginParameters_PluginFloatType factor;
-  PluginParameters_PluginFloatType minLogValue;
-  PluginParameters_PluginFloatType maxLogValue;  
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  LogParam (const LogParam&);
-  LogParam& operator=(const LogParam &other);
-
-protected:  
-  PluginParameters_PluginFloatType * const value;  
-  const PluginParameters_PluginFloatType defaultValue; 
-  PluginParameters_PluginFloatType xmlValue;  
-
-public:  
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
-    }
-    updateXml=false;
-    return false;
-  }
-    
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
-    }
-    return false;
-  }
-
-  bool hostSet(const PluginParameters_HostFloatType hostValue){
-    PluginParameters_PluginFloatType oldValue=*value;
+  virtual const FloatType mapHostToUi(const PluginParameters_HostFloatType hostValue) const{
     if (hostValue>1)
-      *value=maxLogValue;
-    else if (hostValue<0)
-      *value=minLogValue;
-    else
-      *value=(PluginParameters_PluginFloatType)pow(10,(double)((minLogValue+hostValue*(maxLogValue-minLogValue))/factor));    
+      return maxMappedValue;
+    if (hostValue<0)
+      return minMappedValue;
 
-    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
-      return true;
-      
-    return false;
-  }
-    
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const double valueArg);
-    
-  /** Returns the parameter value to set the UI */
-  double uiGet() const{
-    if (*value<=0) 
-      return (double)(minLogValue);
-    else{
-      double uiValue=factor*log10(fabs((double)*value));
-      if (uiValue<minLogValue)
-        return (double)(minLogValue);
-      else if (uiValue>maxLogValue)        
-        return (double)(maxLogValue);
-      else
-        return (double)(uiValue);
-    }
-  }
-
-  PluginParameters_HostFloatType hostGet() const{        
-    if (maxLogValue==minLogValue)
-      return (PluginParameters_HostFloatType)(0.f);
-    if (*value<=0){
-      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return (PluginParameters_HostFloatType)(0.f);
-    }
-    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)*value))-minLogValue)/(maxLogValue-minLogValue);
-    if (newHostValue<0){
-      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-      return (PluginParameters_HostFloatType)(0.f);
-    } else if (newHostValue>1){
-      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return (PluginParameters_HostFloatType)(1.f);
-    } else
-      return newHostValue;
+    return minMappedValue+(FloatType)(hostValue)*(maxMappedValue-minMappedValue);
   }  
-
-  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){
-    if (defaultValue>=minValueArg && minValueArg>0){
-      minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
-      if (*value<minValueArg)
-        *value=minValueArg;
-      if (xmlValue<minValueArg)
-        xmlValue=minValueArg;
-    } else //minValue can't be <=0 or greater than the (constant) default value
-      jassertfalse;
-    
-    if (updateHostFlag){
-      updateHost(false);
-    }
-  }
-
-  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
-    if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
-      if (*value>maxValueArg)
-        *value=maxValueArg;
-      if (xmlValue>maxValueArg)
-        xmlValue=maxValueArg;
-    } else //maxValue can't be <=0 or less than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
-    }
-  }
-    
-  const PluginParameters_PluginFloatType getDefaultValue() const{
-    return defaultValue;
-  }
-    
-  PluginParameters_PluginFloatType getValue() const{
-    return *value;
-  }
-    
-  const PluginParameters_PluginFloatType getFactor() const{
-    return factor;
-  }  
-    
-  const double getMin() const{
-    return minLogValue;
-  }
-
-  const double getMax() const{
-    return maxLogValue;
-  }
-
-  void readXml(XmlElement *xml,XmlType xmlType=SESSION){
-    if ((xmlType==SESSION && settings[loadFromSession]) 
-        || (xmlType==PRESET && settings[loadFromPresets])){
-      
-      //tell updateProcessorFromXml(...) to update *value from xmlValue
-      updateXml=true;
-
-      if (xml==nullptr)
-        xmlValue=defaultValue;
-      else
-        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));          
-      if (maxLogValue==minLogValue){
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }
-      
-      if (xmlValue<=0){
-        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor))); //minValue
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }    
-      xmlHostValue=(PluginParameters_HostFloatType)(factor*log10(fabs((double)xmlValue))-minLogValue)/(maxLogValue-minLogValue);
-      if (xmlHostValue<0){
-        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(minLogValue/factor)));
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      } else if (xmlHostValue>1){
-        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }
-    }
-  }
-
-  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
-    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
-        && ( (xmlType==SESSION && settings[saveToSession]) 
-           || (xmlType==PRESET && settings[saveToPresets])) ){
-      xml->setAttribute(Param::getXmlName(),(double)(*value));
-    }
-  }
-    
-  LogParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(0)):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    factor(1),  
-    minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
-    maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),  
-    value(value),
-    defaultValue(jmax<PluginParameters_PluginFloatType>(minValue,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
-  {
-    //log values are stricly positive, please define a strictly positive range
-    jassert(minValue>0);
-    jassert(maxValue>0);
-    jassert(minValue<maxValue);
-
-    //force *value to the [minValue,maxValue] range
-    xmlValue=*value=defaultValue;
-  }
-};
-
-class LogWith0Param : public Param{
-private:
-  const PluginParameters_PluginFloatType factor;
-  PluginParameters_PluginFloatType minLogValue;
-  PluginParameters_PluginFloatType maxLogValue;  
-  PluginParameters_PluginFloatType minValue;
-  PluginParameters_PluginFloatType maxValue;  
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  LogWith0Param (const LogWith0Param&);
-  LogWith0Param& operator=(const LogWith0Param &other);
-    
-protected:
-  PluginParameters_PluginFloatType * const value;
-  const PluginParameters_PluginFloatType defaultValue;  
-  PluginParameters_PluginFloatType xmlValue;   
-
-public:   
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
-    }
-    updateXml=false;
-    return false;
-  }
-    
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
-    }
-    return false;
-  }
-
-  bool hostSet(const PluginParameters_HostFloatType hostValue){
-    PluginParameters_PluginFloatType oldValue=*value;
-    if (hostValue>1)
-      *value=maxLogValue;
-    else if (hostValue<0.03){
-      //leave a margin of 0.02 to avoid precision errors to confuse +/-minLog with 0
-      *value=(PluginParameters_PluginFloatType)(0);
-    } else {
-      *value=(PluginParameters_PluginFloatType)pow(10,(double)((minLogValue+(jmax<double>((PluginParameters_HostFloatType)0.05,hostValue)-(PluginParameters_HostFloatType)0.05)*(maxLogValue-minLogValue)/0.95)/factor));
-    }
-    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
-      return true;
-      
-    return false;
-  }
-    
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const double valueArg);
-    
-  /** Returns the parameter value to set the UI */
-  double uiGet() const{
-    //[minLogValue-0.05,minLogValue] represent -inf in the UI
-      
-    if (*value<=0)
-      return (double)(minLogValue-0.05);
-      
-    double uiValue=factor*log10(fabs((double)*value));
-      
-    if (uiValue<minLogValue)
-      return (double)(minLogValue-0.05);
-      
-    return jmin<double>(maxLogValue,uiValue);
-  }
-    
-  PluginParameters_HostFloatType hostGet() const{    
-    if (maxLogValue==minLogValue){ //do not let idiots make this crash
-      return (PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
-    }
-      
-    //using the host parameter scale of [0,1]
-    //store positive log value above 0.05 
-    //all values in the range of [0,minLogValue] will be stored as 0
-    //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
-    if (*value<=0){
-      *value=(PluginParameters_PluginFloatType)0;
-      return (PluginParameters_HostFloatType)(0.f);
-    }
-              
-    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(0.05+(factor*log10(fabs((double)*value))-minLogValue)*0.95/(maxLogValue-minLogValue));
-      
-    if (newHostValue<0){
-      *value=(PluginParameters_PluginFloatType)0;
-      return (PluginParameters_HostFloatType)(0.f);
-    }else if (newHostValue>1){
-      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-      return (PluginParameters_HostFloatType)(1.f);
-    } else
-      return newHostValue;    
-  }
-    
-  const PluginParameters_PluginFloatType getDefaultValue() const{
-    return defaultValue;
-  }
-    
-  PluginParameters_PluginFloatType getValue() const{
-    return *value;
-  }
-    
-  const PluginParameters_PluginFloatType getFactor() const{
-    return factor;
-  }
-      
-  void setMin(PluginParameters_PluginFloatType minValueArg,bool updateHostFlag=true){
-    if (defaultValue>=minValueArg && minValueArg>0){
-      minLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minValueArg)));
-      if (*value<minValueArg)
-        *value=0;
-      if (xmlValue<minValueArg)
-        xmlValue=0;
-    } else //minValue can't be <=0 or greater than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
-    }
-  }
-
-  void setMax(PluginParameters_PluginFloatType maxValueArg,bool updateHostFlag=true){    
-    if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
-      if (*value>maxValueArg)
-        *value=maxValueArg;
-      if (xmlValue>maxValueArg)
-        xmlValue=maxValueArg;
-    } else //maxValue can't be <=0 or less than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
-    }
-  }  
-    
-  const double getMin() const{
-    return minLogValue-0.05;
-  }
-
-  const double getMax() const{
-    return maxLogValue;
-  }
-
-  void readXml(XmlElement *xml,XmlType xmlType=SESSION){   
-    if ((xmlType==SESSION && settings[loadFromSession]) 
-        || (xmlType==PRESET && settings[loadFromPresets])){
-
-      //tell updateProcessorFromXml(...) to update *value from xmlValue
-      updateXml=true;
-
-      if (xml==nullptr)
-        xmlValue=defaultValue;
-      else
-        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));  
-                       
-      if (maxLogValue==minLogValue){ //do not let idiots make this crash
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
-        return; 
-      }
-      //using the host parameter scale of [0,1]
-      //store positive log value above 0.05 
-      //all values in the range of [0,minLogValue] will be stored as 0
-      //at 0 (a margin of 0.05 should be safe to avoid confusing 0 with the former)     
-      if (xmlValue<=0){
-        xmlValue=0;
-        xmlHostValue=(PluginParameters_HostFloatType)(0);
-        return;
-      } else {
-        double xmlLogValue=factor*log10(fabs((double)xmlValue));
-        if (xmlLogValue<minLogValue){
-          xmlValue=0;
-          xmlHostValue=(PluginParameters_HostFloatType)(0);
-        }else{
-          xmlHostValue=(PluginParameters_HostFloatType)(0.05+(xmlLogValue-minLogValue)*0.95/(maxLogValue-minLogValue));
-        }     
-      }
-      if (xmlHostValue>1){
-        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxLogValue/factor)));
-        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-      }
-    }       
-  }
-
-  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
-    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
-        && ( (xmlType==SESSION && settings[saveToSession]) 
-           || (xmlType==PRESET && settings[saveToPresets])) ){
-      xml->setAttribute(Param::getXmlName(),(double)(*value));
-    }
-  }
-
-  LogWith0Param(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minValue=(PluginParameters_PluginFloatType)(0.001),const PluginParameters_PluginFloatType maxValue=(PluginParameters_PluginFloatType)(1)):
-    Param(name,registerAtHostFlag,loadSaveOptions),  
-    factor(1),
-    minLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(minValue)))),
-    maxLogValue((PluginParameters_PluginFloatType)(factor*log10((double)(maxValue)))),
-    value(value),
-    defaultValue(jmax<PluginParameters_PluginFloatType>(0,jmin<PluginParameters_PluginFloatType>(*value,maxValue)))
-  {
-    //log values are stricly positive, please define a strictly positive range
-    jassert(minValue>0);
-    jassert(maxValue>0);
-    jassert(minValue<maxValue);
-
-    //force *value to the [0,maxValue] range
-    xmlValue=*value=defaultValue;
-  }
-};
-
-class LogWithSignParam : public Param{
-private:
-  const PluginParameters_PluginFloatType factor;
-  PluginParameters_PluginFloatType maxNegLogValue;
-  PluginParameters_PluginFloatType maxPosLogValue;  
-  PluginParameters_PluginFloatType minAbsLogValue;
-  const PluginParameters_HostFloatType centerValue;
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  LogWithSignParam (const LogWithSignParam&);
-  LogWithSignParam& operator=(const LogWithSignParam &other);
-    
-protected:
-  PluginParameters_PluginFloatType * const value;
-  const PluginParameters_PluginFloatType defaultValue;  
-  PluginParameters_PluginFloatType xmlValue;   
 
 public:
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
-    }
-    updateXml=false;
-    return false;
+  FloatTypeBaseMap(const FloatType minValue,const FloatType maxValue):
+    minMappedValue(minValue),
+    maxMappedValue(maxValue),
+    minValue(minValue),
+    maxValue(maxValue),
+    uiMin(minValue),
+    uiMax(maxValue)
+  {}
+
+  virtual ~FloatTypeBaseMap() {}
+};
+
+/** Identity map in parameters of float type */
+template<class FloatType>
+class IdentityMap: public FloatTypeBaseMap<FloatType>{
+protected:
+  const FloatType map(const FloatType unmappedValue) const override{
+    return unmappedValue;
   }
-    
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
-    }
-    return false;
+  
+  const FloatType unmap(const FloatType mappedValue) const override{
+    return mappedValue;
   }
 
-  bool hostSet(const PluginParameters_HostFloatType hostValue){  
-    PluginParameters_PluginFloatType oldValue=*value;    
-    if (hostValue>1)
-      *value=maxPosLogValue;
-    else if (hostValue<0)
-      *value=maxNegLogValue;
-    else{
-      //leave a margin of 0.02 to avoid precision errors to confuse +/-minLog with 0
-      if (hostValue>centerValue+0.03){
-        *value=(PluginParameters_PluginFloatType)pow(10,((double)(minAbsLogValue+(jmax<double>(0,hostValue-(centerValue+0.05)))*(maxPosLogValue-minAbsLogValue)/(1-centerValue-0.05))/(factor)));
-      } else if (hostValue<centerValue-0.03) {
-        *value=-(PluginParameters_PluginFloatType)pow(10,((double)(minAbsLogValue+((centerValue-0.05)-jmin<double>((centerValue-0.05),hostValue))*(maxNegLogValue-minAbsLogValue)/(centerValue-0.05))/(factor)));
-      } else
-        *value=(PluginParameters_PluginFloatType)(0);
-    }      
-
-    if (fabs(*value-oldValue)>PluginParameters_Epsilon)
-      return true;
-      
-    return false;
+public:
+  IdentityMap(const FloatType minValue,const FloatType maxValue)
+  :FloatTypeBaseMap<FloatType>(minValue,maxValue) 
+  {
+    FloatTypeBaseMap<FloatType>::updateMinMappedValue();
+    FloatTypeBaseMap<FloatType>::updateMaxMappedValue();
   }
-    
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const double valueArg);
-    
-  /** Returns the parameter value to set the UI */
-  double uiGet() const{
-    //in the UI we show a positive range of [0.05,0.05+maxPosLogValue-minAbsLogValue]
-    //and a negative range of [-(0.05+maxNegLogValue-minAbsLogValue),-0.05]
-    //[-0.05,0.05] represents -inf    
-    if (*value==0){      
-      return 0;
-    }
-      
-    double newValue=factor*log10(fabs((double)*value));
-      
-    if (newValue<minAbsLogValue)
-      return 0;
-    else if (*value>0){      
-      if (newValue>maxPosLogValue)
-        return (double)(0.05+maxPosLogValue-minAbsLogValue);
-      else
-        return (double)(0.05+newValue-minAbsLogValue);
-    } else { // *value<0
-      if (newValue>maxNegLogValue)
-        return -(double)(0.05+maxNegLogValue-minAbsLogValue);
-      else
-        return -(double)(0.05+newValue-minAbsLogValue);
-    }
+};
+
+/** Log map in parameters of float type */
+template<class FloatType, int factor>
+class LogMap: public FloatTypeBaseMap<FloatType>{
+protected:
+  const FloatType map(const FloatType unmappedValue) const override{
+    return (FloatType)(factor*log10(fabs((double)unmappedValue)));
+  }
+  
+  const FloatType unmap(const FloatType mappedValue) const override{
+    return (FloatType)(pow(10,(double)(mappedValue/factor)));   
   }
 
-  PluginParameters_HostFloatType hostGet() const{    
-    if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
-      if (*value>0)
-        return (PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
-      else
-        return (PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
-    }
-    PluginParameters_HostFloatType newHostValue; 
-      
-    //using the host parameter scale of [0,1]
-    //store positive log value above 0.55 and negative log values below 0.45
-    //all values in the range of [-minLogValue,minLogValue] will be stored as 0
-    //at 0.5 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
-    if (*value==0){      
-      return centerValue;
-    }
-      
-    double logValue=factor*log10(fabs((double)*value));
-      
-    if (logValue<minAbsLogValue){
-      *value=0;
-      return centerValue;
-    }
-      
-    if (*value>0){
-      newHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
-    } else {
-      newHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
-    }
-      
-    if (newHostValue<0){
-      *value=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
+  void updateMinMappedValue() override{
+    //log values are stricly positive, please define a strictly positive range
+    jassert(FloatTypeBaseMap<FloatType>::minValue>0);
+
+    FloatTypeBaseMap<FloatType>::uiMin=FloatTypeBaseMap<FloatType>::minMappedValue=map(FloatTypeBaseMap<FloatType>::minValue);
+  }
+
+  void updateMaxMappedValue() override{
+    //log values are stricly positive, please define a strictly positive range
+    jassert(FloatTypeBaseMap<FloatType>::maxValue>0);
+
+    FloatTypeBaseMap<FloatType>::uiMax=FloatTypeBaseMap<FloatType>::maxMappedValue=map(FloatTypeBaseMap<FloatType>::maxValue);
+  }
+
+public:
+  LogMap(const FloatType minValue,const FloatType maxValue)
+  :FloatTypeBaseMap<FloatType>(minValue,maxValue) 
+  {
+    updateMinMappedValue();
+    updateMaxMappedValue();
+  }
+};
+
+/** Log map with 0 in parameters of float type 
+
+    using the host parameter scale of [0,1]
+    [0,width0] stores the value 0 (we round [0,FloatTypeBaseMap<FloatType>::minValue/2] to 0))
+    [width0,1] stores the values from FloatTypeBaseMap<FloatType>::minMappedValue to FloatTypeBaseMap<FloatType>::maxMappedValue  
+
+    ui0WidthDenominator=-1 sets automatically ui0Width to reproduce the scale of host0Width in the UI
+*/
+template<class FloatType, int factor=1, int host0WidthDenominator=100, int ui0WidthDenominator=100>
+class LogWith0Map: public FloatTypeBaseMap<FloatType>{
+  FloatType ui0Width;
+  const PluginParameters_HostFloatType host0Width;  
+protected:
+  const FloatType map(const FloatType unmappedValue) const override{
+    return (FloatType)(factor*log10(fabs((double)unmappedValue)));
+  }
+  
+  const FloatType unmap(const FloatType mappedValue) const override{
+    return (FloatType)(pow(10,(double)(mappedValue/factor)));   
+  }  
+
+  void updateMinMappedValue() override{
+    //log values are stricly positive, please define a strictly positive range
+    jassert(FloatTypeBaseMap<FloatType>::minValue>0);
+
+    FloatTypeBaseMap<FloatType>::minMappedValue=map(FloatTypeBaseMap<FloatType>::minValue);
+    FloatTypeBaseMap<FloatType>::uiMin=FloatTypeBaseMap<FloatType>::minMappedValue-ui0Width;
+  }
+
+  void updateMaxMappedValue() override{
+    //log values are stricly positive, please define a strictly positive range
+    jassert(FloatTypeBaseMap<FloatType>::maxValue>0);
+
+    FloatTypeBaseMap<FloatType>::maxMappedValue=map(FloatTypeBaseMap<FloatType>::maxValue);
+    FloatTypeBaseMap<FloatType>::uiMax=FloatTypeBaseMap<FloatType>::maxMappedValue;
+  }      
+
+  const PluginParameters_HostFloatType mapProcessorToHost(FloatType *processorValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==FloatTypeBaseMap<FloatType>::minMappedValue)
+      return (*processorValue>0)?(PluginParameters_HostFloatType)(1.):(PluginParameters_HostFloatType)(0.);
+          
+    if (*processorValue<=FloatTypeBaseMap<FloatType>::minValue/2){
+      *processorValue=0;
       return (PluginParameters_HostFloatType)(0.f);
-    }else if (newHostValue>1){
-      *value=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
-      return (PluginParameters_HostFloatType)(1.f);
-    } else
-      return newHostValue;   
-  }  
-    
-  const PluginParameters_PluginFloatType getDefaultValue() const{
-    return defaultValue;
-  }
-
-  PluginParameters_PluginFloatType getValue() const{
-    return *value;
-  }
-    
-  const PluginParameters_PluginFloatType getFactor() const{
-    return factor;
-  }
-    
-  void setMin(PluginParameters_PluginFloatType minValueArg){
-    if (defaultValue>=minValueArg && minValueArg<0){
-      maxNegLogValue=(PluginParameters_PluginFloatType)(factor*log10(fabs((double)(minValueArg))));
-      if (*value<minValueArg)
-        *value=minValueArg;
-      if (xmlValue<minValueArg)
-        xmlValue=minValueArg;
-    } else //minValue can't be >=0 or greater than the (constant) default value
-      jassertfalse;
-  }
-    
-  void setMinAbs(PluginParameters_PluginFloatType minAbsValueArg,bool updateHostFlag=true){    
-    if (fabs(defaultValue)<=minAbsValueArg && minAbsValueArg>0){
-      minAbsLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(minAbsValueArg)));
-      if (fabs(*value)>minAbsValueArg){
-        if (*value<0)
-          *value=-minAbsValueArg;
-        else
-          *value=minAbsValueArg;
-      }
-      if (fabs(xmlValue)>minAbsValueArg){
-        if (xmlValue<0)
-          xmlValue=-minAbsValueArg;
-        else
-          xmlValue=minAbsValueArg;
-      }
-    } else //minAbsValue can't be <=0 or greater in abs value than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      updateHost(false);
     }
-  }  
-
-  void setMax(PluginParameters_PluginFloatType maxValueArg, bool updateHostFlag=true){    
-    if (defaultValue<=maxValueArg && maxValueArg>0){
-      maxPosLogValue=(PluginParameters_PluginFloatType)(factor*log10((double)(maxValueArg)));
-      if (*value>maxValueArg)
-        *value=maxValueArg;
-      if (xmlValue>maxValueArg)
-        xmlValue=maxValueArg;
-    } else //maxValue can't be <=0 or less than the (constant) default value
-      jassertfalse;
     
-    if (updateHostFlag){
-      updateHost(false);
+    const FloatType mappedValue=map(*processorValue);
+
+    if (mappedValue<FloatTypeBaseMap<FloatType>::minMappedValue){
+      *processorValue=FloatTypeBaseMap<FloatType>::minValue;
+      return host0Width;
     }
-  }  
+
+    if (mappedValue>FloatTypeBaseMap<FloatType>::maxMappedValue){
+      *processorValue=FloatTypeBaseMap<FloatType>::maxValue;
+      return (PluginParameters_HostFloatType)(1.);
+    }
     
-  const double getMinAbs() const{
-    return pow(10,(double)(minAbsLogValue/factor));
-  }  
-    
-  const double getMin() const{
-    return -(maxNegLogValue-minAbsLogValue+0.05);
+    return (PluginParameters_HostFloatType)(host0Width+(1-host0Width)*(mappedValue-FloatTypeBaseMap<FloatType>::minMappedValue)/(FloatTypeBaseMap<FloatType>::maxMappedValue-FloatTypeBaseMap<FloatType>::minMappedValue));
   }
 
-  const double getMax() const{
-    return maxPosLogValue-minAbsLogValue+0.05;
+  const FloatType mapHostToProcessor(const PluginParameters_HostFloatType hostValue) const override{
+    if (hostValue>1)
+      return FloatTypeBaseMap<FloatType>::maxValue;
+
+    if (host0Width==0 && hostValue==0)
+      return 0;
+
+    //leave a margin of hostWidth0/2 to avoid making rounding errors confuse +/-FloatTypeBaseMap<FloatType>::minMappedValue with 0
+    if (hostValue<host0Width/2)
+      return 0;
+
+    if (hostValue<host0Width)
+      return FloatTypeBaseMap<FloatType>::minValue;
+
+    return unmap(FloatTypeBaseMap<FloatType>::minMappedValue+(FloatType)((jmax<PluginParameters_HostFloatType>(host0Width,hostValue)-host0Width)*(FloatTypeBaseMap<FloatType>::maxMappedValue-FloatTypeBaseMap<FloatType>::minMappedValue)/(1-host0Width)));
   }
 
-  void readXml(XmlElement *xml,XmlType xmlType=SESSION){  
-    if ((xmlType==SESSION && settings[loadFromSession]) 
-        || (xmlType==PRESET && settings[loadFromPresets])){
-      
-      //tell updateProcessorFromXml(...) to update *value from xmlValue
-      updateXml=true;
+  const PluginParameters_HostFloatType mapUiToHost(const FloatType uiValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==FloatTypeBaseMap<FloatType>::minMappedValue)
+      return (uiValue>0)?(PluginParameters_HostFloatType)(1.):(PluginParameters_HostFloatType)(0.);    
+    
+    if (uiValue<=FloatTypeBaseMap<FloatType>::minMappedValue-ui0Width/2)
+      return (PluginParameters_HostFloatType)(0.);
 
-      if (xml==nullptr)
-        xmlValue=defaultValue;
-      else
-        xmlValue=(PluginParameters_PluginFloatType)(xml->getDoubleAttribute(Param::getXmlName(),defaultValue));              
-      if (maxPosLogValue==minAbsLogValue || maxNegLogValue==minAbsLogValue){ //do not let idiots make this crash
-        if (xmlValue>0){
-          xmlHostValue=(PluginParameters_HostFloatType)(1.f); //stupid question, stupid answer
-          return;
-        } else{
-          xmlHostValue=(PluginParameters_HostFloatType)(0.f); //stupid question, stupid answer
-          return;
-        }
-      }        
-      
-      //using the host parameter scale of [0,1]
-      //store positive log value above 0.55 and negative log values below 0.45
-      //all values in the range of [-minLogValue,minLogValue] will be stored as 0
-      //at 0.5 (a margin of 0.05 should be safe to avoid confusing 0 with the former)    
-      if (xmlValue==0){
-        xmlValue=0;
-        xmlHostValue=centerValue;
-        return;
-      }    
-      
-      double logValue=factor*log10(fabs((double)(xmlValue)));
-      
-      if (logValue<minAbsLogValue){
-        xmlValue=0;
-        xmlHostValue=centerValue;
-        return;
+    if (uiValue<FloatTypeBaseMap<FloatType>::minMappedValue)
+      return host0Width;
+
+    if (uiValue>FloatTypeBaseMap<FloatType>::maxMappedValue)
+      return (PluginParameters_HostFloatType)(1.);
+
+    return (PluginParameters_HostFloatType)(host0Width+(1-host0Width)*(uiValue-FloatTypeBaseMap<FloatType>::minMappedValue)/(FloatTypeBaseMap<FloatType>::maxMappedValue-FloatTypeBaseMap<FloatType>::minMappedValue));
+  }
+
+  const FloatType mapProcessorToUi(FloatType *processorValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==FloatTypeBaseMap<FloatType>::minMappedValue)
+      return (*processorValue>0)?(PluginParameters_HostFloatType)(FloatTypeBaseMap<FloatType>::maxMappedValue):(FloatTypeBaseMap<FloatType>::minMappedValue-ui0Width);
+
+    if (*processorValue<=FloatTypeBaseMap<FloatType>::minValue/2)
+      return FloatTypeBaseMap<FloatType>::uiMin;
+    
+    const FloatType mappedValue=map(*processorValue);
+
+    if (mappedValue>FloatTypeBaseMap<FloatType>::maxMappedValue)
+      return FloatTypeBaseMap<FloatType>::uiMax;
+
+    if (mappedValue<FloatTypeBaseMap<FloatType>::minMappedValue)
+      return FloatTypeBaseMap<FloatType>::minMappedValue;
+
+    return mappedValue;
+  }
+
+  const FloatType mapHostToUi(const PluginParameters_HostFloatType hostValue) const override{
+    if (hostValue>1)
+      return FloatTypeBaseMap<FloatType>::uiMax;
+
+    if (hostValue<0)
+      return FloatTypeBaseMap<FloatType>::uiMin;
+
+    if (host0Width==0 && hostValue==0)
+      return FloatTypeBaseMap<FloatType>::uiMin;
+    
+    if (hostValue<host0Width/2)
+      return FloatTypeBaseMap<FloatType>::uiMin;
+    
+    if (hostValue<host0Width)
+      return FloatTypeBaseMap<FloatType>::minMappedValue;
+
+    return FloatTypeBaseMap<FloatType>::minMappedValue+(FloatType)((jmax<PluginParameters_HostFloatType>(host0Width,hostValue)-host0Width)*(FloatTypeBaseMap<FloatType>::maxMappedValue-FloatTypeBaseMap<FloatType>::minMappedValue)/(1-host0Width));    
+  }  
+
+public:
+  LogWith0Map(const FloatType minValue,const FloatType maxValue)
+  :FloatTypeBaseMap<FloatType>(minValue,maxValue),
+  ui0Width((FloatType)((ui0WidthDenominator<0)?
+                        ((host0WidthDenominator<=0)?
+                          0
+                          :((1./jmax<int>(host0WidthDenominator,1))/(1-(1./jmax<int>(host0WidthDenominator,1)))*(map(FloatTypeBaseMap<FloatType>::maxValue)-map(FloatTypeBaseMap<FloatType>::minValue))))
+                       :((ui0WidthDenominator==0)?
+                          0
+                          :(1./jmax<int>(ui0WidthDenominator,1))))),
+   host0Width((PluginParameters_HostFloatType)((host0WidthDenominator==0)?
+                                                0
+                                                :(1./jmax<int>(host0WidthDenominator,1))))
+  {
+    updateMinMappedValue();
+    updateMaxMappedValue();
+  }
+};
+
+/** Log map in parameters of float type 
+    
+    using the host parameter scale of [0,1]
+    (host0-host0Width,host0+host0Width) stores the value 0 (we round [-minAbsValue/2,minAbsValue/2] to 0))
+    [host0+host0Width,1] stores the values from minAbsMappedValue to FloatTypeBaseMap<FloatType>::maxMappedValue  
+    [0,host0-host0Width] stores the values from minAbsMappedValue to FloatTypeBaseMap<FloatType>::minMappedValue (negative)    
+
+    ui0WidthDenominator=-1 sets automatically ui0Width to reproduce the scale of host0Width in the UI
+*/
+template<class FloatType, int factor=1, int minAbsValueDenominator=100, int host0WidthDenominator=100, int ui0WidthDenominator=100>
+class LogWithSignMap: public FloatTypeBaseMap<FloatType>{
+  FloatType ui0Width;
+  const PluginParameters_HostFloatType host0Width;
+  const FloatType minAbsValue;
+  const FloatType minAbsMappedValue;
+  const PluginParameters_HostFloatType host0; 
+protected:
+  const FloatType map(const FloatType unmappedValue) const override{
+    return (FloatType)(factor*log10(fabs((double)unmappedValue)));
+  }
+  
+  const FloatType unmap(const FloatType mappedValue) const override{
+    return (FloatType)(pow(10,(double)(mappedValue/factor)));   
+  }  
+
+  void updateMinMappedValue() override{
+    //use class LogWith0Map to deal with FloatTypeBaseMap<FloatType>::minValue>0
+    jassert(FloatTypeBaseMap<FloatType>::minValue<0);
+
+    FloatTypeBaseMap<FloatType>::minMappedValue=map(-FloatTypeBaseMap<FloatType>::minValue);
+    FloatTypeBaseMap<FloatType>::uiMin=-(FloatTypeBaseMap<FloatType>::minMappedValue-minAbsMappedValue+ui0Width);
+  }
+
+  void updateMaxMappedValue() override{
+    //log values are stricly positive, please define a strictly positive range
+    jassert(FloatTypeBaseMap<FloatType>::maxValue>0);
+
+    FloatTypeBaseMap<FloatType>::maxMappedValue=map(FloatTypeBaseMap<FloatType>::maxValue);    
+    FloatTypeBaseMap<FloatType>::uiMax=FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue+ui0Width;
+  }      
+
+  const PluginParameters_HostFloatType mapProcessorToHost(FloatType *processorValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==minAbsMappedValue || FloatTypeBaseMap<FloatType>::minMappedValue==minAbsMappedValue)
+      return (*processorValue==0)?host0:((*processorValue>0)?(PluginParameters_HostFloatType)(1.):(PluginParameters_HostFloatType)(0.));
+          
+    if (fabs(*processorValue)<=minAbsValue/2){
+      *processorValue=0;
+      return host0;
+    }
+    
+    const FloatType mappedValue=map(fabs(*processorValue));
+
+    if (*processorValue>0){
+      if (mappedValue<minAbsMappedValue){
+        *processorValue=minAbsValue;
+        return host0+host0Width;
       }
-      
-      if (xmlValue>0){
-        xmlHostValue=(PluginParameters_HostFloatType)(centerValue+0.05+(logValue-minAbsLogValue)/(maxPosLogValue-minAbsLogValue)*(1-centerValue-0.05));
-      } else { // (xmlValue<0)
-        xmlHostValue=(PluginParameters_HostFloatType)(centerValue-0.05-(logValue-minAbsLogValue)/(maxNegLogValue-minAbsLogValue)*(centerValue-0.05));
+
+      if (mappedValue>FloatTypeBaseMap<FloatType>::maxMappedValue){
+        *processorValue=FloatTypeBaseMap<FloatType>::maxValue;
+        return (PluginParameters_HostFloatType)(1.);
       }
-      
-      if (xmlHostValue<0){
-        xmlValue=-(PluginParameters_PluginFloatType)(pow(10,(double)(maxNegLogValue/factor)));
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      } else if (xmlHostValue>1){
-        xmlValue=(PluginParameters_PluginFloatType)(pow(10,(double)(maxPosLogValue/factor)));
-        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-        return;
+    
+      return (PluginParameters_HostFloatType)(host0+host0Width+(1-host0-host0Width)*(mappedValue-minAbsMappedValue)/(FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue));
+
+    } else { //if (*processorValue<0)
+      if (mappedValue<minAbsMappedValue){
+        *processorValue=-minAbsValue;
+        return host0-host0Width;
       }
+
+      if (mappedValue>FloatTypeBaseMap<FloatType>::maxMappedValue){
+        *processorValue=FloatTypeBaseMap<FloatType>::minValue;
+        return (PluginParameters_HostFloatType)(0.);
+      }
+    
+      return (PluginParameters_HostFloatType)(host0-host0Width-(host0-host0Width)*(mappedValue-minAbsMappedValue)/(FloatTypeBaseMap<FloatType>::minMappedValue-minAbsMappedValue));
     }    
   }
 
-  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
-    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
-        && ( (xmlType==SESSION && settings[saveToSession]) 
-           || (xmlType==PRESET && settings[saveToPresets])) ){
-      xml->setAttribute(Param::getXmlName(),(double)(*value));
+  const FloatType mapHostToProcessor(const PluginParameters_HostFloatType hostValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==minAbsMappedValue || FloatTypeBaseMap<FloatType>::minMappedValue==minAbsMappedValue)
+      return (hostValue==host0)?0:((hostValue>0)?FloatTypeBaseMap<FloatType>::maxValue:FloatTypeBaseMap<FloatType>::minValue);
+
+    if (hostValue>1)
+      return FloatTypeBaseMap<FloatType>::maxValue;
+
+    if (host0Width==0 && hostValue==host0)
+      return  0;
+
+    //leave a margin of hostWidth0/2 to avoid making rounding errors confuse +/-FloatTypeBaseMap<FloatType>::minMappedValue with 0
+    if (hostValue>host0+host0Width/2){
+      if (hostValue<host0+host0Width)
+        return minAbsValue;
+      return unmap(minAbsMappedValue+(FloatType)((jmax<PluginParameters_HostFloatType>(0,hostValue-(host0+host0Width)))*(FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue)/(1-host0-host0Width)));
+
+    } else if (hostValue<host0-host0Width/2){
+      if (hostValue>host0-host0Width)
+        return -minAbsValue;
+      return -unmap(minAbsMappedValue+(FloatType)((host0-host0Width)-jmin<PluginParameters_HostFloatType>(host0-host0Width,hostValue))*(FloatTypeBaseMap<FloatType>::minMappedValue-minAbsMappedValue)/(host0-host0Width));
+
+    } else {
+      return 0;
+    }   
+  }
+
+  const PluginParameters_HostFloatType mapUiToHost(const FloatType uiValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==minAbsMappedValue || FloatTypeBaseMap<FloatType>::minMappedValue==minAbsMappedValue)
+      return (uiValue==0)?host0:((uiValue>0)?(PluginParameters_HostFloatType)(1.):(PluginParameters_HostFloatType)(0.));
+     
+    if (uiValue<=-(FloatTypeBaseMap<FloatType>::minMappedValue-minAbsMappedValue+ui0Width))
+      return (PluginParameters_HostFloatType)(0.);
+
+    if (uiValue>FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue+ui0Width)
+      return (PluginParameters_HostFloatType)(1.);
+
+    if (ui0Width==0 && uiValue==0)
+      return host0;
+
+    if (uiValue>=ui0Width){
+      return (PluginParameters_HostFloatType)(host0+host0Width+(1-host0-host0Width)*(uiValue-ui0Width)/(FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue));
+    } else if (uiValue<=-ui0Width){
+      return (PluginParameters_HostFloatType)(host0-host0Width+(host0-host0Width)*(uiValue+ui0Width)/(FloatTypeBaseMap<FloatType>::minMappedValue-minAbsMappedValue));
+    } else {
+      if (uiValue>ui0Width/2)
+        return host0+host0Width;
+      else if (uiValue<-ui0Width/2)
+        return host0-host0Width;
+      else
+        return host0;
     }
   }
 
-  LogWithSignParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginFloatType * const value, const PluginParameters_PluginFloatType minNegativeValue=(PluginParameters_PluginFloatType)(-1),const PluginParameters_PluginFloatType maxPositiveValue=(PluginParameters_PluginFloatType)(1)):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    factor(1),
-    maxNegLogValue((PluginParameters_PluginFloatType)(factor*log10(-(double)minNegativeValue))),
-    maxPosLogValue((PluginParameters_PluginFloatType)(factor*log10((double)maxPositiveValue))),
-    minAbsLogValue((PluginParameters_PluginFloatType)(factor*log10((double)0.001))),
-    centerValue((PluginParameters_HostFloatType)((factor*log10(-(double)minNegativeValue)+factor*log10((double)0.001))/(factor*log10(-(double)minNegativeValue)+factor*log10((double)maxPositiveValue)+2*factor*log10((double)0.001)))),
-    value(value),
-    defaultValue(jmax<PluginParameters_PluginFloatType>(minNegativeValue,jmin<PluginParameters_PluginFloatType>(*value,maxPositiveValue)))
-  {
-    //minValue should be negative and maxValue positive, otherwise use LogWith0.
-    jassert(minNegativeValue<0);
-    jassert(maxPositiveValue>0);
-    jassert(minNegativeValue<maxPositiveValue);
-      
-    //log values are stricly positive, please define a strictly positive range
-    //jassert(0.001>0);
+  const FloatType mapProcessorToUi(FloatType *processorValue) const override{
+    if (FloatTypeBaseMap<FloatType>::maxMappedValue==minAbsMappedValue || FloatTypeBaseMap<FloatType>::minMappedValue==minAbsMappedValue)
+      return (*processorValue==0)?0:((*processorValue>0)?FloatTypeBaseMap<FloatType>::uiMax:FloatTypeBaseMap<FloatType>::uiMin);
 
-    //force *value to the [minNegativeValue,maxPositiveValue] range
-    xmlValue=*value=defaultValue;
+    //using the host parameter scale of [0,1]
+    //[0,width0] stores the value 0
+    //[width0,1] stores the values from FloatTypeBaseMap<FloatType>::minMappedValue to FloatTypeBaseMap<FloatType>::maxMappedValue  
+    if (fabs(*processorValue)<=minAbsValue/2)
+      return 0;
+    
+    const FloatType mappedValue=map(fabs(*processorValue));
+
+    if (*processorValue>0){
+      if (mappedValue<minAbsMappedValue){
+        return ui0Width;
+      }
+      if (mappedValue>FloatTypeBaseMap<FloatType>::maxMappedValue){
+        return FloatTypeBaseMap<FloatType>::uiMax;
+      }
+      return ui0Width+mappedValue-minAbsMappedValue;
+    
+    } else { //if (*processorValue<0)
+      if (mappedValue<minAbsMappedValue){
+        return -ui0Width;
+      }
+      if (mappedValue>FloatTypeBaseMap<FloatType>::minMappedValue){
+        return FloatTypeBaseMap<FloatType>::uiMin;
+      }
+      return -(mappedValue-minAbsMappedValue+ui0Width);
+    }
+  }
+
+  const FloatType mapHostToUi(const PluginParameters_HostFloatType hostValue) const override{
+    if (hostValue>1)
+      return FloatTypeBaseMap<FloatType>::uiMax;
+
+    if (hostValue<0)
+      return FloatTypeBaseMap<FloatType>::uiMin;
+
+    if (host0Width==0 && hostValue==host0)
+      return  0;
+
+    //leave a margin of hostWidth0/2 to avoid making rounding errors confuse +/-FloatTypeBaseMap<FloatType>::minMappedValue with 0
+    if (hostValue>host0+host0Width/2){
+      if (hostValue<host0+host0Width)
+        return ui0Width;
+      return ui0Width+(FloatType)((jmax<PluginParameters_HostFloatType>(0,hostValue-(host0+host0Width)))*(FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue)/(1-host0-host0Width));
+
+    } else if (hostValue<host0-host0Width/2){
+      if (hostValue>host0-host0Width)
+        return -ui0Width;
+      return -ui0Width-(FloatType)((host0-host0Width)-jmin<PluginParameters_HostFloatType>(host0-host0Width,hostValue))*(FloatTypeBaseMap<FloatType>::maxMappedValue-minAbsMappedValue)/(host0-host0Width);
+
+    } else {
+      return 0;
+    }   
+  }  
+
+public:
+  LogWithSignMap(const FloatType minValue,const FloatType maxValue)
+  :FloatTypeBaseMap<FloatType>(minValue,maxValue),
+   ui0Width((FloatType)((ui0WidthDenominator<0)?
+                        ((host0WidthDenominator<=0)?
+                          0
+                          :((1./jmax<int>(host0WidthDenominator,1))/(1-(1./jmax<int>(host0WidthDenominator,1)))*(map(maxValue)-map(minValue))))
+                       :((ui0WidthDenominator==0)?
+                          0
+                          :(1./jmax<int>(ui0WidthDenominator,1))))),
+   host0Width((PluginParameters_HostFloatType)((host0WidthDenominator==0)?
+                                                0
+                                                :(1./jmax<int>(host0WidthDenominator,1)))),
+   minAbsValue((FloatType)(1./jmax<int>(minAbsValueDenominator,1))),
+   minAbsMappedValue((FloatType)(factor*log10((double)(1./jmax<int>(minAbsValueDenominator,1))))),
+   host0((PluginParameters_HostFloatType)((factor*log10(-(double)minValue)+factor*log10((double)(1./jmax<int>(minAbsValueDenominator,1))))/(factor*log10(-(double)minValue)+factor*log10((double)maxValue)+2*factor*log10((double)(1./jmax<int>(minAbsValueDenominator,1))))))
+  {
+    //FloatTypeBaseMap<FloatType>::minValue should be negative and FloatTypeBaseMap<FloatType>::maxValue positive, otherwise use LogWith0Map.
+    jassert(FloatTypeBaseMap<FloatType>::minValue<0);
+    jassert(FloatTypeBaseMap<FloatType>::maxValue>0);
+
+    updateMinMappedValue();
+    updateMaxMappedValue();
   }
 };
 
-class IntParam : public Param{
-private:
-  PluginParameters_PluginIntType minValue;
-  PluginParameters_PluginIntType maxValue;
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  IntParam (const IntParam&);
-  IntParam& operator=(const IntParam &other);
+/** Class that defines parameters of float type (float, double) */
+template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+class FloatTypeParam : public TypeParam<FloatType>, public FloatTypeMap{
 
-protected:
-  PluginParameters_PluginIntType * const value;
-  const PluginParameters_PluginIntType defaultValue;
-  PluginParameters_PluginIntType xmlValue;   
+  JUCE_DECLARE_NON_COPYABLE (FloatTypeParam)
 
 public:  
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
+
+  void setMin(FloatType minValueArg,bool updateHostFlag=true){        
+    if (TypeParam<FloatType>::defaultValue>=minValueArg){      
+      FloatTypeMap::minValue=minValueArg;
+      FloatTypeMap::updateMinMappedValue();
+      if (*TypeParam<FloatType>::value<minValueArg)
+        *TypeParam<FloatType>::value=minValueArg;
+      if (TypeParam<FloatType>::xmlValue<minValueArg)
+        TypeParam<FloatType>::xmlValue=minValueArg;
+    } else //minValue can't be set to be greater than the (constant) default value
+      jassertfalse;
+
+    if (updateHostFlag){
+      Param::updateHost(false);
     }
-    updateXml=false;
-    return false;
   }
-    
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
+
+  void setMax(FloatType maxValueArg,bool updateHostFlag=true){    
+    if (TypeParam<FloatType>::defaultValue<=maxValueArg){
+      FloatTypeMap::maxValue=maxValueArg;
+      FloatTypeMap::updateMaxMappedValue();
+      if (*TypeParam<FloatType>::value>maxValueArg)
+        *TypeParam<FloatType>::value=maxValueArg;
+      if (TypeParam<FloatType>::xmlValue>maxValueArg)
+        TypeParam<FloatType>::xmlValue=maxValueArg;
+    } else //maxValue can't be set to be less than the (constant) default value
+      jassertfalse;
+
+    if (updateHostFlag){
+      Param::updateHost(false);
     }
-    return false;
   }
 
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
-    PluginParameters_PluginIntType oldValue=*value;
-    if (hostValue>1)
-      *value=maxValue;
-    else if (hostValue<0)
-      *value=minValue;
-    else{
-      *value=roundToInt<PluginParameters_HostFloatType>(minValue+hostValue*(maxValue-minValue));
-    }
+    FloatType oldValue=*TypeParam<FloatType>::value;
+    *TypeParam<FloatType>::value=FloatTypeMap::mapHostToProcessor(hostValue);
 
-    if (abs(*value-oldValue)>PluginParameters_Epsilon)
+    if (fabs(*TypeParam<FloatType>::value-oldValue)>PluginParameters_Epsilon)
       return true;
       
     return false;
   }
     
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const int valueArg);
+  /** Updates the value from its UI denormalized value */
+  void updateProcessorAndHostFromUi(FloatType valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false, UpdateFromFlags updateFromFlag=UPDATE_FROM_UI){
+    Param::updateProcessorAndHostFromNormUi(FloatTypeMap::mapUiToHost(valueArg),undoManager,dontCreateNewUndoTransaction,updateFromFlag);
+  }
     
   /** Returns the parameter value to set the UI */
-  int uiGet() const{    
-    if (*value<minValue)
-      return (int)(minValue);
-    else if (*value>maxValue)        
-      return (int)(maxValue);
-    else
-      return (int)(*value);
+  FloatType uiGet() const{    
+    return FloatTypeMap::mapProcessorToUi(TypeParam<FloatType>::value);
   }
 
   PluginParameters_HostFloatType hostGet() const{
-    if (maxValue==minValue)
-      return (PluginParameters_HostFloatType)(0.f);
-    PluginParameters_HostFloatType newHostValue=(PluginParameters_HostFloatType)(*value-minValue)/(maxValue-minValue);
-    if (newHostValue<0){
-      *value=minValue;
-      return (PluginParameters_HostFloatType)(0.f);
-    } else if (newHostValue>1){
-      *value=maxValue;
-      return (PluginParameters_HostFloatType)(1.f);
-    } else{
-      return newHostValue;
+    return FloatTypeMap::mapProcessorToHost(TypeParam<FloatType>::value);
+  }
+  
+  const double getMin() const{
+    return FloatTypeMap::uiMin;
+  }
+
+  const double getMax() const{
+    return FloatTypeMap::uiMax;
+  }
+
+  void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
+    if ((xmlType==SESSION && Param::settings[Param::loadFromSession]) 
+        || (xmlType==PRESET && Param::settings[Param::loadFromPresets])){
+      
+      //tell updateProcessorFromXml(...) to update *value from xmlValue
+      Param::updateXml=true;
+      
+      if (xml==nullptr)
+        TypeParam<FloatType>::xmlValue=TypeParam<FloatType>::defaultValue;
+      else
+        TypeParam<FloatType>::xmlValue=(FloatType)(xml->getDoubleAttribute(Param::getXmlName(),TypeParam<FloatType>::defaultValue));      
+
+      Param::xmlHostValue=FloatTypeMap::mapProcessorToHost(&(TypeParam<FloatType>::xmlValue));
+    }
+  }
+
+  void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
+    if ((!Param::settings[Param::saveOnlyNonDefaultValues] || *TypeParam<FloatType>::value!=TypeParam<FloatType>::defaultValue) 
+        && ( (xmlType==SESSION && Param::settings[Param::saveToSession]) 
+           || (xmlType==PRESET && Param::settings[Param::saveToPresets])) ){
+      xml->setAttribute(Param::getXmlName(),(double)(*TypeParam<FloatType>::value));
     }
   }
     
-  void setMin(PluginParameters_PluginIntType minValueArg,bool updateHostFlag=true){        
-    if (defaultValue>=minValueArg){
+  FloatTypeParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType * const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(1)):
+  TypeParam<FloatType>(name,registerAtHostFlag,loadSaveOptions,value),
+  FloatTypeMap(minValue,maxValue){        
+    //force *value to the [minValue,maxValue] range
+    TypeParam<FloatType>::xmlValue=*TypeParam<FloatType>::value=TypeParam<FloatType>::defaultValue=jlimit<FloatType>(FloatTypeMap::minValue,FloatTypeMap::maxValue,*TypeParam<FloatType>::value);
+  }
+};
+
+typedef FloatTypeParam<float> FloatParam;
+typedef FloatTypeParam<float,LogMap<float,1> > LogParam;
+typedef FloatTypeParam<float,LogWith0Map<float,1,0,0> > LogWith0Param;
+typedef FloatTypeParam<float,LogWithSignMap<float,1,1000,10,10> > LogWithSignParam;
+
+//-----------------------------------------------------------------------------------
+
+/** Class that defines parameters of int type (char,int,long,etc) */
+template<class IntType>
+class IntTypeParam : public TypeParam<IntType>{
+private:
+  JUCE_DECLARE_NON_COPYABLE (IntTypeParam)
+
+  IntType minValue;
+  IntType maxValue;
+
+protected:
+  const PluginParameters_HostFloatType mapProcessorToHost(IntType *processorValue) const{
+    if (maxValue==minValue)
+      return (PluginParameters_HostFloatType)(0.);
+    
+    if (*processorValue<minValue){
+      *processorValue=minValue;
+      return (PluginParameters_HostFloatType)(0.);
+    }
+
+    if (*processorValue>maxValue){
+      *processorValue=maxValue;
+      return (PluginParameters_HostFloatType)(1.);
+    }
+    
+    return (PluginParameters_HostFloatType)(*processorValue-minValue)/(maxValue-minValue);
+  }
+
+  const IntType mapHostToProcessor(const PluginParameters_HostFloatType hostValue) const{
+    if (hostValue>1)
+      return maxValue;
+    if (hostValue<0)
+      return minValue;
+
+    return (IntType)(roundToInt<PluginParameters_HostFloatType>(minValue+(hostValue)*(maxValue-minValue)));
+  }
+
+  const PluginParameters_HostFloatType mapUiToHost(const IntType uiValue) const{
+    if (maxValue==minValue)
+      return (PluginParameters_HostFloatType)(0.);
+    
+    if (uiValue<minValue)
+      return (PluginParameters_HostFloatType)(0.);
+
+    if (uiValue>maxValue)
+      return (PluginParameters_HostFloatType)(1.);
+
+    return (PluginParameters_HostFloatType)(uiValue-minValue)/(maxValue-minValue);
+  }
+
+  const IntType mapProcessorToUi(IntType *processorValue) const{
+    if (*processorValue>maxValue)
+      return maxValue;
+    if (*processorValue<minValue)
+      return minValue;
+
+    return *processorValue;
+  }
+
+  const IntType mapHostToUi(const PluginParameters_HostFloatType hostValue) const{
+    if (hostValue>1)
+      return maxValue;
+    if (hostValue<0)
+      return minValue;
+
+    return (IntType)(roundToInt<PluginParameters_HostFloatType>(minValue+(hostValue)*(maxValue-minValue)));
+  }
+
+public:    
+  
+  void setMin(IntType minValueArg,bool updateHostFlag=true){        
+    if (TypeParam<IntType>::defaultValue>=minValueArg){
       minValue=minValueArg;
-      if (*value<minValueArg)
-        *value=minValueArg;
-      if (xmlValue<minValueArg)
-        xmlValue=minValueArg;
+      if (*TypeParam<IntType>::value<minValueArg)
+        *TypeParam<IntType>::value=minValueArg;
+      if (TypeParam<IntType>::xmlValue<minValueArg)
+        TypeParam<IntType>::xmlValue=minValueArg;
     } else //minValue can't be greater than the (constant) default value
       jassertfalse;
 
     if (updateHostFlag){
-      updateHost(false);
+      Param::updateHost(false);
     }
   }
 
-  void setMax(PluginParameters_PluginIntType maxValueArg,bool updateHostFlag=true){    
-    if (defaultValue<=maxValueArg){
+  void setMax(IntType maxValueArg,bool updateHostFlag=true){    
+    if (TypeParam<IntType>::defaultValue<=maxValueArg){
       maxValue=maxValueArg;
-      if (*value>maxValueArg)
-        *value=maxValueArg;
-      if (xmlValue>maxValueArg)
-        xmlValue=maxValueArg;
+      if (*TypeParam<IntType>::value>maxValueArg)
+        *TypeParam<IntType>::value=maxValueArg;
+      if (TypeParam<IntType>::xmlValue>maxValueArg)
+        TypeParam<IntType>::xmlValue=maxValueArg;
     } else //maxValue can't be less than the (constant) default value
       jassertfalse;
     
     if (updateHostFlag){
-      updateHost(false);
+      Param::updateHost(false);
     }
   }
 
-  const PluginParameters_PluginIntType getDefaultValue() const{
-    return defaultValue;
-  }
-   
-  PluginParameters_PluginIntType getValue() const{
-    return *value;
-  }
-    
   const double getMin() const{
     return minValue;
   }
@@ -1456,84 +1206,79 @@ public:
     return maxValue;
   }
 
+  bool hostSet(const PluginParameters_HostFloatType hostValue){    
+    IntType oldValue=*TypeParam<IntType>::value;
+    *TypeParam<IntType>::value=mapHostToProcessor(hostValue);
+
+    if (abs((int)(*TypeParam<IntType>::value-oldValue))>0)
+      return true;
+      
+    return false;
+  }
+    
+  /** Updates the value from its UI denormalized value */
+  void updateProcessorAndHostFromUi(IntType valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false, UpdateFromFlags updateFromFlag=UPDATE_FROM_UI){
+    Param::updateProcessorAndHostFromNormUi(mapUiToHost(valueArg),undoManager,dontCreateNewUndoTransaction,updateFromFlag);
+  }
+    
+  /** Returns the parameter value to set the UI */
+  IntType uiGet() const{    
+    return mapProcessorToUi(TypeParam<IntType>::value);
+  }
+
+  PluginParameters_HostFloatType hostGet() const{
+    return mapProcessorToHost(TypeParam<IntType>::value);
+  }
+
   void readXml(XmlElement *xml,XmlType xmlType=SESSION){    
-    if ((xmlType==SESSION && settings[loadFromSession]) 
-        || (xmlType==PRESET && settings[loadFromPresets])){
+    if ((xmlType==SESSION && Param::settings[Param::loadFromSession]) 
+        || (xmlType==PRESET && Param::settings[Param::loadFromPresets])){
 
       //tell updateProcessorFromXml(...) to update *value from xmlValue
-      updateXml=true;
+      Param::updateXml=true;
 
       if (xml==nullptr)
-        xmlValue=defaultValue;
+        TypeParam<IntType>::xmlValue=TypeParam<IntType>::defaultValue;
       else
-        xmlValue=(PluginParameters_PluginIntType)(xml->getIntAttribute(Param::getXmlName(),defaultValue));    
-      xmlHostValue=(PluginParameters_HostFloatType)(xmlValue-minValue)/(maxValue-minValue);
-      if (maxValue==minValue){
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }
-      if (xmlHostValue<0){
-        xmlValue=minValue;
-        xmlHostValue=(PluginParameters_HostFloatType)(0.f);
-        return;
-      }else if (xmlHostValue>1){
-        xmlValue=maxValue;
-        xmlHostValue=(PluginParameters_HostFloatType)(1.f);
-        return;
+        TypeParam<IntType>::xmlValue=(IntType)(xml->getIntAttribute(Param::getXmlName(),TypeParam<IntType>::defaultValue));    
+
+      Param::xmlHostValue=mapProcessorToHost(&(TypeParam<IntType>::xmlValue));
+
+      if (Param::xmlHostValue<=0){
+        TypeParam<IntType>::xmlValue=minValue;
+      } else if (Param::xmlHostValue>=1){
+        TypeParam<IntType>::xmlValue=maxValue;
       }
     }
   }
 
   void saveXml(XmlElement *xml, XmlType xmlType=SESSION) const{
-    if ((!settings[saveOnlyNonDefaultValues] || *value!=defaultValue) 
-        && ( (xmlType==SESSION && settings[saveToSession]) 
-           || (xmlType==PRESET && settings[saveToPresets])) ){
-      xml->setAttribute(Param::getXmlName(),(int)(*value));
+    if ((!Param::settings[Param::saveOnlyNonDefaultValues] || *TypeParam<IntType>::value!=TypeParam<IntType>::defaultValue) 
+        && ( (xmlType==SESSION && Param::settings[Param::saveToSession])
+           || (xmlType==PRESET && Param::settings[Param::saveToPresets])) ){
+      xml->setAttribute(Param::getXmlName(),(int)(*TypeParam<IntType>::value));
     }
   }
     
-  IntParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, PluginParameters_PluginIntType * const value, const PluginParameters_PluginIntType minValue=0,const PluginParameters_PluginIntType maxValue=1):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    minValue(minValue),
-    maxValue(maxValue),
-    value(value),
-    defaultValue(jmax<PluginParameters_PluginIntType>(minValue,jmin<PluginParameters_PluginIntType>(*value,maxValue)))
-  {
+  IntTypeParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType * const value, const IntType minValue=0,const IntType maxValue=1):
+  TypeParam<IntType>(name,registerAtHostFlag,loadSaveOptions,value),
+  minValue(minValue),
+  maxValue(maxValue){
     //force *value to the [minValue,maxValue] range
-    xmlValue=*value=defaultValue;
+    TypeParam<IntType>::xmlValue=*TypeParam<IntType>::value=TypeParam<IntType>::defaultValue;
     jassert(minValue<maxValue);
   }
 };
 
-class BoolParam : public Param{
-  bool * const value;
-  const bool defaultValue;
-  bool xmlValue;
-    
-  // (prevent copy constructor and operator= being generated..)
-  // avoids warning C4512: "assignment operator could not be generated"
-  BoolParam (const BoolParam&);
-  BoolParam& operator=(const BoolParam &other);    
+typedef IntTypeParam<int> IntParam;
+
+//-----------------------------------------------------------------------------------
+
+/** Class that defines parameters of bool type */
+class BoolParam : public TypeParam<bool>{
+  JUCE_DECLARE_NON_COPYABLE (BoolParam)
 
 public:
-  bool updateProcessorFromXml(){
-    if (*value!=xmlValue && updateXml){     
-      *value=xmlValue;
-      updateXml=false;
-      return true;
-    }
-    updateXml=false;
-    return false;
-  }
-
-  bool updateProcessorFromDefaultXml(){
-    if (*value!=defaultValue){
-      *value=defaultValue;
-      return true;
-    }
-    return false;
-  }
-
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
     bool oldValue=*value;
     *value=(hostValue>0.5)?true:false;
@@ -1544,8 +1289,12 @@ public:
     return false;
   }
     
-  /** Updates the value from its UI denormalized value */ 
-  void updateProcessorAndHostFromUi(const bool valueArg);
+  /** Updates the value from its UI value */ 
+  void updateProcessorAndHostFromUi(const bool valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false, UpdateFromFlags updateFromFlag=UPDATE_FROM_UI){  
+  PluginParameters_HostFloatType newHostValue=(valueArg)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
+  
+  Param::updateProcessorAndHostFromNormUi(newHostValue,undoManager,dontCreateNewUndoTransaction,updateFromFlag);
+}
     
   /** Returns the parameter value to set the UI */
   bool uiGet() const{  
@@ -1554,14 +1303,6 @@ public:
 
   PluginParameters_HostFloatType hostGet() const{
     return (*value)?(PluginParameters_HostFloatType)(1.f):(PluginParameters_HostFloatType)(0.f);
-  }
-
-  const bool getDefaultValue() const{
-    return defaultValue;
-  }  
-    
-  bool getValue() const{
-    return *value;
   }
     
   const double getMin() const{
@@ -1596,10 +1337,7 @@ public:
   }
     
   BoolParam(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool * const value):
-    Param(name,registerAtHostFlag,loadSaveOptions),
-    value(value),
-    defaultValue(*value),
-    xmlValue(*value)
+  TypeParam<bool>(name,registerAtHostFlag,loadSaveOptions,value)
   {
   }
 

@@ -38,54 +38,6 @@
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2005 targetFolder="Builds/VisualStudio2005" vstFolder="C:\Users\user\soft\libscpp\vstsdk2.4"
-            rtasFolder="c:\SDKs\PT_80_SDK" libraryType="1">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="PluginParametersDemo"
-                       winWarningLevel="4" generateManifest="1" binaryPath="" headerPath="../../Source"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="PluginParametersDemo"
-                       binaryPath="" winWarningLevel="4" generateManifest="1" headerPath="../../Source"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="PluginParameters" path="../../modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
-        <MODULEPATH id="juce_graphics" path="../../modules"/>
-        <MODULEPATH id="juce_events" path="../../modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../modules"/>
-        <MODULEPATH id="juce_core" path="../../modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-      </MODULEPATHS>
-    </VS2005>
-    <VS2008 targetFolder="Builds/VisualStudio2008" vstFolder="C:\Users\user\soft\libscpp\vstsdk2.4"
-            rtasFolder="c:\SDKs\PT_80_SDK" libraryType="1">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="PluginParametersDemo"
-                       winWarningLevel="4" generateManifest="1" binaryPath="" headerPath="../../Source"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="PluginParametersDemo"
-                       binaryPath="" winWarningLevel="4" generateManifest="1" headerPath="../../Source"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="PluginParameters" path="../../modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
-        <MODULEPATH id="juce_graphics" path="../../modules"/>
-        <MODULEPATH id="juce_events" path="../../modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../modules"/>
-        <MODULEPATH id="juce_core" path="../../modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-      </MODULEPATHS>
-    </VS2008>
     <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vstsdk2.4" rtasFolder="~/SDKs/PT_80_SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="PluginParametersDemo"
@@ -109,14 +61,20 @@
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" vstFolder="C:\Users\user\soft\libscpp\vstsdk2.4">
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="c:\SDKs\vstsdk2.4">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="PluginParametersDemo"
-                       binaryPath="" headerPath="../../Source"/>
+                       headerPath="../../Source"/>
+        <CONFIGURATION name="Debug64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="PluginParametersDemo"
+                       headerPath="../../Source"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="2" targetName="PluginParametersDemo"
-                       binaryPath="" headerPath="../../Source"/>
+                       isDebug="0" optimisation="3" targetName="PluginParametersDemo"
+                       headerPath="../../Source"/>
+        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="PluginParametersDemo"
+                       headerPath="../../Source"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="PluginParameters" path="../../modules"/>
@@ -133,7 +91,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
       </MODULEPATHS>
-    </VS2010>
+    </VS2013>
   </EXPORTFORMATS>
   <MAINGROUP id="dYAMo6Ykd" name="PluginParametersDemo">
     <FILE id="u9PSdB" name="MyPluginProcessor.cpp" compile="1" resource="0"

@@ -6,17 +6,8 @@
 
   ------------------------------------------------------------------------------
 
-   PluginParameters can be redistributed and/or modified under the terms of the 
-   GNU General Public License (Version 2), as published by the Free Software 
-   Foundation. A copy of the license is included in the JUCE distribution, or 
-   can be found online at www.gnu.org/licenses.
-
-   PluginParameters is distributed in the hope that it will be useful, but 
-   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-   details.
-
-  ------------------------------------------------------------------------------
+   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
    To release a closed-source product which uses PluginParameters, commercial 
    licenses are available. For more information, please send me a PM (Personal 
@@ -46,18 +37,20 @@ class runAfterParamChangeThread : public ThreadPoolJob {
   ParamGroup *paramGroup;
   Param *param;
   float newValue;
+  UpdateFromFlags updateFromFlag;
   int runAfterParamChange;
   int updateUi;  
 
   JobStatus runJob() override;
 
 public:
-  runAfterParamChangeThread(int groupIndex,ParamGroup *paramGroup,Param *param,float newValue,int runAfterParamChange=1,int updateUi=1)
+  runAfterParamChangeThread(int groupIndex,ParamGroup *paramGroup,Param *param,float newValue,UpdateFromFlags updateFromFlag,int runAfterParamChange=1,int updateUi=1)
     :ThreadPoolJob(String(paramGroup->getName())+" "+String(groupIndex)),
     groupIndex(groupIndex),
     paramGroup(paramGroup),
     param(param),
-    newValue(newValue),
+    newValue(newValue),   
+    updateFromFlag(updateFromFlag),
     runAfterParamChange(runAfterParamChange),
     updateUi(updateUi)    
   {
@@ -142,7 +135,7 @@ public:
       if updateUi==1: an updateUi is requested if there's a value change and runAfterParamChange==1.
       if updateUi==2: an updateUi is requested in any case.
   */ 
-  void updateProcessorHostAndUi(Param *const param, float newValue,int runAfterParamChange=1,int updateUi=1){
+  void updateProcessorHostAndUi(Param *const param, float newValue,UpdateFromFlags updateFromFlag,int runAfterParamChange=1,int updateUi=1){
     const int globalIndex=param->getGlobalIndex();
     ParamGroup *paramGroup;
     int groupIndex;
@@ -172,13 +165,13 @@ public:
 
     if (param->getOption(Param::createThreadForParamChange)){
       //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
-      runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(groupIndex,paramGroup,param,newValue,runAfterParamChange,updateUi),true);
+      runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(groupIndex,paramGroup,param,newValue,updateFromFlag,runAfterParamChange,updateUi),true);
     } else {
       switch (runAfterParamChange){
         case 2:
-          paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+          paramGroup->runAfterParamChange(groupIndex,updateFromFlag);
           if (paramGroup->getParentParamGroup()!=nullptr)
-            paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());  
+            paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,updateFromFlag);  
           if (updateUi>=1){
             param->updateUi(true);
           }
@@ -187,9 +180,9 @@ public:
           if (param->hostSet(newValue)){
             if (param->getOption(Param::saveToPresets))
               paramGroup->setNonSavedChanges(true);
-            paramGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
+            paramGroup->runAfterParamChange(groupIndex,updateFromFlag);
             if (paramGroup->getParentParamGroup()!=nullptr)
-              paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
+              paramGroup->getParentParamGroup()->runAfterParamGroupChange(paramGroup->getIndex(),groupIndex,updateFromFlag);
             if (updateUi>=1)
               param->updateUi(true);
           } else if (updateUi==2){
@@ -216,7 +209,8 @@ public:
       String name=groupAutomated[index]->getParam(indexInGroupAutomated[index])->getXmlName();
       ParamGroup *paramGroup=groupAutomated[index];
       while (paramGroup->getParentParamGroup()!=nullptr){
-        name=paramGroup->getXmlName()+"_"+name;
+        if (paramGroup->getXmlNameInGetParameterName()) 
+          name=paramGroup->getXmlName()+"_"+name;
         paramGroup=paramGroup->getParentParamGroup();
       }
       return name; 
@@ -231,28 +225,7 @@ public:
       return 0.f;
   }
 
-  virtual void setParameter (int index, float newValue) override{     
-    if (index>=0 && index<getNumAutomatedParams()){
-      ParamGroup * const localParamGroup=groupAutomated[index];
-      const int groupIndex=indexInGroupAutomated[index];
-      Param * const param=localParamGroup->getParam(groupIndex);
-      if (param->getOption(Param::createThreadForParamChange)){
-        //create a different thread to run runAfterParamChange(..) and runAfterParamGroupChange(...)
-        runAfterParamChangeThreads.addJob(new runAfterParamChangeThread(groupIndex,localParamGroup,param,newValue,3,1),true);
-      } else {
-        if (param->hostSet(newValue)){          
-          localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
-          if (localParamGroup->getParentParamGroup()!=nullptr)
-            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
-          param->updateUi(true);
-        } else if (param->getOption(Param::forceRunAfterParamChangeInHost)){
-          localParamGroup->runAfterParamChange(groupIndex,param->getUpdateFromFlag());
-          if (localParamGroup->getParentParamGroup()!=nullptr)
-            localParamGroup->getParentParamGroup()->runAfterParamGroupChange(localParamGroup->getIndex(),groupIndex,param->getUpdateFromFlag());
-        }
-      }
-    } 
-  }  
+  virtual void setParameter (int index, float newValue) override;  
    
   /** generates the mappings between all parameters in ParamGroups and 
     the global list of parameters, by looking at paramGroup and
@@ -296,16 +269,23 @@ public:
       fileLogger=new FileLogger(File::getSpecialLocation(File::userDesktopDirectory).getChildFile(String("errors.txt")),"error log:\n"),
       Logger::setCurrentLogger(fileLogger);        
       #endif
+      //Create main UndoManager
+      setUndoManager(new UndoManager());
   }
   
   ~PluginProcessor(){
     #ifdef PluginParameters_ErrorLogger
     Logger::setCurrentLogger(nullptr);
     if (fileLogger){
-      delete fileLogger;
+      delete fileLogger;    
       fileLogger=nullptr;
     }
     #endif
+
+    if (getUndoManager()){
+      delete getUndoManager();
+      setUndoManager(nullptr);
+    }
 
     if (groupAutomated){
       delete[] groupAutomated;

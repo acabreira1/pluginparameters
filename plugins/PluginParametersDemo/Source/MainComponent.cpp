@@ -243,35 +243,35 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_logSlider] -- add your slider handling code here..
         LogParam *param=processor->getLogParam(MyPluginProcessor::logIndex);
-        param->updateProcessorAndHostFromUi(logSlider->getValue());
+        param->updateProcessorAndHostFromUi((float)logSlider->getValue());
         //[/UserSliderCode_logSlider]
     }
     else if (sliderThatWasMoved == logWith0Slider)
     {
         //[UserSliderCode_logWith0Slider] -- add your slider handling code here..
         LogWith0Param *param=processor->getLogWith0Param(MyPluginProcessor::logWith0Index);
-        param->updateProcessorAndHostFromUi(logWith0Slider->getValue());
+        param->updateProcessorAndHostFromUi((float)logWith0Slider->getValue());
         //[/UserSliderCode_logWith0Slider]
     }
     else if (sliderThatWasMoved == symSignedLogSlider)
     {
         //[UserSliderCode_symSignedLogSlider] -- add your slider handling code here..
         LogWithSignParam *param=processor->getLogWithSignParam(MyPluginProcessor::symSignedLogIndex);
-        param->updateProcessorAndHostFromUi(symSignedLogSlider->getValue());
+        param->updateProcessorAndHostFromUi((float)symSignedLogSlider->getValue());
         //[/UserSliderCode_symSignedLogSlider]
     }
     else if (sliderThatWasMoved == asymSignedLogSlider)
     {
         //[UserSliderCode_asymSignedLogSlider] -- add your slider handling code here..
         LogWithSignParam *param=processor->getLogWithSignParam(MyPluginProcessor::asymSignedLogIndex);
-        param->updateProcessorAndHostFromUi(asymSignedLogSlider->getValue());
+        param->updateProcessorAndHostFromUi((float)asymSignedLogSlider->getValue());
         //[/UserSliderCode_asymSignedLogSlider]
     }
     else if (sliderThatWasMoved == floatSlider)
     {
         //[UserSliderCode_floatSlider] -- add your slider handling code here..
         FloatParam *param=processor->getFloatParam(MyPluginProcessor::floatIndex);
-        param->updateProcessorAndHostFromUi(floatSlider->getValue());
+        param->updateProcessorAndHostFromUi((float)floatSlider->getValue());
         //[/UserSliderCode_floatSlider]
     }
 
