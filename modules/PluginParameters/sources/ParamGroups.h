@@ -1,20 +1,25 @@
 /*
-  ==============================================================================
+==============================================================================
 
-   This file is part of the PluginParameters module.
-   Copyright 2012-13 by MarC
+This file is part of the PluginParameters module.
+Copyright 2012-15 by 4drX
 
-  ------------------------------------------------------------------------------
+Permission is granted to use this software under the terms of the
+GPL v2 (or any later version).
 
-   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
-   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Details of this license can be found at: www.gnu.org/licenses
 
-   To release a closed-source product which uses PluginParameters, commercial 
-   licenses are available. For more information, please send me a PM (Personal 
-   Message) or reply to this thread at the JUCE forum: 
-   http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+------------------------------------------------------------------------------
 
-  ==============================================================================
+PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+To release a closed-source product which uses PluginParameters, you will
+need to purchase a commercial license. For more information, please send me
+a PM (Personal Message) or reply to this thread at the JUCE forum:
+http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+
+==============================================================================
 */
 
 #ifndef __PLUGINPARAMETERS_PARAMGROUPS_HEADER__
@@ -23,23 +28,29 @@
 #include "Params.h"
 
 class StringParamArray;
-class FloatParamArray;
-class LogParamArray;
-class LogWith0ParamArray;
-class LogWithSignParamArray;
-class IntParamArray;
+
+template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+class FloatTypeParamArray;
+
+template<class IntType>
+class IntTypeParamArray;
+
 class BoolParamArray;
 
 class StringParamMatrix;
-class FloatParamMatrix;
-class LogParamMatrix;
-class LogWith0ParamMatrix;
-class LogWithSignParamMatrix;
-class IntParamMatrix;
+
+template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+class FloatTypeParamMatrix;
+
+template<class IntType>
+class IntTypeParamMatrix;
+
 class BoolParamMatrix;
 
 /** Base class for all groups of parameters. Distinctions by type are made below. */
 class ParamGroup{  
+  JUCE_DECLARE_NON_COPYABLE(ParamGroup)
+
 private:       
   bool nonSavedChanges;
 
@@ -287,13 +298,11 @@ public:
   }          
   
   StringParam *getStringParam(const int index) const{
-    /* wrong index */
+    /* Wrong index? */
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
+        You want to use another method such as:
+        getStringParam(), getFloatParam(), getLogParam(), etc  */
     StringParam *pointer=dynamic_cast<StringParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
@@ -312,31 +321,54 @@ public:
   StringParamArray *getStringParamArray(const int index) const;
   StringParamMatrix *getStringParamMatrix(const int index) const;
   
-  template<class FloatType,class FloatTypeMap>
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
   FloatTypeParam<FloatType,FloatTypeMap> *getFloatTypeParam(const int index) const{
-    /* wrong index */
+    /* Wrong index? */
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
+        You want to use another method such as:
+        getStringParam(), getFloatParam(), getLogParam(), etc  */
     FloatTypeParam<FloatType,FloatTypeMap> *pointer=dynamic_cast<FloatTypeParam<FloatType,FloatTypeMap> *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
+  }  
+
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+  void addFloatTypeParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(1),bool forceUniqueXmlName=true){
+    Param *param;
+    addParam(paramIndex,param=new FloatTypeParam<FloatType,FloatTypeMap>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
+    paramsToUnallocateAtDestructor.add(param);
   }
 
-  template<class FloatType>
-  FloatTypeParam<FloatType> *getFloatTypeParam(const int index) const{
-    /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
-    /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
-    FloatTypeParam<FloatType> *pointer=dynamic_cast<FloatTypeParam<FloatType> *>(paramList[index]);
-    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+  void addFloatTypeParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType* const values, int *const size, const int maxSize, const FloatType minValue = (FloatType)(0), const FloatType maxValue = (FloatType)(1), bool saveOnlySizedArrayFlag = true){
+    ParamGroup *paramGroup;
+    addParamGroup(paramIndex, paramGroup = new FloatTypeParamArray<FloatType, FloatTypeMap>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag));
+    paramGroupsToUnallocateAtDestructor.add(paramGroup);
+  }
+
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+  void addFloatTypeParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const FloatType minValue = (FloatType)(0), const FloatType maxValue = (FloatType)(1), const bool saveOnlySizedMatrixFlag = true){
+    ParamGroup *paramGroup;
+    addParamGroup(paramIndex, paramGroup = new FloatTypeParamMatrix<FloatType, FloatTypeMap>(name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag));
+    paramGroupsToUnallocateAtDestructor.add(paramGroup);
+  }
+
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+  FloatTypeParamArray<FloatType, FloatTypeMap> *getFloatTypeParamArray(const int index) const{
+    /* Wrong index? */
+    if (index<0 || index >= paramGroupList.size()) { jassertfalse; return nullptr; }
+    FloatTypeParamArray<FloatType, FloatTypeMap> *pointer = dynamic_cast<FloatTypeParamArray<FloatType, FloatTypeMap> *>(paramGroupList[index]);
+    if (pointer == nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__) + ":" + String(__LINE__) + "::" + "You are trying to fetch a ParamGroup of another type..."); return nullptr; }
+    return pointer;
+  }
+
+  template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
+  FloatTypeParamMatrix<FloatType, FloatTypeMap> *getFloatTypeParamMatrix(const int index) const{
+    /* Wrong index? */
+    if (index<0 || index >= paramGroupList.size()) { jassertfalse; return nullptr; }
+    FloatTypeParamMatrix<FloatType, FloatTypeMap> *pointer = dynamic_cast<FloatTypeParamMatrix<FloatType, FloatTypeMap> *>(paramGroupList[index]);
+    if (pointer == nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__) + ":" + String(__LINE__) + "::" + "You are trying to fetch a ParamGroup of another type..."); return nullptr; }
     return pointer;
   }
 
@@ -344,153 +376,468 @@ public:
     return getFloatTypeParam<float>(index);
   }
 
-  template<class FloatType,class FloatTypeMap>
-  void addFloatTypeParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(0),bool forceUniqueXmlName=true){
-    Param *param;
-    addParam(paramIndex,param=new FloatTypeParam<FloatType,FloatTypeMap>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
-    paramsToUnallocateAtDestructor.add(param);
-  }
-
-  template<class FloatType>
-  void addFloatTypeParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0),const FloatType maxValue=(FloatType)(0),bool forceUniqueXmlName=true){
-    Param *param;
-    addParam(paramIndex,param=new FloatTypeParam<FloatType>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
-    paramsToUnallocateAtDestructor.add(param);
-  }   
-
   void addFloatParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
     addFloatTypeParam<float>(paramIndex,name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,forceUniqueXmlName);
   }   
 
-  void addFloatParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
+  void addFloatParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values, int *const size, const int maxSize, const float minValue = (float)(0), const float maxValue = (float)(1), bool saveOnlySizedArrayFlag = true){
+    addFloatTypeParamArray<float>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
 
-  void addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addFloatParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue = (float)(0), const float maxValue = (float)(1), const bool saveOnlySizedMatrixFlag = true){    
+    addFloatTypeParamMatrix<float>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
 
-  FloatParamArray *getFloatParamArray(const int index) const;
-  FloatParamMatrix *getFloatParamMatrix(const int index) const;
+  FloatTypeParamArray<float> *getFloatParamArray(const int index) const{
+    return getFloatTypeParamArray<float>(index);
+  }
+
+  FloatTypeParamMatrix<float> *getFloatParamMatrix(const int index) const{
+    return getFloatTypeParamMatrix<float>(index);
+  }
   
   LogParam *getLogParam(const int index) const{
-    /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
-    /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
-    LogParam *pointer=dynamic_cast<LogParam *>(paramList[index]);
-    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return pointer;
+    return getFloatTypeParam<float,DefaultLogMap>(index);
   }
    
-   void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
-    Param *param;
-    addParam(paramIndex,param=new LogParam(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
-    paramsToUnallocateAtDestructor.add(param);
+  void addLogParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
+    addFloatTypeParam<float,DefaultLogMap>(paramIndex,name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue, forceUniqueXmlName);
   }   
 
-  void addLogParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);  
+   void addLogParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values, int *const size, const int maxSize, const float minValue = (float)(0), const float maxValue = (float)(1), bool saveOnlySizedArrayFlag = true){
+     addFloatTypeParamArray<float,DefaultLogMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+   }
 
-  void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);  
+   void addLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue = (float)(0), const float maxValue = (float)(1), const bool saveOnlySizedMatrixFlag = true){
+     addFloatTypeParamMatrix<float,DefaultLogMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+   }
   
-  LogParamArray *getLogParamArray(const int index) const;
-  LogParamMatrix *getLogParamMatrix(const int index) const;
+   FloatTypeParamArray<float, DefaultLogMap> *getLogParamArray(const int index) const{
+     return getFloatTypeParamArray<float,DefaultLogMap>(index);
+   }
 
-  LogWith0Param *getLogWith0Param(const int index) const{
-    /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
-    /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
-    LogWith0Param *pointer=dynamic_cast<LogWith0Param *>(paramList[index]);
-    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return pointer;
+   FloatTypeParamMatrix<float, DefaultLogMap> *getLogParamMatrix(const int index) const{
+     return getFloatTypeParamMatrix<float,DefaultLogMap>(index);
+   }
+
+   FloatTypeParam<float, DefaultLogWith0Map> *getLogWith0Param(const int index) const{
+    return getFloatTypeParam<float, DefaultLogWith0Map>(index);
   }  
    
    void addLogWith0Param(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001),const float maxValue=(float)(1),bool forceUniqueXmlName=true){
-    Param *param;
-    addParam(paramIndex,param=new LogWith0Param(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);    
-    paramsToUnallocateAtDestructor.add(param);
+     addFloatTypeParam<float, DefaultLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
   }
 
-  void addLogWith0ParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
+   void addLogWith0ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values, int *const size, const int maxSize, const float minValue = (float)(0), const float maxValue = (float)(1), bool saveOnlySizedArrayFlag = true){
+     addFloatTypeParamArray<float, DefaultLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+   }
 
-  void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
+   void addLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue = (float)(0), const float maxValue = (float)(1), const bool saveOnlySizedMatrixFlag = true){
+     addFloatTypeParamMatrix<float, DefaultLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+   }
   
-  LogWith0ParamArray *getLogWith0ParamArray(const int index) const;
-  LogWith0ParamMatrix *getLogWith0ParamMatrix(const int index) const;
+   FloatTypeParamArray<float, DefaultLogWith0Map> *getLogWith0ParamArray(const int index) const{
+     return getFloatTypeParamArray<float, DefaultLogWith0Map>(index);
+   }
 
-  LogWithSignParam *getLogWithSignParam(const int index) const{
-    /* wrong index */
-    if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
-    /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
-    LogWithSignParam *pointer=dynamic_cast<LogWithSignParam *>(paramList[index]);
-    if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
-    return pointer;
+   FloatTypeParamMatrix<float, DefaultLogWith0Map> *getLogWith0ParamMatrix(const int index) const{
+     return getFloatTypeParamMatrix<float, DefaultLogWith0Map>(index);
+   }
+
+   FloatTypeParam<float, DefaultLogWithSignMap> *getLogWithSignParam(const int index) const{
+    return getFloatTypeParam<float, DefaultLogWithSignMap>(index);
   }  
    
    void addLogWithSignParam(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minNegativeValue=(float)(-1),const float maxPositiveValue=(float)(1),bool forceUniqueXmlName=true){
-   Param *param;
-   addParam(paramIndex,param=new LogWithSignParam(name,registerAtHostFlag,loadSaveOptions,value,minNegativeValue,maxPositiveValue),forceUniqueXmlName);
-  paramsToUnallocateAtDestructor.add(param);
-}  
+     addFloatTypeParam<float, DefaultLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minNegativeValue, maxPositiveValue, forceUniqueXmlName);
+    }
 
-  void addLogWithSignParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true);
+   void addLogWithSignParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values, int *const size, const int maxSize, const float minValue = (float)(0), const float maxValue = (float)(1), bool saveOnlySizedArrayFlag = true){
+     addFloatTypeParamArray<float, DefaultLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+   }
 
-  void addLogWithSignParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true);
+   void addLogWithSignParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue = (float)(0), const float maxValue = (float)(1), const bool saveOnlySizedMatrixFlag = true){
+     addFloatTypeParamMatrix<float, DefaultLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+   }
 
-  LogWithSignParamArray *getLogWithSignParamArray(const int index) const;
-  LogWithSignParamMatrix *getLogWithSignParamMatrix(const int index) const;
-  
+   FloatTypeParamArray<float, DefaultLogWithSignMap> *getLogWithSignParamArray(const int index) const{
+     return getFloatTypeParamArray<float, DefaultLogWithSignMap>(index);
+   }
+
+   FloatTypeParamMatrix<float, DefaultLogWithSignMap> *getLogWithSignParamMatrix(const int index) const{
+     return getFloatTypeParamMatrix<float, DefaultLogWithSignMap>(index);
+   }
+
+  DoubleParam* getDoubleParam(const int index) const{
+    return getFloatTypeParam<double>(index);
+  }
+
+  void addDoubleParam(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue = (double)(0), const double maxValue = (double)(1), bool forceUniqueXmlName = true){
+    addFloatTypeParam<double>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addDoubleParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double* const values, int *const size, const int maxSize, const double minValue = (double)(0), const double maxValue = (double)(1), bool saveOnlySizedArrayFlag = true){
+    addFloatTypeParamArray<double>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addDoubleParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue = (double)(0), const double maxValue = (double)(1), const bool saveOnlySizedMatrixFlag = true){
+    addFloatTypeParamMatrix<double>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  FloatTypeParamArray<double> *getDoubleParamArray(const int index) const{
+    return getFloatTypeParamArray<double>(index);
+  }
+
+  FloatTypeParamMatrix<double> *getDoubleParamMatrix(const int index) const{
+    return getFloatTypeParamMatrix<double>(index);
+  }
+
+  FloatTypeParam<double, DefaultDoubleLogMap> *getDoubleLogParam(const int index) const{
+    return getFloatTypeParam<double, DefaultDoubleLogMap>(index);
+  }
+
+  void addDoubleLogParam(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue = (double)(0.001), const double maxValue = (double)(1), bool forceUniqueXmlName = true){
+    addFloatTypeParam<double, DefaultDoubleLogMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addDoubleLogParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double* const values, int *const size, const int maxSize, const double minValue = (double)(0), const double maxValue = (double)(1), bool saveOnlySizedArrayFlag = true){
+    addFloatTypeParamArray<double, DefaultDoubleLogMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addDoubleLogParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue = (double)(0), const double maxValue = (double)(1), const bool saveOnlySizedMatrixFlag = true)
+  {
+    addFloatTypeParamMatrix<double, DefaultDoubleLogMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  FloatTypeParamArray<double, DefaultDoubleLogMap> *getDoubleLogParamArray(const int index) const{
+    return getFloatTypeParamArray<double, DefaultDoubleLogMap>(index);
+  }
+
+  FloatTypeParamMatrix<double, DefaultDoubleLogMap> *getDoubleLogParamMatrix(const int index) const{
+    return getFloatTypeParamMatrix<double, DefaultDoubleLogMap>(index);
+  }
+
+  FloatTypeParam<double, DefaultDoubleLogWith0Map> *getDoubleLogWith0Param(const int index) const{
+    return getFloatTypeParam<double, DefaultDoubleLogWith0Map>(index);
+  }
+
+  void addDoubleLogWith0Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue = (double)(0.001), const double maxValue = (double)(1), bool forceUniqueXmlName = true){
+    addFloatTypeParam<double, DefaultDoubleLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addDoubleLogWith0ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double* const values, int *const size, const int maxSize, const double minValue = (double)(0), const double maxValue = (double)(1), bool saveOnlySizedArrayFlag = true){
+    addFloatTypeParamArray<double, DefaultDoubleLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addDoubleLogWith0ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue = (double)(0), const double maxValue = (double)(1), const bool saveOnlySizedMatrixFlag = true){
+    addFloatTypeParamMatrix<double, DefaultDoubleLogWith0Map>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  FloatTypeParamArray<double, DefaultDoubleLogWith0Map> *getDoubleLogWith0ParamArray(const int index) const{
+    return getFloatTypeParamArray<double, DefaultDoubleLogWith0Map>(index);
+  }
+
+  FloatTypeParamMatrix<double, DefaultDoubleLogWith0Map> *getDoubleLogWith0ParamMatrix(const int index) const{
+    return getFloatTypeParamMatrix<double, DefaultDoubleLogWith0Map>(index);
+  }
+
+  DoubleLogWithSignParam *getDoubleLogWithSignParam(const int index) const{
+    return getFloatTypeParam<double, DefaultDoubleLogWithSignMap>(index);
+  }
+
+  void addDoubleLogWithSignParam(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minNegativeValue = (double)(-1), const double maxPositiveValue = (double)(1), bool forceUniqueXmlName = true){
+    addFloatTypeParam<double, DefaultDoubleLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minNegativeValue, maxPositiveValue, forceUniqueXmlName);
+  }
+
+  void addDoubleLogWithSignParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double* const values, int *const size, const int maxSize, const double minValue = (double)(0), const double maxValue = (double)(1), bool saveOnlySizedArrayFlag = true){
+    addFloatTypeParamArray<double, DefaultDoubleLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addDoubleLogWithSignParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue = (double)(0), const double maxValue = (double)(1), const bool saveOnlySizedMatrixFlag = true){
+    addFloatTypeParamMatrix<double, DefaultDoubleLogWithSignMap>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  FloatTypeParamArray<double, DefaultDoubleLogWithSignMap> *getDoubleLogWithSignParamArray(const int index) const{
+    return getFloatTypeParamArray<double, DefaultDoubleLogWithSignMap>(index);
+  }
+
+  FloatTypeParamMatrix<double, DefaultDoubleLogWithSignMap> *getDoubleLogWithSignParamMatrix(const int index) const{
+    return getFloatTypeParamMatrix<double, DefaultDoubleLogWithSignMap>(index);
+  }
+
   template<class IntType>
   IntTypeParam<IntType> *getIntTypeParam(const int index) const{
-    /* wrong index */ 
+    /* Wrong index? */ 
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
+        You want to use another method such as:
+        getStringParam(), getFloatParam(), getLogParam(), etc */
     IntTypeParam<IntType> *pointer=dynamic_cast<IntTypeParam<IntType> *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
   }
 
-  IntParam *getIntParam(const int index) const{
-    return getIntTypeParam<int>(index);  
-  }
-  
   template<class IntType>
-  void addIntTypeParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,IntType *const value, const IntType minValue=0,const IntType maxValue=1,bool forceUniqueXmlName=true){
+  void addIntTypeParam(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType *const value, const IntType minValue = 0, const IntType maxValue = 1, bool forceUniqueXmlName = true){
     Param *param;
-    addParam(paramIndex,param=new IntTypeParam<IntType>(name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue),forceUniqueXmlName);
+    addParam(paramIndex, param = new IntTypeParam<IntType>(name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue), forceUniqueXmlName);
     paramsToUnallocateAtDestructor.add(param);
+  }  
+
+  template<class IntType>
+  void addIntTypeParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType* const values, int *const size, const int maxSize, const IntType minValue = (IntType)(0), const IntType maxValue = (IntType)(1), bool saveOnlySizedArrayFlag = true){
+    ParamGroup *paramGroup;
+    addParamGroup(paramIndex, paramGroup = new IntTypeParamArray<IntType>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag));
+    paramGroupsToUnallocateAtDestructor.add(paramGroup);
+  }
+
+  template<class IntType>
+  void addIntTypeParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const IntType minValue = (IntType)(0), const IntType maxValue = (IntType)(1), const bool saveOnlySizedMatrixFlag = true){
+    ParamGroup *paramGroup;
+    addParamGroup(paramIndex, paramGroup = new IntTypeParamMatrix<IntType>(name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag));
+    paramGroupsToUnallocateAtDestructor.add(paramGroup);
+  }
+
+  template<class IntType>
+  IntTypeParamArray<IntType> *getIntTypeParamArray(const int index) const{
+    /* Wrong index? */
+    if (index<0 || index >= paramGroupList.size()) { jassertfalse; return nullptr; }
+    IntTypeParamArray<IntType> *pointer = dynamic_cast<IntTypeParamArray<IntType> *>(paramGroupList[index]);
+    if (pointer == nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__) + ":" + String(__LINE__) + "::" + "You are trying to fetch a ParamGroup of another type..."); return nullptr; }
+    return pointer;
+  }
+
+  template<class IntType>
+  IntTypeParamMatrix<IntType> *getIntTypeParamMatrix(const int index) const{
+    /* Wrong index? */
+    if (index<0 || index >= paramGroupList.size()) { jassertfalse; return nullptr; }
+    IntTypeParamMatrix<IntType> *pointer = dynamic_cast<IntTypeParamMatrix<IntType> *>(paramGroupList[index]);
+    if (pointer == nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__) + ":" + String(__LINE__) + "::" + "You are trying to fetch a ParamGroup of another type..."); return nullptr; }
+    return pointer;
+  }  
+
+  IntParam *getIntParam(const int index) const{
+    return getIntTypeParam<int>(index);
+  }
+
+  Int8Param *getInt8Param(const int index) const{
+    return getIntTypeParam<juce::int8>(index);
+  }
+
+  Uint8Param *getUint8Param(const int index) const{
+    return getIntTypeParam<juce::uint8>(index);
+  }
+
+  Int16Param *getInt16Param(const int index) const{
+    return getIntTypeParam<juce::int16>(index);
+  }
+
+  Uint16Param *getUint16Param(const int index) const{
+    return getIntTypeParam<juce::uint16>(index);
+  }
+
+  Int32Param *getInt32Param(const int index) const{
+    return getIntTypeParam<juce::int32>(index);
+  }
+
+  Uint32Param *getUint32Param(const int index) const{
+    return getIntTypeParam<juce::uint32>(index);
+  }
+
+  Int64Param *getInt64Param(const int index) const{
+    return getIntTypeParam<juce::int64>(index);
+  }
+
+  Uint64Param *getUint64Param(const int index) const{
+    return getIntTypeParam<juce::uint64>(index);
   }
 
   void addIntParam(const int paramIndex,const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions,int *const value, const int minValue=0,const int maxValue=1,bool forceUniqueXmlName=true){
     addIntTypeParam<int>(paramIndex,name,registerAtHostFlag,loadSaveOptions,value,minValue,maxValue,forceUniqueXmlName);
   }
 
-  void addIntParamArray(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int* const values,int *const size,const int maxSize,const int minValue=(int)(0),const int maxValue=(int)(1), bool saveOnlySizedArrayFlag=true);  
+  void addInt8Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8 *const value, const juce::int8 minValue = 0, const juce::int8 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::int8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
 
-  void addIntParamMatrix(const int paramIndex,const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const int minValue=(int)(0),const int maxValue=(int)(1), const bool saveOnlySizedMatrixFlag=true);
+  void addUint8Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8 *const value, const juce::uint8 minValue = 0, const juce::uint8 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::uint8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addInt16Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16 *const value, const juce::int16 minValue = 0, const juce::int16 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::int16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addUint16Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16 *const value, const juce::uint16 minValue = 0, const juce::uint16 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::uint16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addInt32Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32 *const value, const juce::int32 minValue = 0, const juce::int32 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::int32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addUint32Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32 *const value, const juce::uint32 minValue = 0, const juce::uint32 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::uint32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
   
-  IntParamArray *getIntParamArray(const int index) const;
-  IntParamMatrix *getIntParamMatrix(const int index) const;
+  void addInt64Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64 *const value, const juce::int64 minValue = 0, const juce::int64 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::int64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addUint64Param(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64 *const value, const juce::uint64 minValue = 0, const juce::uint64 maxValue = 1, bool forceUniqueXmlName = true){
+    addIntTypeParam<juce::uint64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, value, minValue, maxValue, forceUniqueXmlName);
+  }
+
+  void addIntParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int* const values, int *const size, const int maxSize, const int minValue = (int)(0), const int maxValue = (int)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<int>(paramIndex,name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addIntParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const int minValue = (int)(0), const int maxValue = (int)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<int>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<int> *getIntParamArray(const int index) const{
+    return getIntTypeParamArray<int>(index);
+  }
+
+  IntTypeParamMatrix<int> *getIntParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<int>(index);
+  }
+
+  void addInt8ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8* const values, int *const size, const int maxSize, const juce::int8 minValue = (juce::int8)(0), const juce::int8 maxValue = (juce::int8)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::int8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addInt8ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int8 minValue = (juce::int8)(0), const juce::int8 maxValue = (juce::int8)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::int8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+  
+  IntTypeParamArray<juce::int8> *getInt8ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::int8>(index);
+  }
+
+  IntTypeParamMatrix<juce::int8> *getInt8ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::int8>(index);
+  }
+
+  void addUint8ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8* const values, int *const size, const int maxSize, const juce::uint8 minValue = (juce::uint8)(0), const juce::uint8 maxValue = (juce::uint8)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::uint8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addUint8ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint8 minValue = (juce::uint8)(0), const juce::uint8 maxValue = (juce::uint8)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::uint8>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::uint8> *getUint8ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::uint8>(index);
+  }
+
+  IntTypeParamMatrix<juce::uint8> *getUint8ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::uint8>(index);
+  }
+
+  void addInt16ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16* const values, int *const size, const int maxSize, const juce::int16 minValue = (juce::int16)(0), const juce::int16 maxValue = (juce::int16)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::int16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addInt16ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int16 minValue = (juce::int16)(0), const juce::int16 maxValue = (juce::int16)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::int16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::int16> *getInt16ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::int16>(index);
+  }
+
+  IntTypeParamMatrix<juce::int16> *getInt16ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::int16>(index);
+  }
+
+  void addUint16ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16* const values, int *const size, const int maxSize, const juce::uint16 minValue = (juce::uint16)(0), const juce::uint16 maxValue = (juce::uint16)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::uint16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addUint16ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint16 minValue = (juce::uint16)(0), const juce::uint16 maxValue = (juce::uint16)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::uint16>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::uint16> *getUint16ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::uint16>(index);
+  }
+
+  IntTypeParamMatrix<juce::uint16> *getUint16ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::uint16>(index);
+  }
+
+  void addInt32ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32* const values, int *const size, const int maxSize, const juce::int32 minValue = (juce::int32)(0), const juce::int32 maxValue = (juce::int32)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::int32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addInt32ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int32 minValue = (juce::int32)(0), const juce::int32 maxValue = (juce::int32)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::int32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::int32> *getInt32ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::int32>(index);
+  }
+
+  IntTypeParamMatrix<juce::int32> *getInt32ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::int32>(index);
+  }
+
+  void addUint32ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32* const values, int *const size, const int maxSize, const juce::uint32 minValue = (juce::uint32)(0), const juce::uint32 maxValue = (juce::uint32)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::uint32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addUint32ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint32 minValue = (juce::uint32)(0), const juce::uint32 maxValue = (juce::uint32)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::uint32>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::uint32> *getUint32ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::uint32>(index);
+  }
+
+  IntTypeParamMatrix<juce::uint32> *getUint32ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::uint32>(index);
+  }
+
+  void addInt64ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64* const values, int *const size, const int maxSize, const juce::int64 minValue = (juce::int64)(0), const juce::int64 maxValue = (juce::int64)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::int64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addInt64ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int64 minValue = (juce::int64)(0), const juce::int64 maxValue = (juce::int64)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::int64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::int64> *getInt64ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::int64>(index);
+  }
+
+  IntTypeParamMatrix<juce::int64> *getInt64ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::int64>(index);
+  }
+
+  void addUint64ParamArray(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64* const values, int *const size, const int maxSize, const juce::uint64 minValue = (juce::uint64)(0), const juce::uint64 maxValue = (juce::uint64)(1), bool saveOnlySizedArrayFlag = true){
+    addIntTypeParamArray<juce::uint64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, minValue, maxValue, saveOnlySizedArrayFlag);
+  }
+
+  void addUint64ParamMatrix(const int paramIndex, const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint64 minValue = (juce::uint64)(0), const juce::uint64 maxValue = (juce::uint64)(1), const bool saveOnlySizedMatrixFlag = true){
+    addIntTypeParamMatrix<juce::uint64>(paramIndex, name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, minValue, maxValue, saveOnlySizedMatrixFlag);
+  }
+
+  IntTypeParamArray<juce::uint64> *getUint64ParamArray(const int index) const{
+    return getIntTypeParamArray<juce::uint64>(index);
+  }
+
+  IntTypeParamMatrix<juce::uint64> *getUint64ParamMatrix(const int index) const{
+    return getIntTypeParamMatrix<juce::uint64>(index);
+  }
 
   BoolParam *getBoolParam(const int index) const{
-    /* wrong index */
+    /* Wrong index? */
     if (index<0 || index>=paramList.size()) {jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"Param index out of bounds: "+String(index)+" in ParamGroup with XML name: "+this->getXmlName()); return nullptr;}
     /* You are trying to fetch a parameter with another type... 
-        You want to use another method from the following list: 
-        getStringParam(), getFloatParam(), getLogParam(), 
-        getIntParam(), 
-        getBoolParam()  */
+        You want to use another method such as:
+        getStringParam(), getFloatParam(), getLogParam(), etc */
     BoolParam *pointer=dynamic_cast<BoolParam *>(paramList[index]);
     if (pointer==nullptr) { jassertfalse; Logger::writeToLog(String(__FILE__)+":"+String(__LINE__)+"::"+"You are trying to fetch a parameter with another type..."); return nullptr;}
     return pointer;
@@ -764,16 +1111,21 @@ public:
 //-----------------------------------------------------------------------------------
 
 /** ParamGroup base class for array of Params. */
-class ParamArray : public ParamGroup{       
-  int *const size;
+template<class Type>
+class TypeParamArray : public ParamGroup{       
+  JUCE_DECLARE_NON_COPYABLE(TypeParamArray)
 
-protected:      
+private:  
+  int *const size;
   const int maxSize;
-  const bool registerAtHostFlag;
-  const LoadSaveOptions loadSaveOptions;
-  const bool saveOnlySizedArrayFlag;      
-  const bool saveOnlyNonDefaultValuesFlag;    
+  const bool saveOnlySizedArrayFlag;
+  const bool saveOnlyNonDefaultValuesFlag;
   const bool updateOnlySizedArrayFlag;
+
+protected:
+  Type* const values;  
+  const bool registerAtHostFlag;
+  const LoadSaveOptions loadSaveOptions;  
 
 public:      
   virtual void initParameters() = 0;
@@ -806,11 +1158,16 @@ public:
     else
       return 0;
   }
+
+  /** Returns the value of position i in the array */
+  Type getValue(int i) const{
+    if (i >= 0 && i<getSize() && i<maxSize)
+      return values[i];
+    else return 0;
+  }
  
   virtual void updateUi(const bool request,const bool applyRecursively){
-    const int arrayLength=(size!=nullptr)?*size:maxSize;
-
-    for (int i=0;i<arrayLength;i++)
+    for (int i = 0; i<getSize(); i++)
       getParam(i)->updateUi(request); 
     
     if (applyRecursively){     
@@ -829,11 +1186,11 @@ public:
     if (saveXmlOptionCopy){
       switch(xmlType){
         case SESSION:
-          for (int i=0;i<ParamArray::maxSize;i++)
+          for (int i=0;i<maxSize;i++)
             saveXmlOptionCopy[i]=getParam(i)->getOption(Param::saveToSession);
           break;
         case PRESET:
-          for (int i=0;i<ParamArray::maxSize;i++)
+          for (int i=0;i<maxSize;i++)
             saveXmlOptionCopy[i]=getParam(i)->getOption(Param::saveToPresets);
           break;
         default:
@@ -841,14 +1198,14 @@ public:
       }      
     }
     
-    if (ParamArray::saveOnlySizedArrayFlag){
+    if (saveOnlySizedArrayFlag){
       switch(xmlType){
         case SESSION:
-          for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++)
+          for (int i = getSize(); i<maxSize; i++)
             getParam(i)->setOption(Param::saveToSession,false);
           break;
         case PRESET:
-          for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++)
+          for (int i = getSize(); i<maxSize; i++)
             getParam(i)->setOption(Param::saveToPresets,false);
           break;
         default:
@@ -861,11 +1218,11 @@ public:
     if (saveXmlOptionCopy){
       switch(xmlType){
         case SESSION:
-          for (int i=0;i<ParamArray::maxSize;i++)
+          for (int i=0;i<maxSize;i++)
             getParam(i)->setOption(Param::saveToSession,saveXmlOptionCopy[i]);
           break;
         case PRESET:
-          for (int i=ParamArray::getSize();i<ParamArray::maxSize;i++)
+          for (int i = getSize(); i<maxSize; i++)
             getParam(i)->setOption(Param::saveToPresets,saveXmlOptionCopy[i]);
           break;
         default:
@@ -955,271 +1312,142 @@ public:
     runAfterParamGroupUpdate();
   }
 
-  ParamArray(const String &name,const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int *const size, const int maxSize, bool saveOnlySizedArrayFlag=true, bool updateOnlySizedArrayFlag=true):
-  ParamGroup(name),
+  TypeParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, Type* const values, int *const size, const int maxSize, bool saveOnlySizedArrayFlag = true, bool updateOnlySizedArrayFlag = true) :
+  ParamGroup(name),  
   size(size),
   maxSize(maxSize),  
-  registerAtHostFlag(registerAtHostFlag), 
-  loadSaveOptions(loadSaveOptions), 
   saveOnlySizedArrayFlag(saveOnlySizedArrayFlag),
   saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag),
-  updateOnlySizedArrayFlag(updateOnlySizedArrayFlag)
+  updateOnlySizedArrayFlag(updateOnlySizedArrayFlag),
+  values(values),
+  registerAtHostFlag(registerAtHostFlag), 
+  loadSaveOptions(loadSaveOptions)  
   {
-    saveXmlOptionCopy=new bool[maxSize];
+    //deleted at ~ParamGroup()
+    ParamGroup::saveXmlOptionCopy=new bool[maxSize];
   }
 
-  virtual ~ParamArray() {}
+  virtual ~TypeParamArray() {
+  }
   
 };
 
-/** ParamGroup containing an array of FloatParams. */
-class FloatParamArray : public ParamArray{
-private:
-  float* const values;
-  float minValue;
-  float maxValue;
+/** ParamGroup containing an array of StringParams. */
+class StringParamArray : public TypeParamArray<String>{
+  JUCE_DECLARE_NON_COPYABLE(StringParamArray)
 
-public: 
+public:
   void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addFloatParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
+    for (int i = 0; i<TypeParamArray<String>::getMaxSize(); i++){
+      ParamGroup::addStringParam(i, (String)(i), TypeParamArray<String>::registerAtHostFlag, TypeParamArray<String>::loadSaveOptions, &(TypeParamArray<String>::values[i]), false);
     }
   }
 
-  /** Returns the value of position i in the array */
-  float getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }  
+  /** Updates the value from its UI value */
+  void updateProcessorAndHostFromUi(int i, const String valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
+    return ParamGroup::getStringParam(i)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
+  }
+
+  StringParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String* const values, int *const size, const int maxSize, bool saveOnlySizedArrayFlag = true) :
+    TypeParamArray<String>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, saveOnlySizedArrayFlag)
+  {
+    // Strings cannot be automated! 
+    // (They aren't supported at least in VST)
+    // Try again setting argument registerAtHostFlag=false
+    jassert(TypeParamArray<String>::registerAtHostFlag == false);
+  }
+};
+
+/** ParamGroup containing an array of FloatTypeParams. */
+template<class FloatType, class FloatTypeMap>
+class FloatTypeParamArray : public TypeParamArray<FloatType>{
+  JUCE_DECLARE_NON_COPYABLE(FloatTypeParamArray)
+
+private:
+  const FloatType minValue;
+  const FloatType maxValue;
+
+public: 
+  void initParameters() override{
+    for (int i=0;i<TypeParamArray<FloatType>::getMaxSize();i++){
+      ParamGroup::addFloatTypeParam<FloatType, FloatTypeMap>(i, (String)(i), TypeParamArray<FloatType>::registerAtHostFlag, TypeParamArray<FloatType>::loadSaveOptions, &(TypeParamArray<FloatType>::values[i]), minValue, maxValue, false);
+    }
+  }
   
   /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getFloatParam(i)->setMin(minValueArg);
+  void setMin(FloatType minValueArg){
+    for (int i = 0; i<TypeParamArray<FloatType>::getMaxSize(); i++)
+      ParamGroup::getFloatTypeParam<FloatType,FloatTypeMap>(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getFloatParam(i)->setMax(maxValueArg);
+  void setMax(FloatType maxValueArg){
+    for (int i = 0; i<TypeParamArray<FloatType>::getMaxSize(); i++)
+      ParamGroup::getFloatTypeParam<FloatType, FloatTypeMap>(i)->setMax(maxValueArg);
   }
  
   /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getFloatParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
+  void updateProcessorAndHostFromUi(int i, const FloatType valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
+    return ParamGroup::getFloatTypeParam<FloatType, FloatTypeMap>(i)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
   } 
   
-  FloatParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
+  FloatTypeParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType* const values, int *const size, const int maxSize, const FloatType minValue = (FloatType)(0), const FloatType maxValue = (FloatType)(1), bool saveOnlySizedArrayFlag = true) :
+    TypeParamArray<FloatType>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, saveOnlySizedArrayFlag),
+    minValue(minValue),
+    maxValue(maxValue)
   {} 
 };
 
-/** ParamGroup containing an array of LogParams. */
-class LogParamArray : public ParamArray{
+/** ParamGroup containing an array of IntTypeParams. */
+template<class IntType>
+class IntTypeParamArray : public TypeParamArray<IntType>{
+  JUCE_DECLARE_NON_COPYABLE(IntTypeParamArray)
+
 private:
-  float* const values;
-  float minValue;
-  float maxValue;
-  
-public: 
+  const IntType minValue;
+  const IntType maxValue;
+
+public:
   void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
+    for (int i = 0; i<TypeParamArray<IntType>::getMaxSize(); i++){
+      ParamGroup::addIntTypeParam<IntType>(i, (String)(i), TypeParamArray<IntType>::registerAtHostFlag, TypeParamArray<IntType>::loadSaveOptions, &(TypeParamArray<IntType>::values[i]), minValue, maxValue, false);
     }
   }
 
-  /** Returns the value of position i in the array */
-  float getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }  
-  
   /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogParam(i)->setMin(minValueArg);
+  void setMin(IntType minValueArg){
+    for (int i = 0; i<TypeParamArray<IntType>::getMaxSize(); i++)
+      ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogParam(i)->setMax(maxValueArg);
-  }
-   
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogParam(i)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
-  } 
-  
-  LogParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
-/** ParamGroup containing an array of LogWith0Params. */
-class LogWith0ParamArray : public ParamArray{
-private:
-  float* const values;
-  float minValue;
-  float maxValue;
-
-public:   
-  void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWith0Param(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
-    }
+  void setMax(IntType maxValueArg){
+    for (int i = 0; i<TypeParamArray<IntType>::getMaxSize(); i++)
+      ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->setMax(maxValueArg);
   }
 
-  /** Returns the value of position i in the array */
-  float getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }    
-  
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogWith0Param(i)->setMin(minValueArg);
+  /** Updates the value from its UI value */
+  void updateProcessorAndHostFromUi(int i, const IntType valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
+    return ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
   }
 
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogWith0Param(i)->setMax(maxValueArg);
-  }
- 
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogWith0Param(i)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
-  }
-  
-  LogWith0ParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
-/** ParamGroup containing an array of LogWithSignParams. */
-class LogWithSignParamArray : public ParamArray{
-private:
-  float* const values;
-  float minValue;
-  float maxValue;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addLogWithSignParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
-    }
-  }
-
-  /** Returns the value of position i in the array */
-  float getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }
- 
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogWithSignParam(i)->setMin(minValueArg);
-  }
-
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getLogWithSignParam(i)->setMax(maxValueArg);
-  }
- 
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogWithSignParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  }
-  
-  LogWithSignParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float* const values,int *const size,const int maxSize,const float minValue=(float)(0),const float maxValue=(float)(1), bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
-/** ParamGroup containing an array of IntParams. */
-class IntParamArray : public ParamArray{
-private:
-  int* const values;
-  int minValue;
-  int maxValue;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addIntParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),minValue,maxValue,false);
-    }
-  } 
-
-  /** Returns the value of position i in the array */
-  int getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }  
-  
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(int minValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getIntParam(i)->setMin(minValueArg);
-  }
-
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(int maxValueArg){
-    for (int i=0;i<ParamArray::getMaxSize();i++)
-      ParamGroup::getIntParam(i)->setMax(maxValueArg);
-  }
-
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const int valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getIntParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  }
-  
-  IntParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int* const values,int *const size,const int maxSize,const int minValue=(int)(0),const int maxValue=(int)(1), bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
+  IntTypeParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType* const values, int *const size, const int maxSize, const IntType minValue = (IntType)(0), const IntType maxValue = (IntType)(1), bool saveOnlySizedArrayFlag = true) :
+    TypeParamArray<IntType>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, saveOnlySizedArrayFlag),
+    minValue(minValue),
+    maxValue(maxValue)
+  {}
 };
 
 /** ParamGroup containing an array of BoolParams. */
-class BoolParamArray : public ParamArray{
-private:
-  bool* const values;
+class BoolParamArray : public TypeParamArray<bool>{
+  JUCE_DECLARE_NON_COPYABLE(BoolParamArray)
 
 public: 
   void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addBoolParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),false);
+    for (int i = 0; i<TypeParamArray<bool>::getMaxSize(); i++){
+      ParamGroup::addBoolParam(i, (String)(i), TypeParamArray<bool>::registerAtHostFlag, TypeParamArray<bool>::loadSaveOptions, &(TypeParamArray<bool>::values[i]), false);
     }
-  } 
-
-  /** Returns the value of position i in the array */
-  bool getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return 0;
-  }    
+  }
  
   /** Updates the value from its UI value */ 
   void updateProcessorAndHostFromUi(int i,const bool valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
@@ -1227,62 +1455,30 @@ public:
   }
   
   BoolParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values)
+    TypeParamArray<bool>(name, registerAtHostFlag, loadSaveOptions, values, size, maxSize, saveOnlySizedArrayFlag)
   {} 
 };
-
-
-/** ParamGroup containing an array of StringParams. */
-class StringParamArray : public ParamArray{
-private:
-  String* const values;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamArray::getMaxSize();i++){
-      ParamGroup::addStringParam(i,(String)(i),ParamArray::registerAtHostFlag,ParamArray::loadSaveOptions,&(values[i]),false);
-    }
-  } 
-
-  /** Returns the value of position i in the array */
-  String getValue(int i) const{
-    if (i>=0 && i<ParamArray::getSize() && i<ParamArray::getMaxSize())
-      return values[i];
-    else return String::empty;
-  }    
- 
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,const String valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getStringParam(i)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  }
-  
-  StringParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String* const values,int *const size,const int maxSize,bool saveOnlySizedArrayFlag=true):
-  ParamArray(name,registerAtHostFlag,loadSaveOptions,size,maxSize,saveOnlySizedArrayFlag),
-  values(values)
-  {
-    // Strings cannot be automated! 
-    // (They aren't supported at least in VST)
-    // Try again setting argument registerAtHostFlag=false
-    jassert(registerAtHostFlag==false);
-  } 
-};
-
 
 //-----------------------------------------------------------------------------------
 
 /** ParamGroup base class for a matrix of Params. */
-class ParamMatrix : public ParamGroup{
-protected:
+template<class Type>
+class TypeParamMatrix : public ParamGroup{
+  JUCE_DECLARE_NON_COPYABLE(TypeParamMatrix)
+
+private:  
   int *const numRows;
   int *const numCols;
   const int maxRows;
   const int maxCols;
-  const bool registerAtHostFlag;
-  const LoadSaveOptions loadSaveOptions;
   bool saveOnlySizedMatrixFlag;
   bool saveOnlyNonDefaultValuesFlag;
   bool updateOnlySizedMatrixFlag;
+
+protected:
+  Type** const values;  
+  const bool registerAtHostFlag;
+  const LoadSaveOptions loadSaveOptions;  
   
 public:    
   virtual void initParameters() = 0;
@@ -1326,7 +1522,15 @@ public:
       return getParam(0,0)->getMax();
     else
       return 0;
-  }	
+  }
+
+  /** Returns the value of position i,j in the array */
+  Type getValue(int i, int j) const{
+    if (i >= 0 && i<getNumRows() && i<getMaxRows()
+      && j >= 0 && j<getNumCols() && j<getMaxCols())
+      return values[i][j];
+    else return 0;
+  }
   
   Param *getParam(const int row,const int col) const{
     const int index=row*getNumCols()+col;
@@ -1370,11 +1574,11 @@ public:
     if (saveXmlOptionCopy){
       switch(xmlType){
         case SESSION:
-          for (int i=0;i<ParamMatrix::maxRows*ParamMatrix::maxCols;i++)
+          for (int i=0;i<maxRows*maxCols;i++)
             saveXmlOptionCopy[i]=ParamGroup::getParam(i)->getOption(Param::saveToSession);
           break;
         case PRESET:
-          for (int i=0;i<ParamMatrix::maxRows*ParamMatrix::maxCols;i++)
+          for (int i=0;i<maxRows*maxCols;i++)
             saveXmlOptionCopy[i]=ParamGroup::getParam(i)->getOption(Param::saveToPresets);
           break;
         default:
@@ -1385,15 +1589,15 @@ public:
     if (saveOnlySizedMatrixFlag){
       switch(xmlType){
         case SESSION:
-          for (int i=0;i<ParamMatrix::getNumRows();i++){        
-            for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
+          for (int i=0;i<getNumRows();i++){        
+            for (int j=getNumCols();j<maxCols;j++){
               getParam(i,j)->setOption(Param::saveToSession,false);
             }        
           }
           break;
         case PRESET:
-          for (int i=0;i<ParamMatrix::getNumRows();i++){        
-            for (int j=ParamMatrix::getNumCols();j<ParamMatrix::maxCols;j++){
+          for (int i=0;i<getNumRows();i++){        
+            for (int j=getNumCols();j<maxCols;j++){
               getParam(i,j)->setOption(Param::saveToPresets,false);
             }        
           }
@@ -1517,382 +1721,219 @@ public:
     runAfterParamGroupUpdate();
   }
   
-  ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true, bool updateOnlySizedMatrixFlag=true):
-  ParamGroup(name),
+  TypeParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, Type** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag = true, bool updateOnlySizedMatrixFlag = true) :
+  ParamGroup(name),  
   numRows(numRows),
   numCols(numCols),
-  maxRows(maxRows),  
+  maxRows(maxRows),
   maxCols(maxCols),
-  registerAtHostFlag(registerAtHostFlag),
-  loadSaveOptions(loadSaveOptions),
   saveOnlySizedMatrixFlag(saveOnlySizedMatrixFlag),
   saveOnlyNonDefaultValuesFlag(saveOnlyNonDefaultValuesFlag),
-  updateOnlySizedMatrixFlag(updateOnlySizedMatrixFlag)
+  updateOnlySizedMatrixFlag(updateOnlySizedMatrixFlag),
+  values(values),  
+  registerAtHostFlag(registerAtHostFlag),
+  loadSaveOptions(loadSaveOptions)
   {
-    saveXmlOptionCopy=new bool[maxCols*maxRows];
+    //deleted at ~ParamGroup()
+    ParamGroup::saveXmlOptionCopy=new bool[maxCols*maxRows];
   }
 
-  virtual ~ParamMatrix() {}
+  virtual ~TypeParamMatrix() {}
 };
 
-/** ParamGroup containing a matrix of FloatParams. */
-class FloatParamMatrix : public ParamMatrix{
-private:
-  float** const values;
-  float minValue;
-  float maxValue;
+/** ParamGroup containing a matrix of StringParams. */
+class StringParamMatrix : public TypeParamMatrix<String>{
+  JUCE_DECLARE_NON_COPYABLE(StringParamMatrix)
 
-public: 
+public:
   void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addFloatParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
+    for (int i = 0; i<TypeParamMatrix<String>::getMaxRows(); i++){
+      for (int j = 0; j<TypeParamMatrix<String>::getMaxCols(); j++){
+        ParamGroup::addStringParam(i*TypeParamMatrix<String>::getMaxCols() + j, (String)(i)+":" + (String)j, TypeParamMatrix<String>::registerAtHostFlag, TypeParamMatrix<String>::loadSaveOptions, &(TypeParamMatrix<String>::values[i][j]), false);
       }
     }
   }
 
-  FloatParam* getFloatParam(int i,int j) const{
-    return ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j);
+  StringParam* getStringParam(int i, int j) const{
+    return ParamGroup::getStringParam(i*TypeParamMatrix<String>::getMaxCols() + j);
   }
 
-  /** Returns the value of position i,j in the array */
-  float getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
+  /** Updates the value from its UI value */
+  void updateProcessorAndHostFromUi(int i, int j, const String valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
+    return ParamGroup::getStringParam(i*TypeParamMatrix<String>::getMaxCols() + j)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
+  }
+
+  StringParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag = true) :
+    TypeParamMatrix<String>(name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, saveOnlySizedMatrixFlag)
+  {
+    // Strings cannot be automated! 
+    // (They aren't supported at least in VST)
+    // Try again setting argument registerAtHostFlag=false
+    jassert(TypeParamMatrix<String>::registerAtHostFlag == false);
+  }
+};
+
+/** ParamGroup containing a matrix of FloatTypeParams. */
+template<class FloatType, class FloatTypeMap>
+class FloatTypeParamMatrix : public TypeParamMatrix<FloatType>{
+  JUCE_DECLARE_NON_COPYABLE(FloatTypeParamMatrix)
+
+private:  
+  const FloatType minValue;
+  const FloatType maxValue;
+
+public: 
+  void initParameters() override{
+    for (int i = 0; i<TypeParamMatrix<FloatType>::getMaxRows(); i++){
+      for (int j = 0; j<TypeParamMatrix<FloatType>::getMaxCols(); j++){
+        ParamGroup::addFloatTypeParam<FloatType,FloatTypeMap>(i*TypeParamMatrix<FloatType>::getMaxCols() + j, (String)(i)+":" + (String)j, TypeParamMatrix<FloatType>::registerAtHostFlag, TypeParamMatrix<FloatType>::loadSaveOptions, &(TypeParamMatrix<FloatType>::values[i][j]), minValue, maxValue, false);
+      }
+    }
+  }
+
+  FloatTypeParam<FloatType, FloatTypeMap>* getFloatTypeParam(int i, int j) const{
+    return ParamGroup::getFloatTypeParam<FloatType,FloatTypeMap>(i*TypeParamMatrix<FloatType>::getMaxCols() + j);
   }  
   
   /** Sets the minimum range of each parameter in the array */
   void setMin(float minValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
+    for (int i = 0; i<TypeParamMatrix<FloatType>::getMaxRows(); i++)
+      for (int j = 0; j<TypeParamMatrix<FloatType>::getMaxCols(); j++)
+        ParamGroup::getFloatTypeParam<FloatType,FloatTypeMap>(i*TypeParamMatrix<FloatType>::getMaxCols() + j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
   void setMax(float maxValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
+    for (int i = 0; i<TypeParamMatrix<FloatType>::getMaxRows(); i++)
+      for (int j = 0; j<TypeParamMatrix<FloatType>::getMaxCols(); j++)
+        ParamGroup::getFloatTypeParam<FloatType, FloatTypeMap>(i*TypeParamMatrix<FloatType>::getMaxCols() + j)->setMax(maxValueArg);;
   }
  
   /** Updates the value from its UI value */ 
   void updateProcessorAndHostFromUi(int i,int j,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getFloatParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
+    return ParamGroup::getFloatTypeParam<FloatType, FloatTypeMap>(i*TypeParamMatrix<FloatType>::getMaxCols() + j)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
   } 
   
-  FloatParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
-  values(values),
+  FloatTypeParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const FloatType minValue = (FloatType)(0), const FloatType maxValue = (FloatType)(1), const bool saveOnlySizedMatrixFlag = true) :
+  TypeParamMatrix<FloatType>(name,registerAtHostFlag,loadSaveOptions,values,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
   minValue(minValue),
   maxValue(maxValue)
   {} 
 };
 
-/** ParamGroup containing a matrix of LogParams. */
-class LogParamMatrix : public ParamMatrix{
-private:
-  float** const values;
-  float minValue;
-  float maxValue;
-  bool sparseCompressionFlag; 
-  float mostProbableValue;
+/** ParamGroup containing a matrix of FloatTypeParams. */
+template<class IntType>
+class IntTypeParamMatrix : public TypeParamMatrix<IntType>{
+  JUCE_DECLARE_NON_COPYABLE(IntTypeParamMatrix)
 
-public: 
+private:
+  const IntType minValue;
+  const IntType maxValue;
+
+public:
   void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
+    for (int i = 0; i<TypeParamMatrix<IntType>::getMaxRows(); i++){
+      for (int j = 0; j<TypeParamMatrix<IntType>::getMaxCols(); j++){
+        ParamGroup::addIntTypeParam<IntType>(i*TypeParamMatrix<IntType>::getMaxCols() + j, (String)(i)+":" + (String)j, TypeParamMatrix<IntType>::registerAtHostFlag, TypeParamMatrix<IntType>::loadSaveOptions, &(TypeParamMatrix<IntType>::values[i][j]), minValue, maxValue, false);
       }
     }
   }
 
-  LogParam* getLogParam(int i,int j) const{
-    return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j);
-  }
-
-  /** Returns the value of position i,j in the array */
-  float getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
+  IntTypeParam<IntType>* getIntTypeParam(int i, int j) const{
+    return ParamGroup::getIntTypeParam<IntType>(i*TypeParamMatrix<IntType>::getMaxCols() + j);
   }  
-  
+
   /** Sets the minimum range of each parameter in the array */
   void setMin(float minValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
+    for (int i = 0; i<TypeParamMatrix<IntType>::getMaxRows(); i++)
+      for (int j = 0; j<TypeParamMatrix<IntType>::getMaxCols(); j++)
+        ParamGroup::getIntTypeParam<IntType>(i*TypeParamMatrix<IntType>::getMaxCols() + j)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
   void setMax(float maxValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);     
+    for (int i = 0; i<TypeParamMatrix<IntType>::getMaxRows(); i++)
+      for (int j = 0; j<TypeParamMatrix<IntType>::getMaxCols(); j++)
+        ParamGroup::getIntTypeParam<IntType>(i*TypeParamMatrix<IntType>::getMaxCols() + j)->setMax(maxValueArg);;
   }
 
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
-  } 
+  /** Updates the value from its UI value */
+  void updateProcessorAndHostFromUi(int i, int j, const float valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
+    return ParamGroup::getIntTypeParam<IntType>(i*TypeParamMatrix<IntType>::getMaxCols() + j)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
+  }
 
-  LogParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
+  IntTypeParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType** const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const IntType minValue = (IntType)(0), const IntType maxValue = (IntType)(1), const bool saveOnlySizedMatrixFlag = true) :
+    TypeParamMatrix<IntType>(name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, saveOnlySizedMatrixFlag),
+    minValue(minValue),
+    maxValue(maxValue)
+  {}
 };
-
-/** ParamGroup containing a matrix of LogWith0Params. */
-class LogWith0ParamMatrix : public ParamMatrix{
-private:
-  float** const values;
-  float minValue;
-  float maxValue;
-  bool sparseCompressionFlag; 
-  float mostProbableValue;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWith0Param(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
-      }
-    }
-  }
-
-  LogWith0Param* getLogWith0Param(int i,int j) const{
-    return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j);
-  }
-
-  /** Returns the value of position i,j in the array */
-  float getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
-  }  
-  
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
-  }
-
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
-  }
-
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const double valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogWith0Param(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi((float)valueArg,undoManager,dontCreateNewUndoTransaction);
-  }
-  
-  LogWith0ParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
-/** ParamGroup containing a matrix of LogWithSignParams. */
-class LogWithSignParamMatrix : public ParamMatrix{
-private:
-  float** const values;
-  float minValue;
-  float maxValue;
-  bool sparseCompressionFlag; 
-  float mostProbableValue;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addLogWithSignParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
-      }
-    }
-  }
-
-  LogWithSignParam* getLogWithSignParam(int i,int j) const{
-    return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j);
-  }
-
-  /** Returns the value of position i,j in the array */
-  float getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
-  }  
-  
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(float minValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
-  }
-
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(float maxValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);;      
-  }
-
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const float valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getLogWithSignParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  } 
-  
-  LogWithSignParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const float minValue=(float)(0),const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
-/** ParamGroup containing a matrix of IntParams. */
-class IntParamMatrix : public ParamMatrix{
-private:
-  int** const values;  
-  int minValue;
-  int maxValue;
-
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addIntParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),minValue,maxValue,false);        
-      }
-    }
-  }
-
-  IntParam* getIntParam(int i,int j) const{
-    return ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j);
-  }
-
-  /** Returns the value of position i,j in the array */
-  int getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
-  }  
-  
-  /** Sets the minimum range of each parameter in the array */
-  void setMin(int minValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMin(minValueArg);
-  }
-
-  /** Sets the maximum range of each parameter in the array */
-  void setMax(int maxValueArg){
-    for (int i=0;i<ParamMatrix::getMaxRows();i++)
-      for (int j=0;j<ParamMatrix::getMaxCols();j++)
-        ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->setMax(maxValueArg);
-  }
-
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const int valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getIntParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  } 
-  
-  IntParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols,const int minValue=(int)(0),const int maxValue=(int)(1), const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),
-  values(values),
-  minValue(minValue),
-  maxValue(maxValue)
-  {} 
-};
-
 
 /** ParamGroup containing a matrix of BoolParams. */
-class BoolParamMatrix : public ParamMatrix{
-private:
-  bool** const values;
+class BoolParamMatrix : public TypeParamMatrix<bool>{
+  JUCE_DECLARE_NON_COPYABLE(BoolParamMatrix)
 
 public: 
   void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addBoolParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),false);
+    for (int i = 0; i<TypeParamMatrix<bool>::getMaxRows(); i++){
+      for (int j = 0; j<TypeParamMatrix<bool>::getMaxCols(); j++){
+        ParamGroup::addBoolParam(i*TypeParamMatrix<bool>::getMaxCols() + j, (String)(i)+":" + (String)j, TypeParamMatrix<bool>::registerAtHostFlag, TypeParamMatrix<bool>::loadSaveOptions, &(TypeParamMatrix<bool>::values[i][j]), false);
       }
     }
   } 
 
   BoolParam* getBoolParam(int i,int j) const{
-    return ParamGroup::getBoolParam(i*ParamMatrix::getMaxCols()+j);
+    return ParamGroup::getBoolParam(i*TypeParamMatrix<bool>::getMaxCols() + j);
   }
-
-  /** Returns the value of position i,j in the array */
-  bool getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return 0;
-  }   
  
   /** Updates the value from its UI value */ 
   void updateProcessorAndHostFromUi(int i,int j,const bool valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getBoolParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
+    return ParamGroup::getBoolParam(i*TypeParamMatrix<bool>::getMaxCols() + j)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
   } 
   
   BoolParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, bool** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),  
-  values(values)
+    TypeParamMatrix<bool>(name, registerAtHostFlag, loadSaveOptions, values, numRows, numCols, maxRows, maxCols, saveOnlySizedMatrixFlag)
   {} 
 };
 
-/** ParamGroup containing a matrix of StringParams. */
-class StringParamMatrix : public ParamMatrix{
-private:
-  String** const values;
+typedef FloatTypeParamArray<float> FloatParamArray;
+typedef FloatTypeParamArray<float, DefaultLogMap > LogParamArray;
+typedef FloatTypeParamArray<float, DefaultLogWith0Map > LogWith0ParamArray;
+typedef FloatTypeParamArray<float, DefaultLogWithSignMap > LogWithSignParamArray;
 
-public: 
-  void initParameters() override{
-    for (int i=0;i<ParamMatrix::getMaxRows();i++){
-      for (int j=0;j<ParamMatrix::getMaxCols();j++){
-        ParamGroup::addStringParam(i*ParamMatrix::getMaxCols()+j,(String)(i)+":"+(String)j,ParamMatrix::registerAtHostFlag,ParamMatrix::loadSaveOptions,&(values[i][j]),false);
-      }
-    }
-  } 
+typedef FloatTypeParamArray<double> DoubleParamArray;
+typedef FloatTypeParamArray<double, DefaultDoubleLogMap > DoubleLogParamArray;
+typedef FloatTypeParamArray<double, DefaultDoubleLogWith0Map > DoubleLogWith0ParamArray;
+typedef FloatTypeParamArray<double, DefaultDoubleLogWithSignMap > DoubleLogWithSignParamArray;
 
-  StringParam* getStringParam(int i,int j) const{
-    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j);
-  }
+typedef FloatTypeParamMatrix<float> FloatParamMatrix;
+typedef FloatTypeParamMatrix<float, DefaultLogMap > LogParamMatrix;
+typedef FloatTypeParamMatrix<float, DefaultLogWith0Map > LogWith0ParamMatrix;
+typedef FloatTypeParamMatrix<float, DefaultLogWithSignMap > LogWithSignParamMatrix;
 
-  /** Returns the value of position i,j in the array */
-  String getValue(int i,int j) const{
-    if (i>=0 && i<ParamMatrix::getNumRows() && i<ParamMatrix::getMaxRows()
-        && j>=0 && j<ParamMatrix::getNumCols() && j<ParamMatrix::getMaxCols())
-      return values[i][j];
-    else return String::empty;
-  }   
- 
-  /** Updates the value from its UI value */ 
-  void updateProcessorAndHostFromUi(int i,int j,const String valueArg, UndoManager *const undoManager=nullptr, const bool dontCreateNewUndoTransaction=false) const{
-    return ParamGroup::getStringParam(i*ParamMatrix::getMaxCols()+j)->updateProcessorAndHostFromUi(valueArg,undoManager,dontCreateNewUndoTransaction);
-  } 
-  
-  StringParamMatrix(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, String** const values,int *const numRows, int *const numCols,const int maxRows, const int maxCols, const bool saveOnlySizedMatrixFlag=true):
-  ParamMatrix(name,registerAtHostFlag,loadSaveOptions,numRows,numCols,maxRows,maxCols,saveOnlySizedMatrixFlag),  
-  values(values)
-  {
-    // Strings cannot be automated! 
-    // (They aren't supported at least in VST)
-    // Try again setting argument registerAtHostFlag=false
-    jassert(registerAtHostFlag==false);
-  } 
-};
+typedef FloatTypeParamMatrix<double> DoubleParamMatrix;
+typedef FloatTypeParamMatrix<double, DefaultDoubleLogMap > DoubleLogParamMatrix;
+typedef FloatTypeParamMatrix<double, DefaultDoubleLogWith0Map > DoubleLogWith0ParamMatrix;
+typedef FloatTypeParamMatrix<double, DefaultDoubleLogWithSignMap > DoubleLogWithSignParamMatrix;
+
+typedef IntTypeParamArray<int> IntParamArray;
+typedef IntTypeParamArray<juce::int8> Int8ParamArray;
+typedef IntTypeParamArray<juce::uint8> Uint8ParamArray;
+typedef IntTypeParamArray<juce::int16> Int16ParamArray;
+typedef IntTypeParamArray<juce::uint16> Uint16ParamArray;
+typedef IntTypeParamArray<juce::int32> Int32ParamArray;
+typedef IntTypeParamArray<juce::uint32> Uint32ParamArray;
+typedef IntTypeParamArray<juce::int64> Int64ParamArray;
+typedef IntTypeParamArray<juce::uint64> Uint64ParamArray;
+
+typedef IntTypeParamMatrix<int> IntParamMatrix;
+typedef IntTypeParamMatrix<juce::int8> Int8ParamMatrix;
+typedef IntTypeParamMatrix<juce::uint8> Uint8ParamMatrix;
+typedef IntTypeParamMatrix<juce::int16> Int16ParamMatrix;
+typedef IntTypeParamMatrix<juce::uint16> Uint16ParamMatrix;
+typedef IntTypeParamMatrix<juce::int32> Int32ParamMatrix;
+typedef IntTypeParamMatrix<juce::uint32> Uint32ParamMatrix;
+typedef IntTypeParamMatrix<juce::int64> Int64ParamMatrix;
+typedef IntTypeParamMatrix<juce::uint64> Uint64ParamMatrix;
+
 #endif

@@ -1,20 +1,25 @@
 /*
-  ==============================================================================
+==============================================================================
 
-   This file is part of the PluginParameters module.
-   Copyright 2012-13 by MarC
+This file is part of the PluginParameters module.
+Copyright 2012-15 by 4drX
 
-  ------------------------------------------------------------------------------
+Permission is granted to use this software under the terms of the
+GPL v2 (or any later version).
 
-   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
-   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Details of this license can be found at: www.gnu.org/licenses
 
-   To release a closed-source product which uses PluginParameters, commercial 
-   licenses are available. For more information, please send me a PM (Personal 
-   Message) or reply to this thread at the JUCE forum: 
-   http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+------------------------------------------------------------------------------
 
-  ==============================================================================
+PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+To release a closed-source product which uses PluginParameters, you will
+need to purchase a commercial license. For more information, please send me
+a PM (Personal Message) or reply to this thread at the JUCE forum:
+http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+
+==============================================================================
 */
 
 #include "PluginProcessor.h"
@@ -120,11 +125,6 @@ class UpdateParamFromUiAction: public UndoableAction{
   JUCE_DECLARE_NON_COPYABLE (UpdateParamFromUiAction)
 };
 
-/*
-Only methods who implicate a circular reference and therefore
-can't be written in the header file are placed here.
-*/
-
 //public
 
 void Param::updateProcessorHostAndUi(PluginParameters_HostFloatType newHostValue, UpdateFromFlags updateFromFlagArg){     
@@ -194,10 +194,10 @@ void StringParam::updateProcessorAndHostFromUi(const String valueArg, UndoManage
     if (undoManager==nullptr){
       virtualHostValue=valueArg;
       Param::updateProcessorAndHostFromNormUi((PluginParameters_HostFloatType)(0.f),undoManager,dontCreateNewUndoTransaction,updateFromFlag);   
-      //this parameter can't be automated (maped as a PluginParameters_HostFloatType)
-      //so hostSet doesn't do anything apart from updating *value from virtualHostValue
-      //the host always is notified with 0 but this is bogus since StrinParams can not be 
-      //registered at the host
+      //This parameter can't be automated (maped as a PluginParameters_HostFloatType)
+      //so hostSet doesn't do anything apart from updating *value from virtualHostValue.
+      //The host always is notified with 0 but this is bogus since StringParams can not be 
+      //registered at the host.
     } else {
       if (dontCreateNewUndoTransaction){
         Array<const UndoableAction*> undoableActions;

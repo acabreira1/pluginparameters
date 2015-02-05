@@ -1,27 +1,32 @@
 /*
-  ==============================================================================
+==============================================================================
 
-   This file is part of the PluginParameters module.
-   Copyright 2012-13 by MarC
+This file is part of the PluginParameters module.
+Copyright 2012-15 by 4drX
 
-  ------------------------------------------------------------------------------
+Permission is granted to use this software under the terms of the
+GPL v2 (or any later version).
 
-   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
-   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Details of this license can be found at: www.gnu.org/licenses
 
-   To release a closed-source product which uses PluginParameters, commercial 
-   licenses are available. For more information, please send me a PM (Personal 
-   Message) or reply to this thread at the JUCE forum: 
-   http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+------------------------------------------------------------------------------
 
-  ==============================================================================
+PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+To release a closed-source product which uses PluginParameters, you will
+need to purchase a commercial license. For more information, please send me
+a PM (Personal Message) or reply to this thread at the JUCE forum:
+http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+
+==============================================================================
 */
 
 #ifndef __PLUGINPARAMETERS_PARAMS_HEADER__
 #define __PLUGINPARAMETERS_PARAMS_HEADER__
 
 using namespace juce;
-  
+
 class PluginProcessor;
 
 class ParamGroup;
@@ -102,9 +107,9 @@ public:
                                         from the host. Otherwise it will be called only
                                         if the parameter value changes.
     
-    createThreadForParamChange: runAfterParamChange(...) is usually run in the UI 
+    createThreadForParamChange:         runAfterParamChange(...) is usually run in the UI 
                                         thread if updateProcessorAndHostFromUi(...) is called
-                                        or in the processing thread (uh uh!) if the host sends a new
+                                        or in the processing thread (oh oh...) if the host sends a new
                                         value for it. Specially in the latter case, it is important
                                         to make sure that we are not doing anything to block it. 
                                         If that were the case (e.g. reading a new preset from
@@ -991,7 +996,6 @@ public:
 /** Class that defines parameters of float type (float, double) */
 template<class FloatType, class FloatTypeMap = IdentityMap<FloatType> >
 class FloatTypeParam : public TypeParam<FloatType>, public FloatTypeMap{
-
   JUCE_DECLARE_NON_COPYABLE (FloatTypeParam)
 
 public:  
@@ -1091,11 +1095,6 @@ public:
     TypeParam<FloatType>::xmlValue=*TypeParam<FloatType>::value=TypeParam<FloatType>::defaultValue=jlimit<FloatType>(FloatTypeMap::minValue,FloatTypeMap::maxValue,*TypeParam<FloatType>::value);
   }
 };
-
-typedef FloatTypeParam<float> FloatParam;
-typedef FloatTypeParam<float,LogMap<float,1> > LogParam;
-typedef FloatTypeParam<float,LogWith0Map<float,1,0,0> > LogWith0Param;
-typedef FloatTypeParam<float,LogWithSignMap<float,1,1000,10,10> > LogWithSignParam;
 
 //-----------------------------------------------------------------------------------
 
@@ -1199,11 +1198,11 @@ public:
   }
 
   const double getMin() const{
-    return minValue;
+    return (double)minValue;
   }
 
   const double getMax() const{
-    return maxValue;
+    return (double)maxValue;
   }
 
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
@@ -1240,7 +1239,7 @@ public:
       if (xml==nullptr)
         TypeParam<IntType>::xmlValue=TypeParam<IntType>::defaultValue;
       else
-        TypeParam<IntType>::xmlValue=(IntType)(xml->getIntAttribute(Param::getXmlName(),TypeParam<IntType>::defaultValue));    
+        TypeParam<IntType>::xmlValue=(IntType)(xml->getIntAttribute(Param::getXmlName(),(int)TypeParam<IntType>::defaultValue));
 
       Param::xmlHostValue=mapProcessorToHost(&(TypeParam<IntType>::xmlValue));
 
@@ -1269,8 +1268,6 @@ public:
     jassert(minValue<maxValue);
   }
 };
-
-typedef IntTypeParam<int> IntParam;
 
 //-----------------------------------------------------------------------------------
 
@@ -1342,5 +1339,36 @@ public:
   }
 
 };
+
+typedef LogMap<float, 1> DefaultLogMap;
+typedef LogWith0Map<float, 1, 0, 0> DefaultLogWith0Map;
+typedef LogWithSignMap<float, 1, 1000, 10, 10> DefaultLogWithSignMap;
+typedef LogMap<double, 1> DefaultDoubleLogMap;
+typedef LogWith0Map<double, 1, 0, 0> DefaultDoubleLogWith0Map;
+typedef LogWithSignMap<double, 1, 1000, 10, 10> DefaultDoubleLogWithSignMap;
+
+typedef FloatTypeParam<float> FloatParam;
+typedef FloatTypeParam<float, DefaultLogMap > LogParam;
+typedef FloatTypeParam<float, DefaultLogWith0Map > LogWith0Param;
+typedef FloatTypeParam<float, DefaultLogWithSignMap > LogWithSignParam;
+
+typedef FloatTypeParam<double> DoubleParam;
+typedef FloatTypeParam<double, DefaultDoubleLogMap > DoubleLogParam;
+typedef FloatTypeParam<double, DefaultDoubleLogWith0Map > DoubleLogWith0Param;
+typedef FloatTypeParam<double, DefaultDoubleLogWithSignMap > DoubleLogWithSignParam;
+
+typedef IntTypeParam<int> IntParam;
+
+typedef IntTypeParam<juce::int8> Int8Param;
+typedef IntTypeParam<juce::uint8> Uint8Param;
+
+typedef IntTypeParam<juce::int16> Int16Param;
+typedef IntTypeParam<juce::uint16> Uint16Param;
+
+typedef IntTypeParam<juce::int32> Int32Param;
+typedef IntTypeParam<juce::uint32> Uint32Param;
+
+typedef IntTypeParam<juce::int64> Int64Param;
+typedef IntTypeParam<juce::uint64> Uint64Param;
 
 #endif

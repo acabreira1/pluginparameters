@@ -1,20 +1,25 @@
 /*
-  ==============================================================================
+==============================================================================
 
-   This file is part of the PluginParameters module.
-   Copyright 2012-13 by MarC
+This file is part of the PluginParameters module.
+Copyright 2012-15 by 4drX
 
-  ------------------------------------------------------------------------------
+Permission is granted to use this software under the terms of the
+GPL v2 (or any later version).
 
-   PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied 
-   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Details of this license can be found at: www.gnu.org/licenses
 
-   To release a closed-source product which uses PluginParameters, commercial 
-   licenses are available. For more information, please send me a PM (Personal 
-   Message) or reply to this thread at the JUCE forum: 
-   http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+------------------------------------------------------------------------------
 
-  ==============================================================================
+PluginParameters is provided WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+To release a closed-source product which uses PluginParameters, you will
+need to purchase a commercial license. For more information, please send me
+a PM (Personal Message) or reply to this thread at the JUCE forum:
+http://www.juce.com/forum/topic/juce-module-automatically-handle-plugin-parameters
+
+==============================================================================
 */
 
 #include "PluginProcessor.h"

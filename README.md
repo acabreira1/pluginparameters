@@ -15,7 +15,7 @@ If you are new to [JUCE](http://www.juce.com), first [download it](http://www.ju
 ###What it does
 
 * It can be used to build a VST/AU/RTAS plugin or built-in plugins (AudioPluginInstance's).
-* Includes methods to map any integer, float or bool parameter type to the host float range of [0,1] back and forth linearly, logarithmically (w/out a 0, w/out a sign). Custom mappings can also be defined.
+* Includes methods to map any integer, float or bool parameter types to the host float range of [0,1] back and forth linearly, logarithmically (w/out a 0, w/out a sign). Custom mappings can also be defined.
 * Parameters can be grouped as ParamGroups, which may be nested. This allows to create quite easily independent plugin building blocks.
 * Arrays and Matrices are defined for each defined parameter type (they are both a subclass of ParamGroup).
 * Allows parameters to be registered at the host (automated by default) or to be left unregistered (non-automated) but saved/restored anyway internally at the end/beginning of each session.
