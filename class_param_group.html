@@ -100,23 +100,17 @@ Inheritance diagram for ParamGroup:</div>
  <div class="center">
   <img src="class_param_group.png" usemap="#ParamGroup_map" alt=""/>
   <map id="ParamGroup_map" name="ParamGroup_map">
-<area href="class_param_array.html" alt="ParamArray" shape="rect" coords="0,56,153,80"/>
-<area href="class_param_matrix.html" alt="ParamMatrix" shape="rect" coords="326,56,479,80"/>
-<area href="class_plugin_processor.html" alt="PluginProcessor" shape="rect" coords="489,56,642,80"/>
-<area href="class_bool_param_array.html" alt="BoolParamArray" shape="rect" coords="163,112,316,136"/>
-<area href="class_float_param_array.html" alt="FloatParamArray" shape="rect" coords="163,168,316,192"/>
-<area href="class_int_param_array.html" alt="IntParamArray" shape="rect" coords="163,224,316,248"/>
-<area href="class_log_param_array.html" alt="LogParamArray" shape="rect" coords="163,280,316,304"/>
-<area href="class_log_with0_param_array.html" alt="LogWith0ParamArray" shape="rect" coords="163,336,316,360"/>
-<area href="class_log_with_sign_param_array.html" alt="LogWithSignParamArray" shape="rect" coords="163,392,316,416"/>
-<area href="class_string_param_array.html" alt="StringParamArray" shape="rect" coords="163,448,316,472"/>
-<area href="class_bool_param_matrix.html" alt="BoolParamMatrix" shape="rect" coords="489,112,642,136"/>
-<area href="class_float_param_matrix.html" alt="FloatParamMatrix" shape="rect" coords="489,168,642,192"/>
-<area href="class_int_param_matrix.html" alt="IntParamMatrix" shape="rect" coords="489,224,642,248"/>
-<area href="class_log_param_matrix.html" alt="LogParamMatrix" shape="rect" coords="489,280,642,304"/>
-<area href="class_log_with0_param_matrix.html" alt="LogWith0ParamMatrix" shape="rect" coords="489,336,642,360"/>
-<area href="class_log_with_sign_param_matrix.html" alt="LogWithSignParamMatrix" shape="rect" coords="489,392,642,416"/>
-<area href="class_string_param_matrix.html" alt="StringParamMatrix" shape="rect" coords="489,448,642,472"/>
+<area href="class_plugin_processor.html" alt="PluginProcessor" shape="rect" coords="201,56,392,80"/>
+<area href="class_type_param_array.html" alt="TypeParamArray&lt; Type &gt;" shape="rect" coords="201,112,392,136"/>
+<area href="class_type_param_array.html" alt="TypeParamArray&lt; bool &gt;" shape="rect" coords="201,168,392,192"/>
+<area href="class_type_param_array.html" alt="TypeParamArray&lt; FloatType &gt;" shape="rect" coords="201,224,392,248"/>
+<area href="class_type_param_array.html" alt="TypeParamArray&lt; IntType &gt;" shape="rect" coords="201,280,392,304"/>
+<area href="class_type_param_array.html" alt="TypeParamArray&lt; String &gt;" shape="rect" coords="201,336,392,360"/>
+<area href="class_type_param_matrix.html" alt="TypeParamMatrix&lt; Type &gt;" shape="rect" coords="201,392,392,416"/>
+<area href="class_type_param_matrix.html" alt="TypeParamMatrix&lt; bool &gt;" shape="rect" coords="201,448,392,472"/>
+<area href="class_type_param_matrix.html" alt="TypeParamMatrix&lt; FloatType &gt;" shape="rect" coords="201,504,392,528"/>
+<area href="class_type_param_matrix.html" alt="TypeParamMatrix&lt; IntType &gt;" shape="rect" coords="201,560,392,584"/>
+<area href="class_type_param_matrix.html" alt="TypeParamMatrix&lt; String &gt;" shape="rect" coords="201,616,392,640"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -184,24 +178,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addStringParamMatrix<
 <a class="el" href="class_string_param_matrix.html">StringParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getStringParamMatrix</b> (const int index) const </td></tr>
 <tr class="separator:abf8513e8f3249544ea15e151a3ba157b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a495ca7cdf3f69523fd14e717f196ccc9"><td class="memTemplParams" colspan="2"><a class="anchor" id="a495ca7cdf3f69523fd14e717f196ccc9"></a>
-template&lt;class FloatType , class FloatTypeMap &gt; </td></tr>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
 <tr class="memitem:a495ca7cdf3f69523fd14e717f196ccc9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; FloatType, FloatTypeMap &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getFloatTypeParam</b> (const int index) const </td></tr>
 <tr class="separator:a495ca7cdf3f69523fd14e717f196ccc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628efee1a3d8c6995137ab191369a966"><td class="memTemplParams" colspan="2"><a class="anchor" id="a628efee1a3d8c6995137ab191369a966"></a>
-template&lt;class FloatType &gt; </td></tr>
-<tr class="memitem:a628efee1a3d8c6995137ab191369a966"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; FloatType &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getFloatTypeParam</b> (const int index) const </td></tr>
-<tr class="separator:a628efee1a3d8c6995137ab191369a966"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfac5b138bdcc5330948419cd6fb50b6"><td class="memTemplParams" colspan="2"><a class="anchor" id="acfac5b138bdcc5330948419cd6fb50b6"></a>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
+<tr class="memitem:acfac5b138bdcc5330948419cd6fb50b6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addFloatTypeParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0), const FloatType maxValue=(FloatType)(1), bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:acfac5b138bdcc5330948419cd6fb50b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed575141981b92a7927caf248b4bb941"><td class="memTemplParams" colspan="2"><a class="anchor" id="aed575141981b92a7927caf248b4bb941"></a>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
+<tr class="memitem:aed575141981b92a7927caf248b4bb941"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addFloatTypeParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const values, int *const size, const int maxSize, const FloatType minValue=(FloatType)(0), const FloatType maxValue=(FloatType)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:aed575141981b92a7927caf248b4bb941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20205d039bf4b83ab1cc35c54f0b4fe7"><td class="memTemplParams" colspan="2"><a class="anchor" id="a20205d039bf4b83ab1cc35c54f0b4fe7"></a>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
+<tr class="memitem:a20205d039bf4b83ab1cc35c54f0b4fe7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addFloatTypeParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const FloatType minValue=(FloatType)(0), const FloatType maxValue=(FloatType)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a20205d039bf4b83ab1cc35c54f0b4fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4782d25215e9db4bbb08ff58510e967"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad4782d25215e9db4bbb08ff58510e967"></a>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
+<tr class="memitem:ad4782d25215e9db4bbb08ff58510e967"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; FloatType, FloatTypeMap &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getFloatTypeParamArray</b> (const int index) const </td></tr>
+<tr class="separator:ad4782d25215e9db4bbb08ff58510e967"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca281f45edc1bee3d32a9892c634791f"><td class="memTemplParams" colspan="2"><a class="anchor" id="aca281f45edc1bee3d32a9892c634791f"></a>
+template&lt;class FloatType , class FloatTypeMap  = IdentityMap&lt;FloatType&gt;&gt; </td></tr>
+<tr class="memitem:aca281f45edc1bee3d32a9892c634791f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; FloatType, FloatTypeMap &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getFloatTypeParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:aca281f45edc1bee3d32a9892c634791f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac33fe36358e50537ca65928c2bb9ccf2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac33fe36358e50537ca65928c2bb9ccf2"></a>
 <a class="el" href="class_float_type_param.html">FloatParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getFloatParam</b> (const int index) const </td></tr>
 <tr class="separator:ac33fe36358e50537ca65928c2bb9ccf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a280141b8617938868b20c36776322f01"><td class="memTemplParams" colspan="2"><a class="anchor" id="a280141b8617938868b20c36776322f01"></a>
-template&lt;class FloatType , class FloatTypeMap &gt; </td></tr>
-<tr class="memitem:a280141b8617938868b20c36776322f01"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addFloatTypeParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0), const FloatType maxValue=(FloatType)(0), bool forceUniqueXmlName=true)</td></tr>
-<tr class="separator:a280141b8617938868b20c36776322f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a342d18aac8eddfc0fbe004bed718ffeb"><td class="memTemplParams" colspan="2"><a class="anchor" id="a342d18aac8eddfc0fbe004bed718ffeb"></a>
-template&lt;class FloatType &gt; </td></tr>
-<tr class="memitem:a342d18aac8eddfc0fbe004bed718ffeb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addFloatTypeParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, FloatType *const value, const FloatType minValue=(FloatType)(0), const FloatType maxValue=(FloatType)(0), bool forceUniqueXmlName=true)</td></tr>
-<tr class="separator:a342d18aac8eddfc0fbe004bed718ffeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab278867c71c8f90c468f70c5e82c37d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab278867c71c8f90c468f70c5e82c37d8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addFloatParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0), const float maxValue=(float)(1), bool forceUniqueXmlName=true)</td></tr>
 <tr class="separator:ab278867c71c8f90c468f70c5e82c37d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,12 +213,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addFloatParamArray</b
 <tr class="memitem:a6b8a09ec13f12020bd5be7a408fb7665"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b8a09ec13f12020bd5be7a408fb7665"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addFloatParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue=(float)(0), const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
 <tr class="separator:a6b8a09ec13f12020bd5be7a408fb7665"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9421ca2e3ded2061368c05ff10322a00"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9421ca2e3ded2061368c05ff10322a00"></a>
-<a class="el" href="class_float_param_array.html">FloatParamArray</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getFloatParamArray</b> (const int index) const </td></tr>
-<tr class="separator:a9421ca2e3ded2061368c05ff10322a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a863a327cfb56c04b901ba302115d470e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a863a327cfb56c04b901ba302115d470e"></a>
-<a class="el" href="class_float_param_matrix.html">FloatParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getFloatParamMatrix</b> (const int index) const </td></tr>
-<tr class="separator:a863a327cfb56c04b901ba302115d470e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d600eb7f3dfd8abfaad918a6042c14a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d600eb7f3dfd8abfaad918a6042c14a"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; float &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getFloatParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a1d600eb7f3dfd8abfaad918a6042c14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae057173e83b6e88721fa2ddc12963744"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae057173e83b6e88721fa2ddc12963744"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; float &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getFloatParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:ae057173e83b6e88721fa2ddc12963744"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39cf23c212902630b004fb3a306784b5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39cf23c212902630b004fb3a306784b5"></a>
 <a class="el" href="class_float_type_param.html">LogParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogParam</b> (const int index) const </td></tr>
 <tr class="separator:a39cf23c212902630b004fb3a306784b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -229,15 +231,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogParamArray</b> 
 <tr class="memitem:a1d0229aed656846b0a694e3213392d69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d0229aed656846b0a694e3213392d69"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue=(float)(0), const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
 <tr class="separator:a1d0229aed656846b0a694e3213392d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8316512933fe73a89c469cdc9ccce315"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8316512933fe73a89c469cdc9ccce315"></a>
-<a class="el" href="class_log_param_array.html">LogParamArray</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogParamArray</b> (const int index) const </td></tr>
-<tr class="separator:a8316512933fe73a89c469cdc9ccce315"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98dea089116bca7df9db4b7c1497f875"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98dea089116bca7df9db4b7c1497f875"></a>
-<a class="el" href="class_log_param_matrix.html">LogParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogParamMatrix</b> (const int index) const </td></tr>
-<tr class="separator:a98dea089116bca7df9db4b7c1497f875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a480909897d82404c99f54eb8c4526417"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a480909897d82404c99f54eb8c4526417"></a>
-<a class="el" href="class_float_type_param.html">LogWith0Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0Param</b> (const int index) const </td></tr>
-<tr class="separator:a480909897d82404c99f54eb8c4526417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a021f81c7be3dd529e5a278901302c907"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a021f81c7be3dd529e5a278901302c907"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; float, <a class="el" href="class_log_map.html">DefaultLogMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a021f81c7be3dd529e5a278901302c907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa937c900cbc2510ae331a97f1fce1d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa937c900cbc2510ae331a97f1fce1d5"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; float, <a class="el" href="class_log_map.html">DefaultLogMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:afa937c900cbc2510ae331a97f1fce1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5336bf32370dd4a9e0c2d3feb324d9a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5336bf32370dd4a9e0c2d3feb324d9a"></a>
+<a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; float, <a class="el" href="class_log_with0_map.html">DefaultLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0Param</b> (const int index) const </td></tr>
+<tr class="separator:ae5336bf32370dd4a9e0c2d3feb324d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa62ff918e288d9c228e36e695976fdcc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa62ff918e288d9c228e36e695976fdcc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWith0Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minValue=(float)(0.001), const float maxValue=(float)(1), bool forceUniqueXmlName=true)</td></tr>
 <tr class="separator:aa62ff918e288d9c228e36e695976fdcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -247,15 +249,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWith0ParamArray
 <tr class="memitem:af5b1f9f7810a1dc7be10e6ec5d3a98ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5b1f9f7810a1dc7be10e6ec5d3a98ec"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWith0ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue=(float)(0), const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
 <tr class="separator:af5b1f9f7810a1dc7be10e6ec5d3a98ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab821c7f2141217449d046d70d100c3ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab821c7f2141217449d046d70d100c3ed"></a>
-<a class="el" href="class_log_with0_param_array.html">LogWith0ParamArray</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0ParamArray</b> (const int index) const </td></tr>
-<tr class="separator:ab821c7f2141217449d046d70d100c3ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abaab100c41e91f984a9d46a1cdf8267a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abaab100c41e91f984a9d46a1cdf8267a"></a>
-<a class="el" href="class_log_with0_param_matrix.html">LogWith0ParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0ParamMatrix</b> (const int index) const </td></tr>
-<tr class="separator:abaab100c41e91f984a9d46a1cdf8267a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3585a1c61433edc9c07974c09110b02"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3585a1c61433edc9c07974c09110b02"></a>
-<a class="el" href="class_float_type_param.html">LogWithSignParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParam</b> (const int index) const </td></tr>
-<tr class="separator:ad3585a1c61433edc9c07974c09110b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a061413bbcb3065ab1749d8131e30b9f9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a061413bbcb3065ab1749d8131e30b9f9"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; float, <a class="el" href="class_log_with0_map.html">DefaultLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a061413bbcb3065ab1749d8131e30b9f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22b4021de33f760b21ed3f33c935ea6e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a22b4021de33f760b21ed3f33c935ea6e"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; float, <a class="el" href="class_log_with0_map.html">DefaultLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWith0ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a22b4021de33f760b21ed3f33c935ea6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1507657761f3177b0d55c9b1a71d76a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1507657761f3177b0d55c9b1a71d76a"></a>
+<a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; float, <a class="el" href="class_log_with_sign_map.html">DefaultLogWithSignMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParam</b> (const int index) const </td></tr>
+<tr class="separator:aa1507657761f3177b0d55c9b1a71d76a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a888e3bb4e9dc7e30800b008fe718215b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a888e3bb4e9dc7e30800b008fe718215b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWithSignParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float *const value, const float minNegativeValue=(float)(-1), const float maxPositiveValue=(float)(1), bool forceUniqueXmlName=true)</td></tr>
 <tr class="separator:a888e3bb4e9dc7e30800b008fe718215b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -265,38 +267,270 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWithSignParamAr
 <tr class="memitem:aa78e3f993fdc543b416b23ff19b2f273"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa78e3f993fdc543b416b23ff19b2f273"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addLogWithSignParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, float **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const float minValue=(float)(0), const float maxValue=(float)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
 <tr class="separator:aa78e3f993fdc543b416b23ff19b2f273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab314b3485a021a06f9c2109dc81504cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab314b3485a021a06f9c2109dc81504cb"></a>
-<a class="el" href="class_log_with_sign_param_array.html">LogWithSignParamArray</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParamArray</b> (const int index) const </td></tr>
-<tr class="separator:ab314b3485a021a06f9c2109dc81504cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91ea9e2c995fef253ab483da25464fb3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91ea9e2c995fef253ab483da25464fb3"></a>
-<a class="el" href="class_log_with_sign_param_matrix.html">LogWithSignParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParamMatrix</b> (const int index) const </td></tr>
-<tr class="separator:a91ea9e2c995fef253ab483da25464fb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68cbeacb7c900b7966c4f86cb9cc3686"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68cbeacb7c900b7966c4f86cb9cc3686"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; float, <a class="el" href="class_log_with_sign_map.html">DefaultLogWithSignMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a68cbeacb7c900b7966c4f86cb9cc3686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67ec0c997e2f57cf9e766efb9a29e069"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67ec0c997e2f57cf9e766efb9a29e069"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; float, <a class="el" href="class_log_with_sign_map.html">DefaultLogWithSignMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getLogWithSignParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a67ec0c997e2f57cf9e766efb9a29e069"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade320cae2bd933a08fd0e7dd31162708"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade320cae2bd933a08fd0e7dd31162708"></a>
+<a class="el" href="class_float_type_param.html">DoubleParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleParam</b> (const int index) const </td></tr>
+<tr class="separator:ade320cae2bd933a08fd0e7dd31162708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a2c8ebd0a3814006f9c9ddfdcd496c9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a2c8ebd0a3814006f9c9ddfdcd496c9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue=(double)(0), const double maxValue=(double)(1), bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a7a2c8ebd0a3814006f9c9ddfdcd496c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dcef8ad137e56ef32faaa58e8ca7dfb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1dcef8ad137e56ef32faaa58e8ca7dfb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const values, int *const size, const int maxSize, const double minValue=(double)(0), const double maxValue=(double)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a1dcef8ad137e56ef32faaa58e8ca7dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8de0d1b8c4da5170715de53cb67d0aa1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8de0d1b8c4da5170715de53cb67d0aa1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue=(double)(0), const double maxValue=(double)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a8de0d1b8c4da5170715de53cb67d0aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1ff98c7139ce0988fa563a3dc26b52a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1ff98c7139ce0988fa563a3dc26b52a"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleParamArray</b> (const int index) const </td></tr>
+<tr class="separator:aa1ff98c7139ce0988fa563a3dc26b52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14b9c1d53654f9e6ec0b64161aab7c9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad14b9c1d53654f9e6ec0b64161aab7c9"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:ad14b9c1d53654f9e6ec0b64161aab7c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c76f65004327687f142f78217f7dedf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c76f65004327687f142f78217f7dedf"></a>
+<a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; double, <a class="el" href="class_log_map.html">DefaultDoubleLogMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogParam</b> (const int index) const </td></tr>
+<tr class="separator:a8c76f65004327687f142f78217f7dedf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85e3084ced70fcd6f8ff7d354cab6f96"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85e3084ced70fcd6f8ff7d354cab6f96"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue=(double)(0.001), const double maxValue=(double)(1), bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a85e3084ced70fcd6f8ff7d354cab6f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac525ce54fc99dc68116a44a505ab5d80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac525ce54fc99dc68116a44a505ab5d80"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const values, int *const size, const int maxSize, const double minValue=(double)(0), const double maxValue=(double)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:ac525ce54fc99dc68116a44a505ab5d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cc0190f3ed68bf12b1e372ba4c84786"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9cc0190f3ed68bf12b1e372ba4c84786"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue=(double)(0), const double maxValue=(double)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a9cc0190f3ed68bf12b1e372ba4c84786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fe01d5f1924e7bb07254d117cd27f1c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3fe01d5f1924e7bb07254d117cd27f1c"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; double, <a class="el" href="class_log_map.html">DefaultDoubleLogMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a3fe01d5f1924e7bb07254d117cd27f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9535c950a703440486413f4fe8df8b03"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9535c950a703440486413f4fe8df8b03"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; double, <a class="el" href="class_log_map.html">DefaultDoubleLogMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a9535c950a703440486413f4fe8df8b03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94e8aa7ffda1041b3c7aff87d4aebf0c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94e8aa7ffda1041b3c7aff87d4aebf0c"></a>
+<a class="el" href="class_float_type_param.html">FloatTypeParam</a>&lt; double, <a class="el" href="class_log_with0_map.html">DefaultDoubleLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWith0Param</b> (const int index) const </td></tr>
+<tr class="separator:a94e8aa7ffda1041b3c7aff87d4aebf0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb803b7248860c43a210dddbb5aa2e44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abb803b7248860c43a210dddbb5aa2e44"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWith0Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minValue=(double)(0.001), const double maxValue=(double)(1), bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:abb803b7248860c43a210dddbb5aa2e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26a66495b30cc02d17d8b59e95a1f602"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26a66495b30cc02d17d8b59e95a1f602"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWith0ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const values, int *const size, const int maxSize, const double minValue=(double)(0), const double maxValue=(double)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a26a66495b30cc02d17d8b59e95a1f602"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ebbda133548b65697ac53893dde41c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78ebbda133548b65697ac53893dde41c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWith0ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue=(double)(0), const double maxValue=(double)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a78ebbda133548b65697ac53893dde41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c255e83f940525934afb75e4a9f2ff5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c255e83f940525934afb75e4a9f2ff5"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; double, <a class="el" href="class_log_with0_map.html">DefaultDoubleLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWith0ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a5c255e83f940525934afb75e4a9f2ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac485cab591403edd43cea3c5f1554b7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac485cab591403edd43cea3c5f1554b7b"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; double, <a class="el" href="class_log_with0_map.html">DefaultDoubleLogWith0Map</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWith0ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:ac485cab591403edd43cea3c5f1554b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac94100c6581908ba6b326a2f16f2dae1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac94100c6581908ba6b326a2f16f2dae1"></a>
+<a class="el" href="class_float_type_param.html">DoubleLogWithSignParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWithSignParam</b> (const int index) const </td></tr>
+<tr class="separator:ac94100c6581908ba6b326a2f16f2dae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48d93d9427e76d6d0d6d3f2bd709f7c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48d93d9427e76d6d0d6d3f2bd709f7c6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWithSignParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const value, const double minNegativeValue=(double)(-1), const double maxPositiveValue=(double)(1), bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a48d93d9427e76d6d0d6d3f2bd709f7c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeea2c32022c12584b4a2d9487386f373"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeea2c32022c12584b4a2d9487386f373"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWithSignParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double *const values, int *const size, const int maxSize, const double minValue=(double)(0), const double maxValue=(double)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:aeea2c32022c12584b4a2d9487386f373"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83287677527fd4ae23f6d3c9d8ed82c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83287677527fd4ae23f6d3c9d8ed82c4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addDoubleLogWithSignParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, double **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const double minValue=(double)(0), const double maxValue=(double)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a83287677527fd4ae23f6d3c9d8ed82c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61b2d5fa6ccff7e7c9b6c144adcf39ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61b2d5fa6ccff7e7c9b6c144adcf39ad"></a>
+<a class="el" href="class_float_type_param_array.html">FloatTypeParamArray</a>&lt; double, <a class="el" href="class_log_with_sign_map.html">DefaultDoubleLogWithSignMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWithSignParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a61b2d5fa6ccff7e7c9b6c144adcf39ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7dee5ededbd6440642f2f2607e34704"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7dee5ededbd6440642f2f2607e34704"></a>
+<a class="el" href="class_float_type_param_matrix.html">FloatTypeParamMatrix</a>&lt; double, <a class="el" href="class_log_with_sign_map.html">DefaultDoubleLogWithSignMap</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getDoubleLogWithSignParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:aa7dee5ededbd6440642f2f2607e34704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb713f1eee9b708ea64d81ba4f4f9167"><td class="memTemplParams" colspan="2"><a class="anchor" id="adb713f1eee9b708ea64d81ba4f4f9167"></a>
 template&lt;class IntType &gt; </td></tr>
 <tr class="memitem:adb713f1eee9b708ea64d81ba4f4f9167"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_int_type_param.html">IntTypeParam</a>&lt; IntType &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getIntTypeParam</b> (const int index) const </td></tr>
 <tr class="separator:adb713f1eee9b708ea64d81ba4f4f9167"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab17b807dcf0effc10f2d1979abf6f625"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab17b807dcf0effc10f2d1979abf6f625"></a>
-<a class="el" href="class_int_type_param.html">IntParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParam</b> (const int index) const </td></tr>
-<tr class="separator:ab17b807dcf0effc10f2d1979abf6f625"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa70f8ec5ead84f6cf79f6de8414922"><td class="memTemplParams" colspan="2"><a class="anchor" id="afaa70f8ec5ead84f6cf79f6de8414922"></a>
 template&lt;class IntType &gt; </td></tr>
 <tr class="memitem:afaa70f8ec5ead84f6cf79f6de8414922"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addIntTypeParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType *const value, const IntType minValue=0, const IntType maxValue=1, bool forceUniqueXmlName=true)</td></tr>
 <tr class="separator:afaa70f8ec5ead84f6cf79f6de8414922"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51a11e644bd3305ca0f3c9ce7fac1dd6"><td class="memTemplParams" colspan="2"><a class="anchor" id="a51a11e644bd3305ca0f3c9ce7fac1dd6"></a>
+template&lt;class IntType &gt; </td></tr>
+<tr class="memitem:a51a11e644bd3305ca0f3c9ce7fac1dd6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addIntTypeParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType *const values, int *const size, const int maxSize, const IntType minValue=(IntType)(0), const IntType maxValue=(IntType)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a51a11e644bd3305ca0f3c9ce7fac1dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f589f498d446f56af8af99ec68dd153"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4f589f498d446f56af8af99ec68dd153"></a>
+template&lt;class IntType &gt; </td></tr>
+<tr class="memitem:a4f589f498d446f56af8af99ec68dd153"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>addIntTypeParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const IntType minValue=(IntType)(0), const IntType maxValue=(IntType)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a4f589f498d446f56af8af99ec68dd153"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a773e2622f9a160dc49fe2fda072a48"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9a773e2622f9a160dc49fe2fda072a48"></a>
+template&lt;class IntType &gt; </td></tr>
+<tr class="memitem:a9a773e2622f9a160dc49fe2fda072a48"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; IntType &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getIntTypeParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a9a773e2622f9a160dc49fe2fda072a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7e2a71ce59d49287610e4b027caa237"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa7e2a71ce59d49287610e4b027caa237"></a>
+template&lt;class IntType &gt; </td></tr>
+<tr class="memitem:aa7e2a71ce59d49287610e4b027caa237"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; IntType &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>getIntTypeParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:aa7e2a71ce59d49287610e4b027caa237"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab17b807dcf0effc10f2d1979abf6f625"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab17b807dcf0effc10f2d1979abf6f625"></a>
+<a class="el" href="class_int_type_param.html">IntParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParam</b> (const int index) const </td></tr>
+<tr class="separator:ab17b807dcf0effc10f2d1979abf6f625"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05d5eba5a086617ca2d4fcafc627471b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05d5eba5a086617ca2d4fcafc627471b"></a>
+<a class="el" href="class_int_type_param.html">Int8Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt8Param</b> (const int index) const </td></tr>
+<tr class="separator:a05d5eba5a086617ca2d4fcafc627471b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d0ab1630a63ac321366c01f5403e607"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d0ab1630a63ac321366c01f5403e607"></a>
+<a class="el" href="class_int_type_param.html">Uint8Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint8Param</b> (const int index) const </td></tr>
+<tr class="separator:a6d0ab1630a63ac321366c01f5403e607"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd6facbb3d1beaf342a28c541629c8be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd6facbb3d1beaf342a28c541629c8be"></a>
+<a class="el" href="class_int_type_param.html">Int16Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt16Param</b> (const int index) const </td></tr>
+<tr class="separator:afd6facbb3d1beaf342a28c541629c8be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab32d4c335f1cf4de97dbe93083c4e0b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab32d4c335f1cf4de97dbe93083c4e0b"></a>
+<a class="el" href="class_int_type_param.html">Uint16Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint16Param</b> (const int index) const </td></tr>
+<tr class="separator:aab32d4c335f1cf4de97dbe93083c4e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf8cae8fbf660b1b3a0d65d9662aa032"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf8cae8fbf660b1b3a0d65d9662aa032"></a>
+<a class="el" href="class_int_type_param.html">Int32Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt32Param</b> (const int index) const </td></tr>
+<tr class="separator:aaf8cae8fbf660b1b3a0d65d9662aa032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75ef28d821b659fd7df066a923e7ee3f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75ef28d821b659fd7df066a923e7ee3f"></a>
+<a class="el" href="class_int_type_param.html">Uint32Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint32Param</b> (const int index) const </td></tr>
+<tr class="separator:a75ef28d821b659fd7df066a923e7ee3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6a4acb687a724557891e7024df33251"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6a4acb687a724557891e7024df33251"></a>
+<a class="el" href="class_int_type_param.html">Int64Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt64Param</b> (const int index) const </td></tr>
+<tr class="separator:ae6a4acb687a724557891e7024df33251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46909720745c4554d0b91e6261afad8a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a46909720745c4554d0b91e6261afad8a"></a>
+<a class="el" href="class_int_type_param.html">Uint64Param</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint64Param</b> (const int index) const </td></tr>
+<tr class="separator:a46909720745c4554d0b91e6261afad8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b968b564b0b3b8e8c0532aa193359aa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b968b564b0b3b8e8c0532aa193359aa"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addIntParam</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int *const value, const int minValue=0, const int maxValue=1, bool forceUniqueXmlName=true)</td></tr>
 <tr class="separator:a9b968b564b0b3b8e8c0532aa193359aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabd90427ed89f64d3957139507a5e0a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabd90427ed89f64d3957139507a5e0a7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt8Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8 *const value, const juce::int8 minValue=0, const juce::int8 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:aabd90427ed89f64d3957139507a5e0a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad125d1b72795c702f2e01128dcdc50e3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad125d1b72795c702f2e01128dcdc50e3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint8Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8 *const value, const juce::uint8 minValue=0, const juce::uint8 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:ad125d1b72795c702f2e01128dcdc50e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5831f77f61a79ee51e8eac1bb3bae81"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5831f77f61a79ee51e8eac1bb3bae81"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt16Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16 *const value, const juce::int16 minValue=0, const juce::int16 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:ab5831f77f61a79ee51e8eac1bb3bae81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63ba3e11186e8d42b7e9f27154205af8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63ba3e11186e8d42b7e9f27154205af8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint16Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16 *const value, const juce::uint16 minValue=0, const juce::uint16 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a63ba3e11186e8d42b7e9f27154205af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab589c8f6c29aea66725e186f3608ba12"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab589c8f6c29aea66725e186f3608ba12"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt32Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32 *const value, const juce::int32 minValue=0, const juce::int32 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:ab589c8f6c29aea66725e186f3608ba12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37436ead2449f4c748ae2522352121c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37436ead2449f4c748ae2522352121c8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint32Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32 *const value, const juce::uint32 minValue=0, const juce::uint32 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a37436ead2449f4c748ae2522352121c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d3eda4c62d12ea1acf59dcb1a0db5fd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d3eda4c62d12ea1acf59dcb1a0db5fd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt64Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64 *const value, const juce::int64 minValue=0, const juce::int64 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:a8d3eda4c62d12ea1acf59dcb1a0db5fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0ed9b5fcb71982de4be36bb34ff5a51"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0ed9b5fcb71982de4be36bb34ff5a51"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint64Param</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64 *const value, const juce::uint64 minValue=0, const juce::uint64 maxValue=1, bool forceUniqueXmlName=true)</td></tr>
+<tr class="separator:ab0ed9b5fcb71982de4be36bb34ff5a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7f4cd1a62dc20f4d065ff8e4383614c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7f4cd1a62dc20f4d065ff8e4383614c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addIntParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int *const values, int *const size, const int maxSize, const int minValue=(int)(0), const int maxValue=(int)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
 <tr class="separator:ab7f4cd1a62dc20f4d065ff8e4383614c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae63d10e68aa4f7bfc8e59c25f603144"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae63d10e68aa4f7bfc8e59c25f603144"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addIntParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, int **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const int minValue=(int)(0), const int maxValue=(int)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
 <tr class="separator:aae63d10e68aa4f7bfc8e59c25f603144"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8c0cfc8db3b51e88d2c61e4014bebca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8c0cfc8db3b51e88d2c61e4014bebca"></a>
-<a class="el" href="class_int_param_array.html">IntParamArray</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParamArray</b> (const int index) const </td></tr>
-<tr class="separator:ab8c0cfc8db3b51e88d2c61e4014bebca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae10388d2aa318637f175144422bdf680"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae10388d2aa318637f175144422bdf680"></a>
-<a class="el" href="class_int_param_matrix.html">IntParamMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParamMatrix</b> (const int index) const </td></tr>
-<tr class="separator:ae10388d2aa318637f175144422bdf680"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96eaacbfaad5c8fcd779db121109c8f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af96eaacbfaad5c8fcd779db121109c8f"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; int &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParamArray</b> (const int index) const </td></tr>
+<tr class="separator:af96eaacbfaad5c8fcd779db121109c8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae1d4e55ea7f29f01bfc0a92e0c31384"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae1d4e55ea7f29f01bfc0a92e0c31384"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; int &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getIntParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:aae1d4e55ea7f29f01bfc0a92e0c31384"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a890aae8cc03415dd1769f3b95762b9d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a890aae8cc03415dd1769f3b95762b9d5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt8ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8 *const values, int *const size, const int maxSize, const juce::int8 minValue=(juce::int8)(0), const juce::int8 maxValue=(juce::int8)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a890aae8cc03415dd1769f3b95762b9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52170a16da2b1a833f6b662c88622a80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a52170a16da2b1a833f6b662c88622a80"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt8ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int8 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int8 minValue=(juce::int8)(0), const juce::int8 maxValue=(juce::int8)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a52170a16da2b1a833f6b662c88622a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98677f3f69fd8fc29d38ef6edbcef9c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98677f3f69fd8fc29d38ef6edbcef9c8"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::int8 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt8ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a98677f3f69fd8fc29d38ef6edbcef9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4251e54859ab8ece8250eec7838abed5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4251e54859ab8ece8250eec7838abed5"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::int8 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt8ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a4251e54859ab8ece8250eec7838abed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02c2166211b07ee9285eb687193faaf5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02c2166211b07ee9285eb687193faaf5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint8ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8 *const values, int *const size, const int maxSize, const juce::uint8 minValue=(juce::uint8)(0), const juce::uint8 maxValue=(juce::uint8)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a02c2166211b07ee9285eb687193faaf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686fc282dd23a3fc013345fb8cf75bb3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a686fc282dd23a3fc013345fb8cf75bb3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint8ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint8 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint8 minValue=(juce::uint8)(0), const juce::uint8 maxValue=(juce::uint8)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a686fc282dd23a3fc013345fb8cf75bb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c371a729d73acfb5a39478a7b1f643e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c371a729d73acfb5a39478a7b1f643e"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::uint8 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint8ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a1c371a729d73acfb5a39478a7b1f643e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf7d1d431a953fe7e4cbd632845056a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf7d1d431a953fe7e4cbd632845056a3"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::uint8 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint8ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:abf7d1d431a953fe7e4cbd632845056a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad17eb54a95d987f97f03d7cd838a4aa4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad17eb54a95d987f97f03d7cd838a4aa4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt16ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16 *const values, int *const size, const int maxSize, const juce::int16 minValue=(juce::int16)(0), const juce::int16 maxValue=(juce::int16)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:ad17eb54a95d987f97f03d7cd838a4aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa454bd6daa4f0aac8d76c95def752b4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa454bd6daa4f0aac8d76c95def752b4d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt16ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int16 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int16 minValue=(juce::int16)(0), const juce::int16 maxValue=(juce::int16)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:aa454bd6daa4f0aac8d76c95def752b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea4387067873598b6fb42b9424c4b06c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea4387067873598b6fb42b9424c4b06c"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::int16 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt16ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:aea4387067873598b6fb42b9424c4b06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa37d07434d34c98e829e5d7ae8f934f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa37d07434d34c98e829e5d7ae8f934f"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::int16 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt16ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:aaa37d07434d34c98e829e5d7ae8f934f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14c9d55d6921a76c302ab3f8f338f71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad14c9d55d6921a76c302ab3f8f338f71"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint16ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16 *const values, int *const size, const int maxSize, const juce::uint16 minValue=(juce::uint16)(0), const juce::uint16 maxValue=(juce::uint16)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:ad14c9d55d6921a76c302ab3f8f338f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019870c11bb65dcd4b09245938e834a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a019870c11bb65dcd4b09245938e834a7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint16ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint16 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint16 minValue=(juce::uint16)(0), const juce::uint16 maxValue=(juce::uint16)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a019870c11bb65dcd4b09245938e834a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e782cf785105aca2d774faba00f88f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e782cf785105aca2d774faba00f88f3"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::uint16 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint16ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a8e782cf785105aca2d774faba00f88f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f553bdcf78c0eb9187af1480b84f16b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f553bdcf78c0eb9187af1480b84f16b"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::uint16 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint16ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a9f553bdcf78c0eb9187af1480b84f16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2695a009100ba28b0e4f33efe630d04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af2695a009100ba28b0e4f33efe630d04"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt32ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32 *const values, int *const size, const int maxSize, const juce::int32 minValue=(juce::int32)(0), const juce::int32 maxValue=(juce::int32)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:af2695a009100ba28b0e4f33efe630d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb392795d528b49a6bab4765dadee033"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb392795d528b49a6bab4765dadee033"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt32ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int32 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int32 minValue=(juce::int32)(0), const juce::int32 maxValue=(juce::int32)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:adb392795d528b49a6bab4765dadee033"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aa4f970ddacc9d412b02938e540bdda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4aa4f970ddacc9d412b02938e540bdda"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::int32 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt32ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a4aa4f970ddacc9d412b02938e540bdda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0042ee29b94f470b13e07abc7759b1cd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0042ee29b94f470b13e07abc7759b1cd"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::int32 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt32ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a0042ee29b94f470b13e07abc7759b1cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a348e4cc75d308d1b3ed93935fde7ea8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a348e4cc75d308d1b3ed93935fde7ea8c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint32ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32 *const values, int *const size, const int maxSize, const juce::uint32 minValue=(juce::uint32)(0), const juce::uint32 maxValue=(juce::uint32)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a348e4cc75d308d1b3ed93935fde7ea8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a620862fd5dd21cc7b0db4f870c091d6f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a620862fd5dd21cc7b0db4f870c091d6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint32ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint32 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint32 minValue=(juce::uint32)(0), const juce::uint32 maxValue=(juce::uint32)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a620862fd5dd21cc7b0db4f870c091d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d330bbea6bfd1b973f83724766bf53b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d330bbea6bfd1b973f83724766bf53b"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::uint32 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint32ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a8d330bbea6bfd1b973f83724766bf53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70a29d8da30b77cfc3014ff3aa2bee93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70a29d8da30b77cfc3014ff3aa2bee93"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::uint32 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint32ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a70a29d8da30b77cfc3014ff3aa2bee93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e075f9e46a64e83a450229974be7a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90e075f9e46a64e83a450229974be7a5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt64ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64 *const values, int *const size, const int maxSize, const juce::int64 minValue=(juce::int64)(0), const juce::int64 maxValue=(juce::int64)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a90e075f9e46a64e83a450229974be7a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e95cb35962a4b931d23c5032b598b2a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e95cb35962a4b931d23c5032b598b2a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addInt64ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::int64 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::int64 minValue=(juce::int64)(0), const juce::int64 maxValue=(juce::int64)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:a4e95cb35962a4b931d23c5032b598b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199c6d351e5f48e17a6b925163fe45b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a199c6d351e5f48e17a6b925163fe45b9"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::int64 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt64ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a199c6d351e5f48e17a6b925163fe45b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9269afd3650d7e16ffd44e9905e080d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9269afd3650d7e16ffd44e9905e080d8"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::int64 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getInt64ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:a9269afd3650d7e16ffd44e9905e080d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a014dfc9e4eaa7833f77dc5950a350369"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a014dfc9e4eaa7833f77dc5950a350369"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint64ParamArray</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64 *const values, int *const size, const int maxSize, const juce::uint64 minValue=(juce::uint64)(0), const juce::uint64 maxValue=(juce::uint64)(1), bool saveOnlySizedArrayFlag=true)</td></tr>
+<tr class="separator:a014dfc9e4eaa7833f77dc5950a350369"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af55df740c5d21a1f07cb62e149c1cb36"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af55df740c5d21a1f07cb62e149c1cb36"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addUint64ParamMatrix</b> (const int paramIndex, const String &amp;name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, juce::uint64 **const values, int *const numRows, int *const numCols, const int maxRows, const int maxCols, const juce::uint64 minValue=(juce::uint64)(0), const juce::uint64 maxValue=(juce::uint64)(1), const bool saveOnlySizedMatrixFlag=true)</td></tr>
+<tr class="separator:af55df740c5d21a1f07cb62e149c1cb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d67e3166f47b1fca4f3464425e9771d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d67e3166f47b1fca4f3464425e9771d"></a>
+<a class="el" href="class_int_type_param_array.html">IntTypeParamArray</a>&lt; juce::uint64 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint64ParamArray</b> (const int index) const </td></tr>
+<tr class="separator:a0d67e3166f47b1fca4f3464425e9771d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4d251d3d6dfd07747b092c150c1fb10"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4d251d3d6dfd07747b092c150c1fb10"></a>
+<a class="el" href="class_int_type_param_matrix.html">IntTypeParamMatrix</a>&lt; juce::uint64 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getUint64ParamMatrix</b> (const int index) const </td></tr>
+<tr class="separator:ae4d251d3d6dfd07747b092c150c1fb10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fd3c4321bcae3f259567570bdfb193e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6fd3c4321bcae3f259567570bdfb193e"></a>
 <a class="el" href="class_bool_param.html">BoolParam</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getBoolParam</b> (const int index) const </td></tr>
 <tr class="separator:a6fd3c4321bcae3f259567570bdfb193e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -736,7 +970,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><div class="memdoc">
 <p>All parameters and parameter groups must be added in this method </p>
 
-<p>Implemented in <a class="el" href="class_string_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">StringParamMatrix</a>, <a class="el" href="class_bool_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">BoolParamMatrix</a>, <a class="el" href="class_int_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">IntParamMatrix</a>, <a class="el" href="class_log_with_sign_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">LogWithSignParamMatrix</a>, <a class="el" href="class_log_with0_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">LogWith0ParamMatrix</a>, <a class="el" href="class_log_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">LogParamMatrix</a>, <a class="el" href="class_float_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">FloatParamMatrix</a>, <a class="el" href="class_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">ParamMatrix</a>, <a class="el" href="class_string_param_array.html#adb883d725d681427b636ae8987e9c0d2">StringParamArray</a>, <a class="el" href="class_bool_param_array.html#adb883d725d681427b636ae8987e9c0d2">BoolParamArray</a>, <a class="el" href="class_int_param_array.html#adb883d725d681427b636ae8987e9c0d2">IntParamArray</a>, <a class="el" href="class_log_with_sign_param_array.html#adb883d725d681427b636ae8987e9c0d2">LogWithSignParamArray</a>, <a class="el" href="class_log_with0_param_array.html#adb883d725d681427b636ae8987e9c0d2">LogWith0ParamArray</a>, <a class="el" href="class_log_param_array.html#adb883d725d681427b636ae8987e9c0d2">LogParamArray</a>, <a class="el" href="class_float_param_array.html#adb883d725d681427b636ae8987e9c0d2">FloatParamArray</a>, and <a class="el" href="class_param_array.html#abd4b1717b7e31b110ce122672890d35c">ParamArray</a>.</p>
+<p>Implemented in <a class="el" href="class_bool_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">BoolParamMatrix</a>, <a class="el" href="class_int_type_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">IntTypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_float_type_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">FloatTypeParamMatrix&lt; FloatType, FloatTypeMap &gt;</a>, <a class="el" href="class_string_param_matrix.html#adb883d725d681427b636ae8987e9c0d2">StringParamMatrix</a>, <a class="el" href="class_type_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">TypeParamMatrix&lt; Type &gt;</a>, <a class="el" href="class_type_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">TypeParamMatrix&lt; String &gt;</a>, <a class="el" href="class_type_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">TypeParamMatrix&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">TypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_type_param_matrix.html#abd4b1717b7e31b110ce122672890d35c">TypeParamMatrix&lt; bool &gt;</a>, <a class="el" href="class_bool_param_array.html#adb883d725d681427b636ae8987e9c0d2">BoolParamArray</a>, <a class="el" href="class_int_type_param_array.html#adb883d725d681427b636ae8987e9c0d2">IntTypeParamArray&lt; IntType &gt;</a>, <a class="el" href="class_float_type_param_array.html#adb883d725d681427b636ae8987e9c0d2">FloatTypeParamArray&lt; FloatType, FloatTypeMap &gt;</a>, <a class="el" href="class_string_param_array.html#adb883d725d681427b636ae8987e9c0d2">StringParamArray</a>, <a class="el" href="class_type_param_array.html#abd4b1717b7e31b110ce122672890d35c">TypeParamArray&lt; Type &gt;</a>, <a class="el" href="class_type_param_array.html#abd4b1717b7e31b110ce122672890d35c">TypeParamArray&lt; String &gt;</a>, <a class="el" href="class_type_param_array.html#abd4b1717b7e31b110ce122672890d35c">TypeParamArray&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_array.html#abd4b1717b7e31b110ce122672890d35c">TypeParamArray&lt; IntType &gt;</a>, and <a class="el" href="class_type_param_array.html#abd4b1717b7e31b110ce122672890d35c">TypeParamArray&lt; bool &gt;</a>.</p>
 
 </div>
 </div>
@@ -1100,7 +1334,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><div class="memdoc">
 <p>Stores the parameter values as an XML attribute. If createChild is set to true it will create a child XML node (you want to disable it at the root node). </p>
 
-<p>Reimplemented in <a class="el" href="class_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">ParamMatrix</a>, and <a class="el" href="class_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">ParamArray</a>.</p>
+<p>Reimplemented in <a class="el" href="class_type_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamMatrix&lt; Type &gt;</a>, <a class="el" href="class_type_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamMatrix&lt; String &gt;</a>, <a class="el" href="class_type_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamMatrix&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamMatrix&lt; bool &gt;</a>, <a class="el" href="class_type_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamArray&lt; Type &gt;</a>, <a class="el" href="class_type_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamArray&lt; String &gt;</a>, <a class="el" href="class_type_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamArray&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamArray&lt; IntType &gt;</a>, and <a class="el" href="class_type_param_array.html#a2e02a316dc49b5a59d66ba3bc652d3d7">TypeParamArray&lt; bool &gt;</a>.</p>
 
 </div>
 </div>
@@ -1309,7 +1543,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><div class="memdoc">
 <p>Reset all parameters in this <a class="el" href="class_param_group.html">ParamGroup</a> to their defaultValue. If applyRecursively=true do the same for the child ParamGroups. </p>
 
-<p>Reimplemented in <a class="el" href="class_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">ParamMatrix</a>, and <a class="el" href="class_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">ParamArray</a>.</p>
+<p>Reimplemented in <a class="el" href="class_type_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamMatrix&lt; Type &gt;</a>, <a class="el" href="class_type_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamMatrix&lt; String &gt;</a>, <a class="el" href="class_type_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamMatrix&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamMatrix&lt; bool &gt;</a>, <a class="el" href="class_type_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamArray&lt; Type &gt;</a>, <a class="el" href="class_type_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamArray&lt; String &gt;</a>, <a class="el" href="class_type_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamArray&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamArray&lt; IntType &gt;</a>, and <a class="el" href="class_type_param_array.html#a4b4b800df666b70e4a50890be1b8a30d">TypeParamArray&lt; bool &gt;</a>.</p>
 
 </div>
 </div>
@@ -1352,7 +1586,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><div class="memdoc">
 <p>Reset all parameters in this <a class="el" href="class_param_group.html">ParamGroup</a> to their defaultValue. If applyRecursively=true do the same for the child ParamGroups. Update for each parameter the Host and the UI accordingly. Beware that parameters with the option loadFromPresets set to false won't be reset. </p>
 
-<p>Reimplemented in <a class="el" href="class_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">ParamMatrix</a>, and <a class="el" href="class_param_array.html#accc77f82dc2816faa6617d756c605d6a">ParamArray</a>.</p>
+<p>Reimplemented in <a class="el" href="class_type_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">TypeParamMatrix&lt; Type &gt;</a>, <a class="el" href="class_type_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">TypeParamMatrix&lt; String &gt;</a>, <a class="el" href="class_type_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">TypeParamMatrix&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">TypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_type_param_matrix.html#accc77f82dc2816faa6617d756c605d6a">TypeParamMatrix&lt; bool &gt;</a>, <a class="el" href="class_type_param_array.html#accc77f82dc2816faa6617d756c605d6a">TypeParamArray&lt; Type &gt;</a>, <a class="el" href="class_type_param_array.html#accc77f82dc2816faa6617d756c605d6a">TypeParamArray&lt; String &gt;</a>, <a class="el" href="class_type_param_array.html#accc77f82dc2816faa6617d756c605d6a">TypeParamArray&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_array.html#accc77f82dc2816faa6617d756c605d6a">TypeParamArray&lt; IntType &gt;</a>, and <a class="el" href="class_type_param_array.html#accc77f82dc2816faa6617d756c605d6a">TypeParamArray&lt; bool &gt;</a>.</p>
 
 </div>
 </div>
@@ -1389,7 +1623,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><div class="memdoc">
 <p>Set the updateUi flags of all its parameters to true only in this <a class="el" href="class_param_group.html">ParamGroup</a> or applyRecursively. </p>
 
-<p>Reimplemented in <a class="el" href="class_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">ParamMatrix</a>, and <a class="el" href="class_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">ParamArray</a>.</p>
+<p>Reimplemented in <a class="el" href="class_type_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamMatrix&lt; Type &gt;</a>, <a class="el" href="class_type_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamMatrix&lt; String &gt;</a>, <a class="el" href="class_type_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamMatrix&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamMatrix&lt; IntType &gt;</a>, <a class="el" href="class_type_param_matrix.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamMatrix&lt; bool &gt;</a>, <a class="el" href="class_type_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamArray&lt; Type &gt;</a>, <a class="el" href="class_type_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamArray&lt; String &gt;</a>, <a class="el" href="class_type_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamArray&lt; FloatType &gt;</a>, <a class="el" href="class_type_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamArray&lt; IntType &gt;</a>, and <a class="el" href="class_type_param_array.html#a93ca3f2dcc5d7ce67fe8c843d477b43e">TypeParamArray&lt; bool &gt;</a>.</p>
 
 </div>
 </div>
@@ -1400,7 +1634,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jan 31 2015 12:09:54 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 8 2015 13:47:18 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

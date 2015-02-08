@@ -228,7 +228,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 <p>loadFromPresets: Try to load this parameter value from the plugin presets (managed using the PluginParameters module).</p>
 <p>saveToPresets: Save this parameter value to the plugin presets (managed using the PluginParameters module).</p>
 <p>forceRunAfterParamChangeInHost: if enabled runAfterParamChange(...) will <em>always</em> be called when an (automated) parameter is updated from the host. Otherwise it will be called only if the parameter value changes.</p>
-<p>createThreadForParamChange: runAfterParamChange(...) is usually run in the UI thread if updateProcessorAndHostFromUi(...) is called or in the processing thread (uh uh!) if the host sends a new value for it. Specially in the latter case, it is important to make sure that we are not doing anything to block it. If that were the case (e.g. reading a new preset from from disk), please enable this option to create a new thread.</p>
+<p>createThreadForParamChange: runAfterParamChange(...) is usually run in the UI thread if updateProcessorAndHostFromUi(...) is called or in the processing thread (oh oh...) if the host sends a new value for it. Specially in the latter case, it is important to make sure that we are not doing anything to block it. If that were the case (e.g. reading a new preset from from disk), please enable this option to create a new thread.</p>
 <p>autoChangeGestures If true, beginParameterChangeGesture() and endParameterChangeGesture() are called before and after (respectively) of each host update. Otherwise you should call them manually (e.g. at sliderDragStarted() and sliderDragEnded()). Without them hosts like Logic won't receive the value updates. </p>
 
 </div>
@@ -894,7 +894,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b></td><
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jan 31 2015 12:09:54 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Feb 8 2015 13:47:17 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>
