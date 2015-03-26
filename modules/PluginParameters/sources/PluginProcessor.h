@@ -70,9 +70,9 @@ protected:
   FileLogger *fileLogger;
   #endif
 
-private:  
   ThreadPool runAfterParamChangeThreads;
 
+private:
   ParamGroup **groupAutomated;
   int *indexInGroupAutomated;
   ParamGroup **groupNonAutomated;

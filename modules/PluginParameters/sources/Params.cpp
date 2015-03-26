@@ -146,9 +146,9 @@ void Param::updateProcessorHostAndUiFromXml(bool forceUpdateHost,bool forceUpdat
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromXml()){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1); 
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,2); 
     } else if (forceUpdateHost){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:0);
     } else if (forceUpdateUi){
       updateUi(true);
     }   
@@ -159,9 +159,9 @@ void Param::updateProcessorHostAndUiFromDefaultXml(bool forceUpdateHost,bool for
   if (pluginProcessor==nullptr) return;
   if (settings[loadFromSession] || settings[loadFromPresets]){
     if (updateProcessorFromDefaultXml()){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,2);
     } else if (forceUpdateHost){
-      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:1);
+      pluginProcessor->updateProcessorHostAndUi(this,xmlHostValue,UPDATE_FROM_PROCESSOR,0,(forceUpdateUi)?2:0);
     } else if (forceUpdateUi){
       updateUi(true);
     }   

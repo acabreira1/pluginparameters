@@ -1004,32 +1004,32 @@ public:
     if (TypeParam<FloatType>::defaultValue>=minValueArg){      
       FloatTypeMap::minValue=minValueArg;
       FloatTypeMap::updateMinMappedValue();
-      if (*TypeParam<FloatType>::value<minValueArg)
-        *TypeParam<FloatType>::value=minValueArg;
+      if (*TypeParam<FloatType>::value < minValueArg){
+        *TypeParam<FloatType>::value = minValueArg;
+        if (updateHostFlag){
+          Param::updateHost(false);
+        }
+      }
       if (TypeParam<FloatType>::xmlValue<minValueArg)
         TypeParam<FloatType>::xmlValue=minValueArg;
     } else //minValue can't be set to be greater than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      Param::updateHost(false);
-    }
+      jassertfalse;    
   }
 
   void setMax(FloatType maxValueArg,bool updateHostFlag=true){    
     if (TypeParam<FloatType>::defaultValue<=maxValueArg){
       FloatTypeMap::maxValue=maxValueArg;
       FloatTypeMap::updateMaxMappedValue();
-      if (*TypeParam<FloatType>::value>maxValueArg)
+      if (*TypeParam<FloatType>::value>maxValueArg){
         *TypeParam<FloatType>::value=maxValueArg;
+        if (updateHostFlag){
+          Param::updateHost(false);
+        }
+      }
       if (TypeParam<FloatType>::xmlValue>maxValueArg)
         TypeParam<FloatType>::xmlValue=maxValueArg;
     } else //maxValue can't be set to be less than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      Param::updateHost(false);
-    }
+      jassertfalse;    
   }
 
   bool hostSet(const PluginParameters_HostFloatType hostValue){    
@@ -1170,31 +1170,33 @@ public:
   void setMin(IntType minValueArg,bool updateHostFlag=true){        
     if (TypeParam<IntType>::defaultValue>=minValueArg){
       minValue=minValueArg;
-      if (*TypeParam<IntType>::value<minValueArg)
-        *TypeParam<IntType>::value=minValueArg;
-      if (TypeParam<IntType>::xmlValue<minValueArg)
-        TypeParam<IntType>::xmlValue=minValueArg;
+      if (*TypeParam<IntType>::value < minValueArg){
+        *TypeParam<IntType>::value = minValueArg;
+        if (updateHostFlag){
+          Param::updateHost(false);
+        }
+      }
+      if (TypeParam<IntType>::xmlValue < minValueArg){
+        TypeParam<IntType>::xmlValue = minValueArg;
+      }
     } else //minValue can't be greater than the (constant) default value
-      jassertfalse;
-
-    if (updateHostFlag){
-      Param::updateHost(false);
-    }
+      jassertfalse;    
   }
 
-  void setMax(IntType maxValueArg,bool updateHostFlag=true){    
-    if (TypeParam<IntType>::defaultValue<=maxValueArg){
-      maxValue=maxValueArg;
-      if (*TypeParam<IntType>::value>maxValueArg)
-        *TypeParam<IntType>::value=maxValueArg;
-      if (TypeParam<IntType>::xmlValue>maxValueArg)
-        TypeParam<IntType>::xmlValue=maxValueArg;
+  void setMax(IntType maxValueArg,bool updateHostFlag=true){
+    if (TypeParam<IntType>::defaultValue <= maxValueArg){
+      maxValue = maxValueArg;
+      if (*TypeParam<IntType>::value > maxValueArg){
+        *TypeParam<IntType>::value = maxValueArg;
+        if (updateHostFlag){
+          Param::updateHost(false);
+        }
+      }
+      if (TypeParam<IntType>::xmlValue > maxValueArg){
+        TypeParam<IntType>::xmlValue = maxValueArg;        
+      }
     } else //maxValue can't be less than the (constant) default value
-      jassertfalse;
-    
-    if (updateHostFlag){
-      Param::updateHost(false);
-    }
+      jassertfalse;    
   }
 
   const double getMin() const{
