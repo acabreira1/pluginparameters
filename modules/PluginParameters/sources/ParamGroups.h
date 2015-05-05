@@ -1417,18 +1417,18 @@ public:
   /** Sets the minimum range of each parameter in the array */
   void setMin(IntType minValueArg){
     for (int i = 0; i<TypeParamArray<IntType>::getMaxSize(); i++)
-      ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->setMin(minValueArg);
+      ParamGroup::getIntTypeParam<IntType>(i)->setMin(minValueArg);
   }
 
   /** Sets the maximum range of each parameter in the array */
   void setMax(IntType maxValueArg){
     for (int i = 0; i<TypeParamArray<IntType>::getMaxSize(); i++)
-      ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->setMax(maxValueArg);
+      ParamGroup::getIntTypeParam<IntType>(i)->setMax(maxValueArg);
   }
 
   /** Updates the value from its UI value */
   void updateProcessorAndHostFromUi(int i, const IntType valueArg, UndoManager *const undoManager = nullptr, const bool dontCreateNewUndoTransaction = false) const{
-    return ParamGroup::getIntTypeParam<IntType, IntTypeMap>(i)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
+    return ParamGroup::getIntTypeParam<IntType>(i)->updateProcessorAndHostFromUi(valueArg, undoManager, dontCreateNewUndoTransaction);
   }
 
   IntTypeParamArray(const String &name, const bool registerAtHostFlag, const LoadSaveOptions loadSaveOptions, IntType* const values, int *const size, const int maxSize, const IntType minValue = (IntType)(0), const IntType maxValue = (IntType)(1), bool saveOnlySizedArrayFlag = true) :
