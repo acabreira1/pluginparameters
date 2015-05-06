@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">PluginParameters
-   &#160;<span id="projectnumber">1.1.9</span>
+   &#160;<span id="projectnumber">1.1.10</span>
    </div>
    <div id="projectbrief">JUCE module providing utilities to manage automatically different types of audio plugin parameters</div>
   </td>
@@ -85,6 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_plugin_processor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PluginProcessor Class Reference</div>  </div>
@@ -605,6 +606,16 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateProcess
 &#160;</td><td class="memItemRight" valign="bottom"><b>ParamGroup</b> (const String &amp;name)</td></tr>
 <tr class="separator:aa09c62650f898321cd030b6da25f25ff inherit pub_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:abbbc81888296148bec050c2665cda33b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abbbc81888296148bec050c2665cda33b"></a>
+ThreadPool&#160;</td><td class="memItemRight" valign="bottom"><b>runAfterParamChangeThreads</b></td></tr>
+<tr class="separator:abbbc81888296148bec050c2665cda33b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_class_param_group"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_param_group')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_param_group.html">ParamGroup</a></td></tr>
+<tr class="memitem:a1a3dcb722730843733efceb817e3e7bb inherit pro_attribs_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a3dcb722730843733efceb817e3e7bb"></a>
+bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</b></td></tr>
+<tr class="separator:a1a3dcb722730843733efceb817e3e7bb inherit pro_attribs_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_param_group"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_param_group')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_param_group.html">ParamGroup</a></td></tr>
@@ -613,10 +624,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:acd1fd3dc1d1a03af454cef9d06cf294a inherit pro_methods_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd1fd3dc1d1a03af454cef9d06cf294a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setPluginProcessor</b> (<a class="el" href="class_plugin_processor.html">PluginProcessor</a> *pluginProcessorArg)</td></tr>
 <tr class="separator:acd1fd3dc1d1a03af454cef9d06cf294a inherit pro_methods_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_attribs_class_param_group"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_param_group')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_param_group.html">ParamGroup</a></td></tr>
-<tr class="memitem:a1a3dcb722730843733efceb817e3e7bb inherit pro_attribs_class_param_group"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a3dcb722730843733efceb817e3e7bb"></a>
-bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</b></td></tr>
-<tr class="separator:a1a3dcb722730843733efceb817e3e7bb inherit pro_attribs_class_param_group"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>methods to redirect all parameters to the global list referred by the host and handle automatically automated and not automated parameters </p>
@@ -707,7 +714,7 @@ bool *&#160;</td><td class="memItemRight" valign="bottom"><b>saveXmlOptionCopy</
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 8 2015 13:50:09 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 6 2015 11:44:58 for PluginParameters by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>
