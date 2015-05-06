@@ -72,7 +72,7 @@ public:
     bool isOutputChannelStereoPair (int index) const;
 
     //==============================================================================
-    int getNumPrograms()                                                { return 0; }
+    int getNumPrograms()                                                { return 1; }
     int getCurrentProgram()                                             { return 0; }
     void setCurrentProgram (int /*index*/)                              { }
     const String getProgramName (int /*index*/)                         { return String::empty; }
